@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stereo Capture</title>
+  <style>
+    body { margin: 0; background: #000; color: #fff; font-family: sans-serif; text-align: center; }
+    video, canvas { width: 100%; max-width: 480px; height: auto; }
+    #arrowOverlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: red;
+      display: none;
+    }
+    #controls { margin-top: 10px; }
+    button { padding: 12px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Stereo Photo Capture</h2>
+  <div style="position: relative; display: inline-block;">
+    <video id="video" autoplay playsinline></video>
+    <div id="arrowOverlay">➡️</div>
+  </div>
+
+  <div id="controls">
+    <button id="captureBtn">Capture First Photo</button>
+    <p id="statusText">Align camera and take the first photo</p>
+  </div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const arrow = document.getElementById('arrowOverlay');
+    const captureBtn = document.getElementById('captureBtn');
+    const statusText = document.getElementById('statusText');
+
+    let firstPhoto = null;
+    let secondPhoto = null;
+
+    // Open webcam
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+      .then(stream => video.srcObject = stream)
+      .catch(err => alert('Camera access failed: ' + err));
+
+    captureBtn.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/jpeg');
+
+      if (!firstPhoto) {
+        firstPhoto = imageData;
+        arrow.style.display = 'block';
+        captureBtn.textContent = 'Capture Second Photo';
+        statusText.textContent = 'Now move slightly right and align the arrows';
+      } else {
+        secondPhoto = imageData;
+        arrow.style.display = 'none';
+        statusText.textContent = 'Both photos captured!';
+        captureBtn.disabled = true;
+
+        // TODO: send both images to backend
+        console.log('First and second photos captured.');
+        // Example:
+        // fetch('/upload-stereo', { method: 'POST', body: JSON.stringify({ left: firstPhoto, right: secondPhoto }) })
+
+        // Preview (optional for dev):
+        const img1 = new Image(), img2 = new Image();
+        img1.src = firstPhoto;
+        img2.src = secondPhoto;
+        document.body.appendChild(img1);
+        document.body.appendChild(img2);
+      }
+    });
+  </script>
+</body>
+</html>
