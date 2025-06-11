@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stereo Guided Capture</title>
+  <title>Stereo Auto-Capture</title>
   <style>
     body {
       margin: 0;
@@ -39,7 +39,7 @@
   </style>
 </head>
 <body>
-  <h2>Stereo Capture Guidance</h2>
+  <h2>Stereo Auto-Capture</h2>
 
   <video id="videoElement" autoplay playsinline muted></video>
   <div id="canvasWrapper">
@@ -66,7 +66,7 @@
         photo2El = document.getElementById("photo2"),
         streaming = false, tracking = false,
         point = null, prevGray = null,
-        photo1 = null;
+        photo1 = null, autoCaptured = false;
 
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
       .then((stream) => {
@@ -83,6 +83,11 @@
         status.textContent = "Camera access failed: " + err;
       });
 
+    function distance(p1, p2) {
+      let dx = p1.x - p2.x, dy = p1.y - p2.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
     function processFrame() {
       if (!streaming) return;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -98,7 +103,7 @@
           point.y = nextPts.data32F[1];
         } else {
           tracking = false;
-          status.textContent = "Tracking lost; tap object to relock.";
+          status.textContent = "Tracking lost.";
         }
         prevPts.delete(); nextPts.delete(); statusArr.delete(); err.delete();
       }
@@ -108,6 +113,20 @@
         ctx.fillStyle = "red";
         ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
         ctx.fill();
+
+        const center = { x: canvas.width / 2, y: canvas.height / 2 };
+        const dist = distance(center, point);
+
+        if (dist < 15 && !autoCaptured) {
+          autoCaptured = true;
+          setTimeout(() => {
+            let imgData = canvas.toDataURL("image/jpeg");
+            photo2El.src = imgData;
+            status.textContent = "Auto-captured second photo.";
+            actionBtn.disabled = true;
+            console.log("Auto-capture complete.");
+          }, 300); // slight delay for stability
+        }
       }
 
       gray.copyTo(prevGray);
@@ -125,7 +144,7 @@
         prevGray = new cv.Mat();
         cv.cvtColor(cv.imread(canvas), prevGray, cv.COLOR_RGBA2GRAY);
         tracking = true;
-        status.textContent = "Tracking... align object marker with center ➤";
+        status.textContent = "Tracking object. Align ➤ with red dot.";
       }
     });
 
@@ -134,13 +153,8 @@
       if (!photo1) {
         photo1 = imgData;
         photo1El.src = imgData;
-        actionBtn.textContent = "Capture Second Photo";
-        status.textContent = "Tap on object to lock marker.";
-      } else {
-        photo2El.src = imgData;
-        status.textContent = "Stereo image pair captured.";
         actionBtn.disabled = true;
-        console.log({ left: photo1, right: imgData });
+        status.textContent = "Tap on object in photo to lock marker.";
       }
     });
   </script>
