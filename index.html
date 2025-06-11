@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Stereo Capture with Auto-Alignment</title>
+  <meta charset="UTF-8">
+  <title>Stereo Vision Marker Capture</title>
   <style>
     body {
       background: #111;
-      color: white;
-      text-align: center;
+      color: #fff;
       font-family: sans-serif;
-      margin: 0;
+      text-align: center;
     }
     #canvasWrapper {
       position: relative;
       display: inline-block;
     }
     #canvas {
-      border: 2px solid #444;
+      border: 2px solid #333;
     }
     #centerArrow {
       position: absolute;
@@ -27,141 +26,145 @@
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
-    button {
-      margin-top: 12px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
     #photo1, #photo2 {
       max-width: 45%;
       margin: 10px;
     }
+    button {
+      margin: 12px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
-  <h2>Guided Stereo Photo Capture</h2>
 
-  <video id="video" autoplay playsinline muted style="display:none;"></video>
-  <div id="canvasWrapper">
-    <canvas id="canvas"></canvas>
-    <div id="centerArrow">➤</div>
-  </div>
+<h2>Stereo Capture (Marker Based)</h2>
 
-  <br>
-  <button id="captureBtn">Capture First Photo</button>
-  <p id="status">Waiting for camera...</p>
+<video id="video" autoplay playsinline muted style="display:none;"></video>
+<div id="canvasWrapper">
+  <canvas id="canvas"></canvas>
+  <div id="centerArrow">➤</div>
+</div>
+<p id="status">Waiting for camera...</p>
+<button id="captureBtn">Capture First Photo</button>
 
-  <img id="photo1" />
-  <img id="photo2" />
+<img id="photo1" />
+<img id="photo2" />
 
-  <script src="https://docs.opencv.org/4.x/opencv.js"></script>
-  <script>
-    let video = document.getElementById('video');
-    let canvas = document.getElementById('canvas');
-    let ctx = canvas.getContext('2d');
-    let captureBtn = document.getElementById('captureBtn');
-    let status = document.getElementById('status');
-    let photo1 = document.getElementById('photo1');
-    let photo2 = document.getElementById('photo2');
-    
-    let point = null, tracking = false, prevGray = null, autoCaptured = false;
-    let photo1Taken = false;
+<script src="https://docs.opencv.org/4.x/opencv.js"></script>
+<script>
+  let video = document.getElementById("video");
+  let canvas = document.getElementById("canvas");
+  let ctx = canvas.getContext("2d");
+  let captureBtn = document.getElementById("captureBtn");
+  let status = document.getElementById("status");
+  let photo1 = document.getElementById("photo1");
+  let photo2 = document.getElementById("photo2");
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-      .then(stream => {
-        video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          video.play();
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          requestAnimationFrame(draw);
-          status.textContent = "Ready. Capture first photo.";
-        };
-      })
-      .catch(err => {
-        status.textContent = "Camera access error: " + err;
-      });
+  let tracking = false;
+  let point = null;
+  let prevGray = null;
+  let paused = false;
+  let autoCaptured = false;
 
-    captureBtn.onclick = () => {
-      if (!photo1Taken) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        photo1.src = canvas.toDataURL("image/jpeg");
-        photo1Taken = true;
-        status.textContent = "Click the object in photo to track.";
-        captureBtn.disabled = true;
-      }
-    };
-
-    canvas.addEventListener("click", (e) => {
-      if (photo1Taken && !tracking) {
-        let rect = canvas.getBoundingClientRect();
-        point = {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        };
-        prevGray = new cv.Mat();
-        let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        src.data.set(imageData.data);
-        cv.cvtColor(src, prevGray, cv.COLOR_RGBA2GRAY);
-        src.delete();
-        tracking = true;
-        status.textContent = "Tracking object. Align red dot to green ➤.";
-      }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(stream => {
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        requestAnimationFrame(draw);
+        status.textContent = "Camera ready. Click 'Capture First Photo'.";
+      };
+    })
+    .catch(err => {
+      status.textContent = "Camera error: " + err;
     });
 
-    function draw() {
+  captureBtn.onclick = () => {
+    if (!paused) {
+      paused = true;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      photo1.src = canvas.toDataURL("image/jpeg");
+      status.textContent = "Click on the object in photo to set marker.";
+    }
+  };
 
-      if (tracking && point) {
-        let currentGray = new cv.Mat();
-        let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        src.data.set(imageData.data);
-        cv.cvtColor(src, currentGray, cv.COLOR_RGBA2GRAY);
+  canvas.addEventListener("click", (e) => {
+    if (paused && !tracking) {
+      let rect = canvas.getBoundingClientRect();
+      point = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+      prevGray = new cv.Mat();
+      let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      src.data.set(imageData.data);
+      cv.cvtColor(src, prevGray, cv.COLOR_RGBA2GRAY);
+      src.delete();
 
-        let prevPts = cv.matFromArray(1, 1, cv.CV_32FC2, [point.x, point.y]);
-        let nextPts = new cv.Mat(), statusArr = new cv.Mat(), err = new cv.Mat();
+      paused = false;
+      tracking = true;
+      status.textContent = "Tracking marker. Align red dot to green ➤.";
+    }
+  });
 
-        cv.calcOpticalFlowPyrLK(prevGray, currentGray, prevPts, nextPts, statusArr, err);
+  function draw() {
+    if (!paused) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
 
-        if (statusArr.data[0]) {
-          point.x = nextPts.data32F[0];
-          point.y = nextPts.data32F[1];
+    if (tracking && point) {
+      let currentGray = new cv.Mat();
+      let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      src.data.set(imageData.data);
+      cv.cvtColor(src, currentGray, cv.COLOR_RGBA2GRAY);
 
-          ctx.beginPath();
-          ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-          ctx.fillStyle = "red";
-          ctx.fill();
+      let prevPts = cv.matFromArray(1, 1, cv.CV_32FC2, [point.x, point.y]);
+      let nextPts = new cv.Mat(), statusArr = new cv.Mat(), err = new cv.Mat();
 
-          let cx = canvas.width / 2;
-          let cy = canvas.height / 2;
-          let dist = Math.hypot(point.x - cx, point.y - cy);
+      cv.calcOpticalFlowPyrLK(prevGray, currentGray, prevPts, nextPts, statusArr, err);
 
-          if (dist < 20 && !autoCaptured) {
-            autoCaptured = true;
-            setTimeout(() => {
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-              photo2.src = canvas.toDataURL("image/jpeg");
-              status.textContent = "Second photo auto-captured!";
-            }, 300);
-          }
+      if (statusArr.data[0]) {
+        point.x = nextPts.data32F[0];
+        point.y = nextPts.data32F[1];
 
-        } else {
-          status.textContent = "Tracking lost.";
-          tracking = false;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = "red";
+        ctx.fill();
+
+        let cx = canvas.width / 2;
+        let cy = canvas.height / 2;
+        let dist = Math.hypot(point.x - cx, point.y - cy);
+
+        if (dist < 20 && !autoCaptured) {
+          autoCaptured = true;
+          setTimeout(() => {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            photo2.src = canvas.toDataURL("image/jpeg");
+            status.textContent = "Second photo auto-captured!";
+          }, 300);
         }
 
-        prevGray.delete();
-        prevGray = currentGray.clone();
-
-        src.delete(); currentGray.delete(); prevPts.delete(); nextPts.delete(); statusArr.delete(); err.delete();
+      } else {
+        status.textContent = "Tracking lost.";
+        tracking = false;
       }
 
-      requestAnimationFrame(draw);
+      prevGray.delete();
+      prevGray = currentGray.clone();
+
+      src.delete(); currentGray.delete(); prevPts.delete(); nextPts.delete(); statusArr.delete(); err.delete();
     }
-  </script>
+
+    requestAnimationFrame(draw);
+  }
+</script>
+
 </body>
 </html>
