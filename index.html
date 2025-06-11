@@ -5,29 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stereo Pair Capture</title>
     <style>
-        #container { text-align: center; }
-        #video, #ghostOverlay { position: absolute; }
-        #video { display: block; margin: auto; border: 2px solid black; }
-        #ghostOverlay { opacity: 0.5; pointer-events: none; width: 640px; height: 480px; }
-        #images { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
-        img { width: 300px; height: auto; border: 1px solid #ccc; }
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #videoContainer { position: relative; display: inline-block; }
+        #video, #ghostOverlay { width: 100%; max-width: 640px; height: auto; border: 2px solid black; }
+        #ghostOverlay { position: absolute; top: 0; left: 0; opacity: 0.4; pointer-events: none; display: none; }
+        #buttons { margin-top: 10px; }
+        #images { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+        img { width: 100%; max-width: 300px; height: auto; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
-    <div id="container">
-        <h2>Capture Stereo Pair Images</h2>
-        <div style="position: relative; display: inline-block;">
-            <video id="video" width="640" height="480" autoplay></video>
-            <img id="ghostOverlay" src="" style="display:none;">
-        </div>
+    <h2>Capture Stereo Pair Images</h2>
+    <div id="videoContainer">
+        <video id="video" autoplay playsinline></video>
+        <img id="ghostOverlay" src="">
+    </div>
+    <div id="buttons">
         <button id="captureLeft">Capture Left Image</button>
         <button id="captureRight" disabled>Capture Right Image</button>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <div id="images">
-            <img id="leftImage" alt="Left Image">
-            <img id="rightImage" alt="Right Image">
-        </div>
     </div>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="images">
+        <img id="leftImage" alt="Left Image">
+        <img id="rightImage" alt="Right Image">
+    </div>
+
     <script>
         let video = document.getElementById("video");
         let captureLeft = document.getElementById("captureLeft");
@@ -38,11 +40,10 @@
         let ghostOverlay = document.getElementById("ghostOverlay");
         let leftTaken = false;
 
-        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-            video.srcObject = stream;
-        }).catch(error => {
-            console.error("Error accessing webcam: ", error);
-        });
+        // Request access to the back camera on mobile
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(stream => { video.srcObject = stream; })
+            .catch(error => { console.error("Error accessing webcam: ", error); });
 
         function captureImage(imageElement) {
             canvas.width = video.videoWidth;
@@ -59,7 +60,7 @@
             leftTaken = true;
             captureLeft.disabled = true;
             captureRight.disabled = false;
-            alert("Move slightly to the right and align with the ghost image to capture the second photo.");
+            alert("Move slightly to the right and align with the ghost image before capturing the second photo.");
         });
 
         captureRight.addEventListener("click", () => {
