@@ -1,170 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Stereo Vision Marker Capture</title>
-  <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-    }
-    #canvasWrapper {
-      position: relative;
-      display: inline-block;
-    }
-    #canvas {
-      border: 2px solid #333;
-    }
-    #centerArrow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      font-size: 32px;
-      color: lime;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    #photo1, #photo2 {
-      max-width: 45%;
-      margin: 10px;
-    }
-    button {
-      margin: 12px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stereo Pair Capture</title>
+    <style>
+        #container { text-align: center; }
+        #video, #ghostOverlay { position: absolute; }
+        #video { display: block; margin: auto; border: 2px solid black; }
+        #ghostOverlay { opacity: 0.5; pointer-events: none; width: 640px; height: 480px; }
+        #images { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        img { width: 300px; height: auto; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
+    <div id="container">
+        <h2>Capture Stereo Pair Images</h2>
+        <div style="position: relative; display: inline-block;">
+            <video id="video" width="640" height="480" autoplay></video>
+            <img id="ghostOverlay" src="" style="display:none;">
+        </div>
+        <button id="captureLeft">Capture Left Image</button>
+        <button id="captureRight" disabled>Capture Right Image</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <div id="images">
+            <img id="leftImage" alt="Left Image">
+            <img id="rightImage" alt="Right Image">
+        </div>
+    </div>
+    <script>
+        let video = document.getElementById("video");
+        let captureLeft = document.getElementById("captureLeft");
+        let captureRight = document.getElementById("captureRight");
+        let canvas = document.getElementById("canvas");
+        let leftImage = document.getElementById("leftImage");
+        let rightImage = document.getElementById("rightImage");
+        let ghostOverlay = document.getElementById("ghostOverlay");
+        let leftTaken = false;
 
-<h2>Stereo Capture (Marker Based)</h2>
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            video.srcObject = stream;
+        }).catch(error => {
+            console.error("Error accessing webcam: ", error);
+        });
 
-<video id="video" autoplay playsinline muted style="display:none;"></video>
-<div id="canvasWrapper">
-  <canvas id="canvas"></canvas>
-  <div id="centerArrow">➤</div>
-</div>
-<p id="status">Waiting for camera...</p>
-<button id="captureBtn">Capture First Photo</button>
-
-<img id="photo1" />
-<img id="photo2" />
-
-<script src="https://docs.opencv.org/4.x/opencv.js"></script>
-<script>
-  let video = document.getElementById("video");
-  let canvas = document.getElementById("canvas");
-  let ctx = canvas.getContext("2d");
-  let captureBtn = document.getElementById("captureBtn");
-  let status = document.getElementById("status");
-  let photo1 = document.getElementById("photo1");
-  let photo2 = document.getElementById("photo2");
-
-  let tracking = false;
-  let point = null;
-  let prevGray = null;
-  let paused = false;
-  let autoCaptured = false;
-
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then(stream => {
-      video.srcObject = stream;
-      video.onloadedmetadata = () => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        requestAnimationFrame(draw);
-        status.textContent = "Camera ready. Click 'Capture First Photo'.";
-      };
-    })
-    .catch(err => {
-      status.textContent = "Camera error: " + err;
-    });
-
-  captureBtn.onclick = () => {
-    if (!paused) {
-      paused = true;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      photo1.src = canvas.toDataURL("image/jpeg");
-      status.textContent = "Click on the object in photo to set marker.";
-    }
-  };
-
-  canvas.addEventListener("click", (e) => {
-    if (paused && !tracking) {
-      let rect = canvas.getBoundingClientRect();
-      point = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      };
-      prevGray = new cv.Mat();
-      let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
-      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      src.data.set(imageData.data);
-      cv.cvtColor(src, prevGray, cv.COLOR_RGBA2GRAY);
-      src.delete();
-
-      paused = false;
-      tracking = true;
-      status.textContent = "Tracking marker. Align red dot to green ➤.";
-    }
-  });
-
-  function draw() {
-    if (!paused) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }
-
-    if (tracking && point) {
-      let currentGray = new cv.Mat();
-      let src = new cv.Mat(canvas.height, canvas.width, cv.CV_8UC4);
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      src.data.set(imageData.data);
-      cv.cvtColor(src, currentGray, cv.COLOR_RGBA2GRAY);
-
-      let prevPts = cv.matFromArray(1, 1, cv.CV_32FC2, [point.x, point.y]);
-      let nextPts = new cv.Mat(), statusArr = new cv.Mat(), err = new cv.Mat();
-
-      cv.calcOpticalFlowPyrLK(prevGray, currentGray, prevPts, nextPts, statusArr, err);
-
-      if (statusArr.data[0]) {
-        point.x = nextPts.data32F[0];
-        point.y = nextPts.data32F[1];
-
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
-        ctx.fillStyle = "red";
-        ctx.fill();
-
-        let cx = canvas.width / 2;
-        let cy = canvas.height / 2;
-        let dist = Math.hypot(point.x - cx, point.y - cy);
-
-        if (dist < 20 && !autoCaptured) {
-          autoCaptured = true;
-          setTimeout(() => {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            photo2.src = canvas.toDataURL("image/jpeg");
-            status.textContent = "Second photo auto-captured!";
-          }, 300);
+        function captureImage(imageElement) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            let context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            imageElement.src = canvas.toDataURL("image/png");
         }
 
-      } else {
-        status.textContent = "Tracking lost.";
-        tracking = false;
-      }
+        captureLeft.addEventListener("click", () => {
+            captureImage(leftImage);
+            ghostOverlay.src = leftImage.src;
+            ghostOverlay.style.display = "block";
+            leftTaken = true;
+            captureLeft.disabled = true;
+            captureRight.disabled = false;
+            alert("Move slightly to the right and align with the ghost image to capture the second photo.");
+        });
 
-      prevGray.delete();
-      prevGray = currentGray.clone();
-
-      src.delete(); currentGray.delete(); prevPts.delete(); nextPts.delete(); statusArr.delete(); err.delete();
-    }
-
-    requestAnimationFrame(draw);
-  }
-</script>
-
+        captureRight.addEventListener("click", () => {
+            if (leftTaken) {
+                captureImage(rightImage);
+                captureRight.disabled = true;
+                ghostOverlay.style.display = "none";
+                alert("Stereo pair captured! Use these images for depth estimation.");
+            }
+        });
+    </script>
 </body>
 </html>
