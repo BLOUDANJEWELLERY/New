@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stereo Pair Capture with Motion Detection</title>
+  <title>Stereo Pair Capture with Smart Motion Detection</title>
   <style>
     body {
       text-align: center;
@@ -79,8 +79,11 @@
 
     let stream;
     let leftTaken = false;
-    let leftFrameData = null; // to store the captured left image pixel data
-    const DIFFERENCE_THRESHOLD = 20; // Adjust this value for sensitivity
+    let leftFrameData = null; // stores the left image pixel data
+    // Thresholds for our region checks (tweak these as needed)
+    const LEFT_REGION_THRESHOLD = 8;   // average difference in left quarter must be low
+    const RIGHT_REGION_THRESHOLD = 20; // average difference in right quarter must be high
+    const RATIO_THRESHOLD = 2;         // ratio of right-to-left difference must be high enough
 
     // Request the back camera on mobile (and default camera on desktop)
     navigator.mediaDevices
@@ -93,62 +96,61 @@
         console.error("Error accessing webcam: ", error);
       });
 
-    // Capture an image from the video feed and return its data URL
+    // Capture an image from the video feed, return its data URL
     function captureImage(imageElement) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const context = canvas.getContext("2d");
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataURL = canvas.toDataURL("image/png");
       imageElement.src = dataURL;
       return dataURL;
     }
 
-    // When left button is clicked, capture left image, show ghost overlay, and store pixel data
+    // Computes average per-pixel difference for a given vertical region [startX, endX)
+    function getRegionDifference(imgData1, imgData2, startX, endX) {
+      const { width, height, data: data1 } = imgData1;
+      const data2 = imgData2.data;
+      let diffSum = 0;
+      let count = 0;
+      // iterate through every row in the region defined by startX, endX
+      for (let y = 0; y < height; y++) {
+        for (let x = startX; x < endX; x++) {
+          const index = (y * width + x) * 4;
+          const rDiff = Math.abs(data1[index] - data2[index]);
+          const gDiff = Math.abs(data1[index + 1] - data2[index + 1]);
+          const bDiff = Math.abs(data1[index + 2] - data2[index + 2]);
+          const avgPixelDiff = (rDiff + gDiff + bDiff) / 3;
+          diffSum += avgPixelDiff;
+          count++;
+        }
+      }
+      return diffSum / count;
+    }
+
+    // When left image is captured, show ghost overlay and start motion detection.
     captureLeftBtn.addEventListener("click", () => {
-      // Capture left image
+      // Capture left image and display it.
       captureImage(leftImage);
-      // Also set ghost overlay for alignment aid
       ghostOverlay.src = leftImage.src;
       ghostOverlay.style.display = "block";
       leftTaken = true;
       captureLeftBtn.disabled = true;
       captureRightBtn.disabled = false;
-      alert("Left image captured. Now align with the ghost overlay and wait for auto-capture of the right image.");
+      alert("Left image captured. Now move the camera slightly to the right (without zoom changes) until the capture is triggered.");
 
-      // Store pixel data from left image
-      const context = canvas.getContext("2d");
-      leftFrameData = context.getImageData(0, 0, canvas.width, canvas.height);
-      // Begin checking for optimal motion to capture right image
+      // Store the pixel data of the left image.
+      const ctx = canvas.getContext("2d");
+      leftFrameData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      // Start the motion check loop.
       setTimeout(detectMotion, 500);
     });
 
-    // Compute average per-pixel difference between two ImageData objects
-    function getDifferencePercentage(imgData1, imgData2) {
-      if (imgData1.width !== imgData2.width || imgData1.height !== imgData2.height) {
-        return 0;
-      }
-      let diffSum = 0;
-      const totalPixels = imgData1.width * imgData1.height;
-      const data1 = imgData1.data;
-      const data2 = imgData2.data;
-      for (let i = 0; i < data1.length; i += 4) {
-        // Average difference in R,G,B channels
-        const rDiff = Math.abs(data1[i] - data2[i]);
-        const gDiff = Math.abs(data1[i + 1] - data2[i + 1]);
-        const bDiff = Math.abs(data1[i + 2] - data2[i + 2]);
-        const avgPixelDiff = (rDiff + gDiff + bDiff) / 3;
-        diffSum += avgPixelDiff;
-      }
-      // Return the average difference per pixel
-      return diffSum / totalPixels;
-    }
-
-    // Continuously check for optimal motion difference for capturing right image
+    // Checks if the camera has shifted slightly right (with negligible zoom change)
     function detectMotion() {
       if (!leftTaken) return; // safety check
 
-      // Create an off-screen canvas for the current frame
+      // Capture the current frame from the live video.
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = video.videoWidth;
       tempCanvas.height = video.videoHeight;
@@ -156,17 +158,29 @@
       tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
       const currentFrameData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
 
-      const diffPercent = getDifferencePercentage(leftFrameData, currentFrameData);
-      console.log("Difference: ", diffPercent);
+      // Determine region boundaries.
+      const width = leftFrameData.width;
+      const leftRegionEnd = Math.floor(width / 4);
+      const rightRegionStart = Math.floor((3 * width) / 4);
 
-      // If the average per-pixel difference is above the threshold, capture the right image
-      if (diffPercent >= DIFFERENCE_THRESHOLD) {
+      // Compute average differences for the left and right quarters.
+      const leftDiff = getRegionDifference(leftFrameData, currentFrameData, 0, leftRegionEnd);
+      const rightDiff = getRegionDifference(leftFrameData, currentFrameData, rightRegionStart, width);
+      console.log("Left Region Diff:", leftDiff, "Right Region Diff:", rightDiff);
+
+      // Check if left part stays nearly the same but right has moved:
+      if (
+        leftDiff < LEFT_REGION_THRESHOLD &&
+        rightDiff > RIGHT_REGION_THRESHOLD &&
+        (rightDiff / (leftDiff + 0.1)) > RATIO_THRESHOLD  // add a small value to avoid division by zero
+      ) {
+        // Conditions met, auto-capture right image.
         captureImage(rightImage);
         ghostOverlay.style.display = "none";
         captureRightBtn.disabled = true;
-        alert("Stereo pair captured automatically (optimal motion detected)!");
+        alert("Stereo pair captured automatically with optimal displacement!");
       } else {
-        // Re-check after a short delay if threshold not met
+        // Not yet optimal; re-check after a short delay.
         setTimeout(detectMotion, 500);
       }
     }
