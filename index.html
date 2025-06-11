@@ -1,98 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stereo Pair Capture</title>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        #videoContainer { position: relative; display: inline-block; }
-        #video, #ghostOverlay { width: 100%; max-width: 640px; height: auto; border: 2px solid black; }
-        #ghostOverlay { position: absolute; top: 0; left: 0; opacity: 0.4; pointer-events: none; display: none; }
-        #buttons { margin-top: 10px; }
-        #images { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
-        img { width: 100%; max-width: 300px; height: auto; border: 1px solid #ccc; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stereo Pair Capture with Motion Detection</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h2 {
+      margin-top: 20px;
+    }
+    #videoContainer {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+    #video,
+    #ghostOverlay {
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+      border: 2px solid black;
+    }
+    #ghostOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0.4;
+      pointer-events: none;
+      display: none;
+    }
+    #buttons {
+      margin-top: 10px;
+    }
+    #images {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    #images img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-    <h2>Capture Stereo Pair Images</h2>
-    <div id="videoContainer">
-        <video id="video" autoplay playsinline></video>
-        <img id="ghostOverlay" src="">
-    </div>
-    <div id="buttons">
-        <button id="captureLeft">Capture Left Image</button>
-        <button id="captureRight" disabled>Capture Right Image</button>
-    </div>
-    <canvas id="canvas" style="display:none;"></canvas>
-    <div id="images">
-        <img id="leftImage" alt="Left Image">
-        <img id="rightImage" alt="Right Image">
-    </div>
+  <h2>Capture Stereo Pair Images</h2>
+  <div id="videoContainer">
+    <video id="video" autoplay playsinline></video>
+    <img id="ghostOverlay" src="" alt="Ghost Overlay" />
+  </div>
+  <div id="buttons">
+    <button id="captureLeft">Capture Left Image</button>
+    <button id="captureRight" disabled>Auto Capture Right Image</button>
+  </div>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <div id="images">
+    <img id="leftImage" alt="Left Image" />
+    <img id="rightImage" alt="Right Image" />
+  </div>
 
-    <script>
-        let video = document.getElementById("video");
-        let captureLeft = document.getElementById("captureLeft");
-        let captureRight = document.getElementById("captureRight");
-        let canvas = document.getElementById("canvas");
-        let leftImage = document.getElementById("leftImage");
-        let rightImage = document.getElementById("rightImage");
-        let ghostOverlay = document.getElementById("ghostOverlay");
-        let leftTaken = false;
-        let stream;
-        let lastFrame = null;
+  <script>
+    const video = document.getElementById("video");
+    const captureLeftBtn = document.getElementById("captureLeft");
+    const captureRightBtn = document.getElementById("captureRight");
+    const canvas = document.getElementById("canvas");
+    const leftImage = document.getElementById("leftImage");
+    const rightImage = document.getElementById("rightImage");
+    const ghostOverlay = document.getElementById("ghostOverlay");
 
-        // Request access to the back camera on mobile
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(s => {
-                stream = s;
-                video.srcObject = stream;
-            })
-            .catch(error => console.error("Error accessing webcam: ", error));
+    let stream;
+    let leftTaken = false;
+    let leftFrameData = null; // to store the captured left image pixel data
+    const DIFFERENCE_THRESHOLD = 20; // Adjust this value for sensitivity
 
-        function captureImage(imageElement) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            let context = canvas.getContext("2d");
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            imageElement.src = canvas.toDataURL("image/png");
-        }
+    // Request the back camera on mobile (and default camera on desktop)
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "environment" } })
+      .then((s) => {
+        stream = s;
+        video.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error("Error accessing webcam: ", error);
+      });
 
-        captureLeft.addEventListener("click", () => {
-            captureImage(leftImage);
-            ghostOverlay.src = leftImage.src;
-            ghostOverlay.style.display = "block";
-            leftTaken = true;
-            captureLeft.disabled = true;
-            captureRight.disabled = false;
-            alert("Move slightly to the right and align with the ghost image before capturing the second photo.");
+    // Capture an image from the video feed and return its data URL
+    function captureImage(imageElement) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataURL = canvas.toDataURL("image/png");
+      imageElement.src = dataURL;
+      return dataURL;
+    }
 
-            // Start motion detection for auto-capture
-            lastFrame = leftImage.src;
-            setTimeout(detectMotion, 1000);
-        });
+    // When left button is clicked, capture left image, show ghost overlay, and store pixel data
+    captureLeftBtn.addEventListener("click", () => {
+      // Capture left image
+      captureImage(leftImage);
+      // Also set ghost overlay for alignment aid
+      ghostOverlay.src = leftImage.src;
+      ghostOverlay.style.display = "block";
+      leftTaken = true;
+      captureLeftBtn.disabled = true;
+      captureRightBtn.disabled = false;
+      alert("Left image captured. Now align with the ghost overlay and wait for auto-capture of the right image.");
 
-        function detectMotion() {
-            if (!leftTaken) return;
+      // Store pixel data from left image
+      const context = canvas.getContext("2d");
+      leftFrameData = context.getImageData(0, 0, canvas.width, canvas.height);
+      // Begin checking for optimal motion to capture right image
+      setTimeout(detectMotion, 500);
+    });
 
-            let canvasTemp = document.createElement("canvas");
-            canvasTemp.width = video.videoWidth;
-            canvasTemp.height = video.videoHeight;
-            let context = canvasTemp.getContext("2d");
-            context.drawImage(video, 0, 0, canvasTemp.width, canvasTemp.height);
+    // Compute average per-pixel difference between two ImageData objects
+    function getDifferencePercentage(imgData1, imgData2) {
+      if (imgData1.width !== imgData2.width || imgData1.height !== imgData2.height) {
+        return 0;
+      }
+      let diffSum = 0;
+      const totalPixels = imgData1.width * imgData1.height;
+      const data1 = imgData1.data;
+      const data2 = imgData2.data;
+      for (let i = 0; i < data1.length; i += 4) {
+        // Average difference in R,G,B channels
+        const rDiff = Math.abs(data1[i] - data2[i]);
+        const gDiff = Math.abs(data1[i + 1] - data2[i + 1]);
+        const bDiff = Math.abs(data1[i + 2] - data2[i + 2]);
+        const avgPixelDiff = (rDiff + gDiff + bDiff) / 3;
+        diffSum += avgPixelDiff;
+      }
+      // Return the average difference per pixel
+      return diffSum / totalPixels;
+    }
 
-            let currentImage = canvasTemp.toDataURL("image/png");
+    // Continuously check for optimal motion difference for capturing right image
+    function detectMotion() {
+      if (!leftTaken) return; // safety check
 
-            if (currentImage !== lastFrame) {
-                captureImage(rightImage);
-                ghostOverlay.style.display = "none";
-                captureRight.disabled = true;
-                alert("Stereo pair captured automatically using motion detection!");
-                return;
-            }
+      // Create an off-screen canvas for the current frame
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = video.videoWidth;
+      tempCanvas.height = video.videoHeight;
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+      const currentFrameData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
 
-            setTimeout(detectMotion, 1000);
-        }
-    </script>
+      const diffPercent = getDifferencePercentage(leftFrameData, currentFrameData);
+      console.log("Difference: ", diffPercent);
+
+      // If the average per-pixel difference is above the threshold, capture the right image
+      if (diffPercent >= DIFFERENCE_THRESHOLD) {
+        captureImage(rightImage);
+        ghostOverlay.style.display = "none";
+        captureRightBtn.disabled = true;
+        alert("Stereo pair captured automatically (optimal motion detected)!");
+      } else {
+        // Re-check after a short delay if threshold not met
+        setTimeout(detectMotion, 500);
+      }
+    }
+  </script>
 </body>
 </html>
