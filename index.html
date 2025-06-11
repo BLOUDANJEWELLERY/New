@@ -39,11 +39,16 @@
         let rightImage = document.getElementById("rightImage");
         let ghostOverlay = document.getElementById("ghostOverlay");
         let leftTaken = false;
+        let stream;
+        let lastFrame = null;
 
         // Request access to the back camera on mobile
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(stream => { video.srcObject = stream; })
-            .catch(error => { console.error("Error accessing webcam: ", error); });
+            .then(s => {
+                stream = s;
+                video.srcObject = stream;
+            })
+            .catch(error => console.error("Error accessing webcam: ", error));
 
         function captureImage(imageElement) {
             canvas.width = video.videoWidth;
@@ -61,16 +66,33 @@
             captureLeft.disabled = true;
             captureRight.disabled = false;
             alert("Move slightly to the right and align with the ghost image before capturing the second photo.");
+
+            // Start motion detection for auto-capture
+            lastFrame = leftImage.src;
+            setTimeout(detectMotion, 1000);
         });
 
-        captureRight.addEventListener("click", () => {
-            if (leftTaken) {
+        function detectMotion() {
+            if (!leftTaken) return;
+
+            let canvasTemp = document.createElement("canvas");
+            canvasTemp.width = video.videoWidth;
+            canvasTemp.height = video.videoHeight;
+            let context = canvasTemp.getContext("2d");
+            context.drawImage(video, 0, 0, canvasTemp.width, canvasTemp.height);
+
+            let currentImage = canvasTemp.toDataURL("image/png");
+
+            if (currentImage !== lastFrame) {
                 captureImage(rightImage);
-                captureRight.disabled = true;
                 ghostOverlay.style.display = "none";
-                alert("Stereo pair captured! Use these images for depth estimation.");
+                captureRight.disabled = true;
+                alert("Stereo pair captured automatically using motion detection!");
+                return;
             }
-        });
+
+            setTimeout(detectMotion, 1000);
+        }
     </script>
 </body>
 </html>
