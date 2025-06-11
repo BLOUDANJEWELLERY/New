@@ -3,80 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stereo Capture</title>
+  <title>Stereo Guided Capture</title>
   <style>
-    body { margin: 0; background: #000; color: #fff; font-family: sans-serif; text-align: center; }
-    video, canvas { width: 100%; max-width: 480px; height: auto; }
-    #arrowOverlay {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 48px;
-      color: red;
-      display: none;
+    body { margin:0; background:#000; color:#fff; font-family:sans-serif; text-align:center; }
+    #canvasOutput { width:100%; max-width:480px; }
+    #centerArrow {
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      font-size:48px; color:lime;
     }
-    #controls { margin-top: 10px; }
-    button { padding: 12px 20px; font-size: 16px; }
+    #controls { margin-top:10px; }
+    button { padding:12px 20px; font-size:16px; }
   </style>
 </head>
 <body>
-  <h2>Stereo Photo Capture</h2>
-  <div style="position: relative; display: inline-block;">
-    <video id="video" autoplay playsinline></video>
-    <div id="arrowOverlay">➡️</div>
+  <h2>Stereo Capture Guidance</h2>
+  <div style="position:relative; display:inline-block;">
+    <canvas id="canvasOutput"></canvas>
+    <div id="centerArrow">➤</div>
   </div>
-
   <div id="controls">
-    <button id="captureBtn">Capture First Photo</button>
-    <p id="statusText">Align camera and take the first photo</p>
+    <button id="actionBtn">Capture First Photo</button>
+    <p id="status">Position camera and capture first image.</p>
   </div>
-
-  <canvas id="canvas" style="display:none;"></canvas>
-
+  <br>
+  <img id="photo1" style="max-width:45%;"/>
+  <img id="photo2" style="max-width:45%;"/>
+  <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const arrow = document.getElementById('arrowOverlay');
-    const captureBtn = document.getElementById('captureBtn');
-    const statusText = document.getElementById('statusText');
+    let video = document.createElement('video'),
+        canvas = document.getElementById('canvasOutput'),
+        ctx = canvas.getContext('2d'),
+        actionBtn = document.getElementById('actionBtn'),
+        status = document.getElementById('status'),
+        photo1El = document.getElementById('photo1'),
+        photo2El = document.getElementById('photo2'),
+        streaming=false, tracking=false,
+        point=null, prevGray=null,
+        photo1=null;
 
-    let firstPhoto = null;
-    let secondPhoto = null;
+    navigator.mediaDevices.getUserMedia({ video:{facingMode:'environment'} })
+      .then(s=>{video.srcObject=s; return video.play();})
+      .then(()=>{
+        streaming=true;
+        canvas.width=video.videoWidth;
+        canvas.height=video.videoHeight;
+        requestAnimationFrame(processFrame);
+      });
 
-    // Open webcam
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
-      .then(stream => video.srcObject = stream)
-      .catch(err => alert('Camera access failed: ' + err));
+    function processFrame(){
+      if(!streaming) return;
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+      let frame = cv.imread(canvas), gray = new cv.Mat();
+      cv.cvtColor(frame, gray, cv.COLOR_RGBA2GRAY);
 
-    captureBtn.addEventListener('click', () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/jpeg');
+      if(tracking && point){
+        let prevPts = cv.matFromArray(1,1,cv.CV_32FC2, [point.x, point.y]);
+        let nextPts = new cv.Mat(), statusArr = new cv.Mat(), err = new cv.Mat();
+        cv.calcOpticalFlowPyrLK(prevGray, gray, prevPts, nextPts, statusArr, err);
+        let s = statusArr.data[0];
+        if(s){
+          point.x = nextPts.data32F[0];
+          point.y = nextPts.data32F[1];
+        } else {
+          tracking=false;
+          status.textContent="Tracking lost; tap again to relock.";
+        }
+        prevPts.delete(); statusArr.delete(); err.delete(); nextPts.delete();
+      }
 
-      if (!firstPhoto) {
-        firstPhoto = imageData;
-        arrow.style.display = 'block';
-        captureBtn.textContent = 'Capture Second Photo';
-        statusText.textContent = 'Now move slightly right and align the arrows';
+      if(point){
+        ctx.beginPath();
+        ctx.fillStyle="red";
+        ctx.arc(point.x, point.y,10,0,2*Math.PI);
+        ctx.fill();
+      }
+
+      gray.copyTo(prevGray);
+      frame.delete(); gray.delete();
+
+      requestAnimationFrame(processFrame);
+    }
+
+    canvas.addEventListener('click',(e)=>{
+      if(photo1 && !tracking){
+        let rect=canvas.getBoundingClientRect(), x=e.clientX-rect.left, y=e.clientY-rect.top;
+        point={x,y};
+        prevGray = new cv.Mat();
+        cv.cvtColor(cv.imread(canvas), prevGray, cv.COLOR_RGBA2GRAY);
+        tracking=true;
+        status.textContent="Tracking object; align with center arrow.";
+      }
+    });
+
+    actionBtn.addEventListener('click',()=>{
+      let imgData = canvas.toDataURL('image/jpeg');
+      if(!photo1){
+        photo1 = imgData;
+        photo1El.src = imgData;
+        actionBtn.textContent="Capture Second Photo";
+        status.textContent="Tap the object to lock marker.";
       } else {
-        secondPhoto = imageData;
-        arrow.style.display = 'none';
-        statusText.textContent = 'Both photos captured!';
-        captureBtn.disabled = true;
-
-        // TODO: send both images to backend
-        console.log('First and second photos captured.');
-        // Example:
-        // fetch('/upload-stereo', { method: 'POST', body: JSON.stringify({ left: firstPhoto, right: secondPhoto }) })
-
-        // Preview (optional for dev):
-        const img1 = new Image(), img2 = new Image();
-        img1.src = firstPhoto;
-        img2.src = secondPhoto;
-        document.body.appendChild(img1);
-        document.body.appendChild(img2);
+        photo2El.src = imgData;
+        status.textContent="Stereo pair captured.";
+        actionBtn.disabled=true;
+        console.log({left:photo1, right:imgData});
       }
     });
   </script>
