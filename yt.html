@@ -269,47 +269,122 @@
             document.getElementById('getInfoBtn').disabled = loading;
         }
 
-        async function getVideoInfo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            
-            if (!url) {
-                showError('Please enter a YouTube URL');
-                return;
-            }
+// In your frontend script section, update the getVideoInfo function:
 
-            if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
-                showError('Please enter a valid YouTube URL');
-                return;
-            }
+async function getVideoInfo() {
+    const url = document.getElementById('videoUrl').value.trim();
+    
+    if (!url) {
+        showError('Please enter a YouTube URL');
+        return;
+    }
 
-            setLoading(true);
-            document.getElementById('error').classList.remove('visible');
+    // Better URL validation
+    if (!isValidYouTubeUrl(url)) {
+        showError('Please enter a valid YouTube URL (youtube.com or youtu.be)');
+        return;
+    }
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/info`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ url: url })
-                });
+    setLoading(true);
+    document.getElementById('error').classList.remove('visible');
 
-                const data = await response.json();
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/info`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url })
+        });
 
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to get video info');
-                }
+        const data = await response.json();
 
-                currentVideoInfo = data;
-                displayVideoInfo(data);
-                showSuccess('Video info loaded successfully!');
-
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                setLoading(false);
+        if (!response.ok) {
+            if (response.status === 429) {
+                throw new Error('YouTube is temporarily blocking requests. Please try again in a few minutes.');
+            } else if (response.status === 404) {
+                throw new Error('Video not found. Please check the URL.');
+            } else {
+                throw new Error(data.error || 'Failed to get video info');
             }
         }
+
+        currentVideoInfo = data;
+        displayVideoInfo(data);
+        showSuccess('Video info loaded successfully!');
+
+    } catch (error) {
+        showError(error.message);
+        
+        // Show retry button for bot detection errors
+        if (error.message.includes('blocking')) {
+            showRetryButton();
+        }
+    } finally {
+        setLoading(false);
+    }
+}
+
+function isValidYouTubeUrl(url) {
+    const patterns = [
+        /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/,
+        /^(https?:\/\/)?(www\.)?(youtu\.be\/)([a-zA-Z0-9_-]+)/,
+        /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
+    ];
+    return patterns.some(pattern => pattern.test(url));
+}
+
+function showRetryButton() {
+    const errorDiv = document.getElementById('error');
+    const retryButton = document.createElement('button');
+    retryButton.textContent = 'Try Alternative Method';
+    retryButton.style.marginTop = '10px';
+    retryButton.className = 'btn';
+    retryButton.onclick = tryAlternativeDownload;
+    
+    errorDiv.appendChild(retryButton);
+}
+
+async function tryAlternativeDownload() {
+    const url = document.getElementById('videoUrl').value.trim();
+    
+    if (!url) return;
+    
+    setLoading(true);
+    showError('Trying alternative method...');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/direct-download`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Alternative method failed');
+        }
+
+        // Trigger download
+        const downloadUrl = `${API_BASE_URL}${data.download_url}`;
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${data.title}.mp4`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        showSuccess('Download started using alternative method!');
+
+    } catch (error) {
+        showError(`Alternative method also failed: ${error.message}`);
+    } finally {
+        setLoading(false);
+    }
+}
 
         function displayVideoInfo(info) {
             const videoInfoDiv = document.getElementById('videoInfo');
