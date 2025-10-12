@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Downloader</title>
+    <title>YouTube Video Downloader - Your Own Solution</title>
     <style>
+        /* Keep your existing CSS styles */
         * {
             margin: 0;
             padding: 0;
@@ -37,11 +38,6 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
         }
 
         .content {
@@ -84,6 +80,7 @@
             cursor: pointer;
             transition: transform 0.2s;
             width: 100%;
+            margin: 5px 0;
         }
 
         .btn:hover {
@@ -94,6 +91,14 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #fd746c 0%, #ff9068 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
         }
 
         .video-info {
@@ -191,6 +196,13 @@
             display: block;
         }
 
+        .retry-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
         @media (max-width: 600px) {
             .container {
                 margin: 10px;
@@ -203,6 +215,10 @@
             .header h1 {
                 font-size: 2em;
             }
+            
+            .retry-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -210,7 +226,7 @@
     <div class="container">
         <div class="header">
             <h1>YouTube Video Downloader</h1>
-            <p>Download your favorite YouTube videos easily and quickly</p>
+            <p>Your Own Self-Hosted Solution</p>
         </div>
         
         <div class="content">
@@ -235,6 +251,11 @@
                 <p>Processing your request...</p>
             </div>
             
+            <div id="retryOptions" class="retry-options" style="display: none;">
+                <button id="retryBtn" class="btn btn-secondary">Retry Standard Method</button>
+                <button id="directDownloadBtn" class="btn btn-success">Try Direct Download</button>
+            </div>
+            
             <div id="videoInfo" class="video-info">
                 <!-- Video info will be populated here -->
             </div>
@@ -243,7 +264,7 @@
 
     <script>
         // Update this with your Render backend URL
-        const API_BASE_URL = 'https://gold-rate-t1p9.onrender.com';
+        const API_BASE_URL = 'https://your-app-name.onrender.com';
 
         let currentVideoInfo = null;
         let selectedFormat = 'best';
@@ -254,7 +275,15 @@
             const errorDiv = document.getElementById('error');
             errorDiv.textContent = message;
             errorDiv.classList.add('visible');
-            setTimeout(() => errorDiv.classList.remove('visible'), 5000);
+            
+            // Show retry options for certain errors
+            if (message.includes('block') || message.includes('bot') || message.includes('failed')) {
+                document.getElementById('retryOptions').style.display = 'grid';
+            }
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('visible');
+            }, 10000);
         }
 
         function showSuccess(message) {
@@ -269,142 +298,126 @@
             document.getElementById('getInfoBtn').disabled = loading;
         }
 
-// In your frontend script section, update the getVideoInfo function:
+        function hideRetryOptions() {
+            document.getElementById('retryOptions').style.display = 'none';
+        }
 
-async function getVideoInfo() {
-    const url = document.getElementById('videoUrl').value.trim();
-    
-    if (!url) {
-        showError('Please enter a YouTube URL');
-        return;
-    }
+        async function getVideoInfo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            
+            if (!url) {
+                showError('Please enter a YouTube URL');
+                return;
+            }
 
-    // Better URL validation
-    if (!isValidYouTubeUrl(url)) {
-        showError('Please enter a valid YouTube URL (youtube.com or youtu.be)');
-        return;
-    }
+            if (!isValidYouTubeUrl(url)) {
+                showError('Please enter a valid YouTube URL (youtube.com or youtu.be)');
+                return;
+            }
 
-    setLoading(true);
-    document.getElementById('error').classList.remove('visible');
+            setLoading(true);
+            hideRetryOptions();
+            document.getElementById('error').classList.remove('visible');
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/info`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: url })
-        });
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/info`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        if (!response.ok) {
-            if (response.status === 429) {
-                throw new Error('YouTube is temporarily blocking requests. Please try again in a few minutes.');
-            } else if (response.status === 404) {
-                throw new Error('Video not found. Please check the URL.');
-            } else {
-                throw new Error(data.error || 'Failed to get video info');
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to get video info');
+                }
+
+                currentVideoInfo = data;
+                displayVideoInfo(data);
+                showSuccess('Video info loaded successfully!');
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
             }
         }
 
-        currentVideoInfo = data;
-        displayVideoInfo(data);
-        showSuccess('Video info loaded successfully!');
-
-    } catch (error) {
-        showError(error.message);
+        // Add retry button handlers
+        document.getElementById('retryBtn').addEventListener('click', getVideoInfo);
         
-        // Show retry button for bot detection errors
-        if (error.message.includes('blocking')) {
-            showRetryButton();
-        }
-    } finally {
-        setLoading(false);
-    }
-}
-
-function isValidYouTubeUrl(url) {
-    const patterns = [
-        /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/,
-        /^(https?:\/\/)?(www\.)?(youtu\.be\/)([a-zA-Z0-9_-]+)/,
-        /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
-    ];
-    return patterns.some(pattern => pattern.test(url));
-}
-
-function showRetryButton() {
-    const errorDiv = document.getElementById('error');
-    const retryButton = document.createElement('button');
-    retryButton.textContent = 'Try Alternative Method';
-    retryButton.style.marginTop = '10px';
-    retryButton.className = 'btn';
-    retryButton.onclick = tryAlternativeDownload;
-    
-    errorDiv.appendChild(retryButton);
-}
-
-async function tryAlternativeDownload() {
-    const url = document.getElementById('videoUrl').value.trim();
-    
-    if (!url) return;
-    
-    setLoading(true);
-    showError('Trying alternative method...');
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/direct-download`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: url })
+        document.getElementById('directDownloadBtn').addEventListener('click', function() {
+            const url = document.getElementById('videoUrl').value.trim();
+            if (url) {
+                directDownload(url);
+            }
         });
 
-        const data = await response.json();
+        async function directDownload(url) {
+            setLoading(true);
+            hideRetryOptions();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Alternative method failed');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/direct-download`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Direct download failed');
+                }
+
+                // Trigger download
+                const downloadUrl = `${API_BASE_URL}${data.download_url}`;
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `${data.title}.mp4`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                showSuccess('Direct download started!');
+
+            } catch (error) {
+                showError(`Direct download failed: ${error.message}`);
+            } finally {
+                setLoading(false);
+            }
         }
 
-        // Trigger download
-        const downloadUrl = `${API_BASE_URL}${data.download_url}`;
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = `${data.title}.mp4`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        showSuccess('Download started using alternative method!');
-
-    } catch (error) {
-        showError(`Alternative method also failed: ${error.message}`);
-    } finally {
-        setLoading(false);
-    }
-}
+        function isValidYouTubeUrl(url) {
+            const patterns = [
+                /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/,
+                /^(https?:\/\/)?(www\.)?(youtu\.be\/)([a-zA-Z0-9_-]+)/,
+                /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
+            ];
+            return patterns.some(pattern => pattern.test(url));
+        }
 
         function displayVideoInfo(info) {
             const videoInfoDiv = document.getElementById('videoInfo');
-            const fileSize = (info.formats[0]?.filesize / (1024 * 1024)).toFixed(2) || 'Unknown';
             
             videoInfoDiv.innerHTML = `
                 <h3>${info.title}</h3>
                 <p><strong>Channel:</strong> ${info.author}</p>
                 <p><strong>Duration:</strong> ${formatDuration(info.duration)}</p>
-                <p><strong>File Size:</strong> ${fileSize} MB</p>
                 
-                ${info.thumbnail ? `<img src="${info.thumbnail}" alt="Thumbnail" class="video-thumbnail">` : ''}
+                ${info.thumbnail ? `<img src="${info.thumbnail}" alt="Thumbnail" class="video-thumbnail" onerror="this.style.display='none'">` : ''}
                 
                 <div class="format-selector">
                     <h4>Select Download Quality:</h4>
                     <div id="formatOptions">
-                        ${info.formats.slice(0, 5).map(format => `
+                        ${info.formats.map(format => `
                             <div class="format-option" data-format="${format.format_id}">
                                 <span>${format.quality} (${format.ext.toUpperCase()})</span>
-                                <span>${format.resolution}p - ${(format.filesize / (1024 * 1024)).toFixed(2)}MB</span>
+                                <span>${format.resolution}p - ${format.filesize ? (format.filesize / (1024 * 1024)).toFixed(2) + 'MB' : 'Unknown size'}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -434,6 +447,7 @@ async function tryAlternativeDownload() {
         }
 
         function formatDuration(seconds) {
+            if (!seconds) return 'Unknown';
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             const secs = seconds % 60;
