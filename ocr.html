@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCR (English + Arabic)</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f7f3ee;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+      min-height: 100px;
+      direction: auto;
+      text-align: start;
+      white-space: pre-wrap;
+    }
+    button {
+      margin-top: 10px;
+      background: goldenrod;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: darkgoldenrod;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>OCR for English, Arabic & Numbers</h2>
+    <input type="file" id="imageInput" accept="image/*" />
+    <button onclick="runOCR()">Extract Text</button>
+    <div id="output">Result will appear here...</div>
+  </div>
+
+  <script>
+    async function runOCR() {
+      const file = document.getElementById('imageInput').files[0];
+      if (!file) {
+        alert('Please select an image first.');
+        return;
+      }
+
+      const output = document.getElementById('output');
+      output.textContent = 'Processing... Please wait.';
+
+      try {
+        const { data: { text } } = await Tesseract.recognize(
+          file,
+          'eng+ara', // Combine English + Arabic
+          {
+            logger: info => console.log(info) // optional progress logs
+          }
+        );
+
+        output.textContent = text.trim() || 'No text found.';
+        output.style.direction = /[\u0600-\u06FF]/.test(text) ? 'rtl' : 'ltr';
+      } catch (err) {
+        output.textContent = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
