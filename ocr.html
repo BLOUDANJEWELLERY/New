@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Image to Text Converter</title>
+    <title>Table OCR Data Extractor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -366,45 +366,43 @@
             color: var(--primary);
         }
 
-        .file-list {
-            margin-top: 15px;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
+        .extracted-data {
+            margin-top: 20px;
             background: white;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 20px;
             border: 1px solid #e0e0e0;
         }
 
-        .file-name {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
         }
 
-        .file-actions {
-            display: flex;
-            gap: 5px;
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .file-action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--gray);
-            transition: var(--transition);
-        }
-
-        .file-action-btn:hover {
+        .data-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
             color: var(--primary);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table .field-name {
+            font-weight: 600;
+            width: 30%;
+        }
+
+        .data-table .field-value {
+            font-family: 'Courier New', monospace;
         }
 
         footer {
@@ -442,27 +440,6 @@
             display: block;
         }
 
-        .history-item {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .history-item:hover {
-            background: #f5f5f5;
-        }
-
-        .history-preview {
-            font-size: 0.9rem;
-            color: var(--gray);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
         @media (max-width: 768px) {
             .main-content {
                 padding: 15px;
@@ -485,6 +462,11 @@
             .upload-area {
                 padding: 30px 15px;
             }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
         }
 
         .mobile-file-button {
@@ -506,19 +488,19 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-text-height"></i> OCR Text Extractor</h1>
-            <p>Upload images and extract text with advanced editing options</p>
+            <h1><i class="fas fa-table"></i> Table OCR Data Extractor</h1>
+            <p>Upload table images and extract structured data</p>
         </header>
 
         <div class="main-content">
             <div class="left-panel">
                 <div class="panel">
-                    <h2 class="panel-title"><i class="fas fa-upload"></i> Upload Image</h2>
+                    <h2 class="panel-title"><i class="fas fa-upload"></i> Upload Table Image</h2>
                     <div class="upload-area" id="uploadArea">
                         <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                        <p class="upload-text">Drag & drop your image here or click to browse</p>
-                        <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF, PDF</p>
-                        <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf" multiple>
+                        <p class="upload-text">Drag & drop your table image here or click to browse</p>
+                        <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF</p>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*">
                         <div class="mobile-file-button">
                             <button class="btn" id="mobileBrowseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
                         </div>
@@ -532,13 +514,8 @@
                             <img id="imagePreview" src="" alt="Image preview" style="display: none;">
                             <div id="noPreview" style="color: #999; text-align: center; padding: 20px;">
                                 <i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i>
-                                <p>Image preview will appear here</p>
+                                <p>Table image preview will appear here</p>
                             </div>
-                        </div>
-                        
-                        <div class="file-list" id="fileList" style="display: none;">
-                            <h3>Selected Files</h3>
-                            <div id="fileItems"></div>
                         </div>
                     </div>
 
@@ -549,31 +526,6 @@
                             <select id="language" class="form-control">
                                 <option value="eng">English</option>
                                 <option value="ara">Arabic</option>
-                                <option value="bul">Bulgarian</option>
-                                <option value="chs">Chinese (Simplified)</option>
-                                <option value="cht">Chinese (Traditional)</option>
-                                <option value="hrv">Croatian</option>
-                                <option value="cze">Czech</option>
-                                <option value="dan">Danish</option>
-                                <option value="dut">Dutch</option>
-                                <option value="fin">Finnish</option>
-                                <option value="fre">French</option>
-                                <option value="ger">German</option>
-                                <option value="gre">Greek</option>
-                                <option value="hun">Hungarian</option>
-                                <option value="ita">Italian</option>
-                                <option value="jpn">Japanese</option>
-                                <option value="kor">Korean</option>
-                                <option value="pol">Polish</option>
-                                <option value="por">Portuguese</option>
-                                <option value="rus">Russian</option>
-                                <option value="slv">Slovenian</option>
-                                <option value="spa">Spanish</option>
-                                <option value="swe">Swedish</option>
-                                <option value="tha">Thai</option>
-                                <option value="tur">Turkish</option>
-                                <option value="ukr">Ukrainian</option>
-                                <option value="vnm">Vietnamese</option>
                                 <option value="auto">Auto-detect (Engine 2 only)</option>
                             </select>
                         </div>
@@ -586,24 +538,24 @@
                         </div>
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="detectOrientation">
+                                <input type="checkbox" id="detectOrientation" checked>
                                 <label for="detectOrientation">Detect Text Orientation</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="isTable">
-                                <label for="isTable">Optimize for Tables/Receipts</label>
+                                <input type="checkbox" id="isTable" checked>
+                                <label for="isTable">Optimize for Tables</label>
                             </div>
                         </div>
                     </div>
 
-                    <button class="btn" id="extractBtn" disabled><i class="fas fa-bolt"></i> Extract Text</button>
+                    <button class="btn" id="extractBtn" disabled><i class="fas fa-bolt"></i> Extract Table Data</button>
                     <button class="btn btn-outline" id="clearAllBtn"><i class="fas fa-trash"></i> Clear All</button>
 
                     <div class="loading" id="loadingIndicator">
                         <div class="spinner"></div>
-                        <p>Processing your image... This may take a few seconds.</p>
+                        <p>Processing your table image... This may take a few seconds.</p>
                         <div class="progress-bar">
                             <div class="progress" id="progressBar"></div>
                         </div>
@@ -617,20 +569,20 @@
             <div class="right-panel">
                 <div class="panel">
                     <div class="tabs">
-                        <div class="tab active" data-tab="result">Extracted Text</div>
-                        <div class="tab" data-tab="history">History</div>
+                        <div class="tab active" data-tab="result">Raw Text</div>
+                        <div class="tab" data-tab="extracted">Extracted Data</div>
                     </div>
 
                     <div class="tab-content active" id="resultTab">
                         <div class="result-header">
-                            <h2 class="panel-title"><i class="fas fa-file-alt"></i> Results</h2>
+                            <h2 class="panel-title"><i class="fas fa-file-alt"></i> Raw OCR Results</h2>
                             <div class="result-actions">
                                 <button class="btn btn-success" id="copyBtn"><i class="fas fa-copy"></i> Copy</button>
                                 <button class="btn btn-warning" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
                             </div>
                         </div>
                         
-                        <div class="result-box" id="resultBox" contenteditable="true">
+                        <div class="result-box" id="resultBox">
                             Your extracted text will appear here...
                         </div>
                         
@@ -650,23 +602,50 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="historyTab">
-                        <h2 class="panel-title"><i class="fas fa-history"></i> OCR History</h2>
-                        <div id="historyList">
-                            <p style="text-align: center; color: #999; padding: 20px;">
-                                Your OCR history will appear here
-                            </p>
+                    <div class="tab-content" id="extractedTab">
+                        <h2 class="panel-title"><i class="fas fa-table"></i> Extracted Table Data</h2>
+                        <p>Structured data extracted from your table:</p>
+                        
+                        <div class="extracted-data">
+                            <table class="data-table">
+                                <tr>
+                                    <td class="field-name">Description</td>
+                                    <td class="field-value" id="descriptionValue">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Carat</td>
+                                    <td class="field-value" id="caratValue">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Field 1</td>
+                                    <td class="field-value" id="field1Value">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Field 2</td>
+                                    <td class="field-value" id="field2Value">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Net Weight</td>
+                                    <td class="field-value" id="netWeightValue">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Amount</td>
+                                    <td class="field-value" id="amountValue">-</td>
+                                </tr>
+                            </table>
                         </div>
-                        <button class="btn btn-outline" id="clearHistoryBtn" style="margin-top: 15px;">
-                            <i class="fas fa-trash"></i> Clear History
-                        </button>
+                        
+                        <div class="result-actions" style="margin-top: 20px;">
+                            <button class="btn btn-success" id="copyDataBtn"><i class="fas fa-copy"></i> Copy Data</button>
+                            <button class="btn btn-warning" id="downloadDataBtn"><i class="fas fa-download"></i> Download Data</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>Powered by OCR.space API | Personal OCR Tool</p>
+            <p>Powered by OCR.space API | Table Data Extractor</p>
         </footer>
     </div>
 
@@ -687,15 +666,22 @@
             const progressBar = document.getElementById('progressBar');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
+            const copyDataBtn = document.getElementById('copyDataBtn');
+            const downloadDataBtn = document.getElementById('downloadDataBtn');
             const clearAllBtn = document.getElementById('clearAllBtn');
-            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-            const fileList = document.getElementById('fileList');
-            const fileItems = document.getElementById('fileItems');
             const charCount = document.getElementById('charCount');
             const wordCount = document.getElementById('wordCount');
             const lineCount = document.getElementById('lineCount');
             const tabs = document.querySelectorAll('.tab');
             const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Extracted data elements
+            const descriptionValue = document.getElementById('descriptionValue');
+            const caratValue = document.getElementById('caratValue');
+            const field1Value = document.getElementById('field1Value');
+            const field2Value = document.getElementById('field2Value');
+            const netWeightValue = document.getElementById('netWeightValue');
+            const amountValue = document.getElementById('amountValue');
             
             // API configuration - REPLACE WITH YOUR ACTUAL API KEY
             const API_KEY = 'K87899142388957'; // Your OCR.space API key
@@ -710,7 +696,7 @@
             
             fileInput.addEventListener('change', function() {
                 if (this.files && this.files.length > 0) {
-                    handleFileSelection(this.files);
+                    handleFileSelection(this.files[0]);
                 }
             });
             
@@ -728,15 +714,16 @@
                 uploadArea.classList.remove('active');
                 
                 if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                    handleFileSelection(e.dataTransfer.files);
+                    handleFileSelection(e.dataTransfer.files[0]);
                 }
             });
             
             extractBtn.addEventListener('click', performOCR);
             copyBtn.addEventListener('click', copyText);
             downloadBtn.addEventListener('click', downloadText);
+            copyDataBtn.addEventListener('click', copyData);
+            downloadDataBtn.addEventListener('click', downloadData);
             clearAllBtn.addEventListener('click', clearAll);
-            clearHistoryBtn.addEventListener('click', clearHistory);
             
             resultBox.addEventListener('input', updateStats);
             
@@ -753,123 +740,37 @@
                 });
             });
             
-            function handleFileSelection(files) {
-                // Validate files
-                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/tiff', 'application/pdf'];
-                const validFiles = [];
+            function handleFileSelection(file) {
+                // Validate file
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/tiff'];
                 
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    
-                    if (!validTypes.includes(file.type)) {
-                        showError(`File "${file.name}" is not a supported format.`);
-                        continue;
-                    }
-                    
-                    if (file.size > 10 * 1024 * 1024) {
-                        showError(`File "${file.name}" exceeds 10MB limit.`);
-                        continue;
-                    }
-                    
-                    validFiles.push(file);
-                }
-                
-                if (validFiles.length === 0) {
-                    showError('No valid files selected.');
+                if (!validTypes.includes(file.type)) {
+                    showError('Please select a valid image file (JPG, PNG, GIF, BMP, TIFF).');
                     return;
                 }
                 
-                // Update file input with valid files only
-                const dataTransfer = new DataTransfer();
-                validFiles.forEach(file => dataTransfer.items.add(file));
-                fileInput.files = dataTransfer.files;
-                
-                // Display first image preview
-                if (validFiles[0].type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                        noPreview.style.display = 'none';
-                    };
-                    reader.readAsDataURL(validFiles[0]);
-                } else {
-                    imagePreview.style.display = 'none';
-                    noPreview.style.display = 'block';
-                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10px;"></i><p>PDF file selected</p>';
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                    return;
                 }
                 
-                // Display file list if multiple files
-                if (validFiles.length > 1) {
-                    fileList.style.display = 'block';
-                    fileItems.innerHTML = '';
-                    
-                    validFiles.forEach((file, index) => {
-                        const fileItem = document.createElement('div');
-                        fileItem.className = 'file-item';
-                        fileItem.innerHTML = `
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-actions">
-                                <button class="file-action-btn preview-file" data-index="${index}">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="file-action-btn remove-file" data-index="${index}">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        `;
-                        fileItems.appendChild(fileItem);
-                    });
-                    
-                    // Add event listeners for file actions
-                    document.querySelectorAll('.preview-file').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const index = parseInt(this.getAttribute('data-index'));
-                            previewFile(validFiles[index]);
-                        });
-                    });
-                    
-                    document.querySelectorAll('.remove-file').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const index = parseInt(this.getAttribute('data-index'));
-                            validFiles.splice(index, 1);
-                            
-                            // Update file input
-                            const dataTransfer = new DataTransfer();
-                            validFiles.forEach(file => dataTransfer.items.add(file));
-                            fileInput.files = dataTransfer.files;
-                            
-                            handleFileSelection(validFiles);
-                        });
-                    });
-                } else {
-                    fileList.style.display = 'none';
-                }
+                // Display image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    noPreview.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
                 
                 // Enable the extract button
                 extractBtn.disabled = false;
                 hideMessages();
             }
             
-            function previewFile(file) {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                        noPreview.style.display = 'none';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    imagePreview.style.display = 'none';
-                    noPreview.style.display = 'block';
-                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10px;"></i><p>PDF file selected</p>';
-                }
-            }
-            
             async function performOCR() {
                 if (!fileInput.files || fileInput.files.length === 0) {
-                    showError('Please select at least one file first.');
+                    showError('Please select a file first.');
                     return;
                 }
                 
@@ -880,61 +781,54 @@
                 resultBox.textContent = 'Processing...';
                 
                 try {
-                    const files = Array.from(fileInput.files);
-                    let allResults = '';
+                    const file = fileInput.files[0];
                     
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        const progress = ((i + 1) / files.length) * 100;
-                        progressBar.style.width = `${progress}%`;
-                        
-                        // Prepare form data
-                        const formData = new FormData();
-                        formData.append('apikey', API_KEY);
-                        formData.append('file', file);
-                        formData.append('language', document.getElementById('language').value);
-                        formData.append('OCREngine', document.getElementById('ocrEngine').value);
-                        formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
-                        formData.append('isTable', document.getElementById('isTable').checked);
-                        formData.append('isOverlayRequired', false);
-                        
-                        // Make API request
-                        const response = await fetch(API_URL, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        const data = await response.json();
-                        
-                        // Process response
-                        if (data.IsErroredOnProcessing) {
-                            throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
-                        }
-                        
-                        if (data.ParsedResults && data.ParsedResults.length > 0) {
-                            const parsedResult = data.ParsedResults[0];
-                            
-                            if (parsedResult.ParsedText) {
-                                if (files.length > 1) {
-                                    allResults += `=== ${file.name} ===\n\n${parsedResult.ParsedText}\n\n`;
-                                } else {
-                                    allResults = parsedResult.ParsedText;
-                                }
-                                
-                                // Save to history
-                                saveToHistory(file.name, parsedResult.ParsedText);
-                            } else {
-                                throw new Error('No text was found in the image.');
-                            }
-                        } else {
-                            throw new Error('No results returned from OCR API.');
-                        }
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('apikey', API_KEY);
+                    formData.append('file', file);
+                    formData.append('language', document.getElementById('language').value);
+                    formData.append('OCREngine', document.getElementById('ocrEngine').value);
+                    formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
+                    formData.append('isTable', document.getElementById('isTable').checked);
+                    formData.append('isOverlayRequired', false);
+                    
+                    // Make API request
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Process response
+                    if (data.IsErroredOnProcessing) {
+                        throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
                     }
                     
-                    resultBox.textContent = allResults;
-                    showSuccess(`Text extracted successfully from ${files.length} file(s)!`);
-                    updateStats();
-                    
+                    if (data.ParsedResults && data.ParsedResults.length > 0) {
+                        const parsedResult = data.ParsedResults[0];
+                        
+                        if (parsedResult.ParsedText) {
+                            resultBox.textContent = parsedResult.ParsedText;
+                            showSuccess('Text extracted successfully!');
+                            updateStats();
+                            
+                            // Parse and extract structured data
+                            parseTableData(parsedResult.ParsedText);
+                            
+                            // Switch to extracted data tab
+                            tabs.forEach(t => t.classList.remove('active'));
+                            tabContents.forEach(c => c.classList.remove('active'));
+                            document.querySelector('[data-tab="extracted"]').classList.add('active');
+                            document.getElementById('extractedTab').classList.add('active');
+                            
+                        } else {
+                            throw new Error('No text was found in the image.');
+                        }
+                    } else {
+                        throw new Error('No results returned from OCR API.');
+                    }
                 } catch (error) {
                     console.error('OCR Error:', error);
                     showError('OCR processing failed: ' + error.message);
@@ -942,8 +836,88 @@
                 } finally {
                     loadingIndicator.style.display = 'none';
                     extractBtn.disabled = false;
-                    progressBar.style.width = '0%';
                 }
+            }
+            
+            function parseTableData(text) {
+                // Reset all values
+                descriptionValue.textContent = '-';
+                caratValue.textContent = '-';
+                field1Value.textContent = '-';
+                field2Value.textContent = '-';
+                netWeightValue.textContent = '-';
+                amountValue.textContent = '-';
+                
+                // Split text into lines
+                const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                
+                // Look for patterns in the text
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].toLowerCase();
+                    
+                    // Look for description (text field, usually at the beginning)
+                    if (i === 0 && !containsNumber(line) && line.length > 3) {
+                        descriptionValue.textContent = lines[i];
+                    }
+                    
+                    // Look for carat (number, might have "carat" in the text)
+                    if (line.includes('carat') || line.includes('ct') || line.includes('karat')) {
+                        // Try to extract number from this line or next line
+                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
+                        if (number) caratValue.textContent = number;
+                    }
+                    
+                    // Look for net weight (number, might have "net" or "weight" in the text)
+                    if (line.includes('net') || line.includes('weight')) {
+                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
+                        if (number) netWeightValue.textContent = number;
+                    }
+                    
+                    // Look for amount (number, might have "amount" or "total" in the text)
+                    if (line.includes('amount') || line.includes('total') || line.includes('price')) {
+                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
+                        if (number) amountValue.textContent = number;
+                    }
+                }
+                
+                // If we haven't found values, try to extract numbers in order
+                const allNumbers = extractAllNumbers(text);
+                if (allNumbers.length >= 5) {
+                    if (caratValue.textContent === '-') caratValue.textContent = allNumbers[0];
+                    if (field1Value.textContent === '-') field1Value.textContent = allNumbers[1];
+                    if (field2Value.textContent === '-') field2Value.textContent = allNumbers[2];
+                    if (netWeightValue.textContent === '-') netWeightValue.textContent = allNumbers[3];
+                    if (amountValue.textContent === '-') amountValue.textContent = allNumbers[4];
+                }
+                
+                // If description is still empty, use the first non-number line
+                if (descriptionValue.textContent === '-') {
+                    for (let line of lines) {
+                        if (!containsNumber(line) && line.length > 3) {
+                            descriptionValue.textContent = line;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            function extractNumber(text) {
+                // Match numbers with optional decimal points
+                const match = text.match(/(\d+\.?\d*)/);
+                return match ? match[1] : null;
+            }
+            
+            function extractAllNumbers(text) {
+                const numbers = [];
+                const matches = text.matchAll(/(\d+\.?\d*)/g);
+                for (const match of matches) {
+                    numbers.push(match[1]);
+                }
+                return numbers;
+            }
+            
+            function containsNumber(text) {
+                return /\d/.test(text);
             }
             
             function copyText() {
@@ -975,23 +949,64 @@
                 }
             }
             
+            function copyData() {
+                const data = {
+                    description: descriptionValue.textContent,
+                    carat: caratValue.textContent,
+                    field1: field1Value.textContent,
+                    field2: field2Value.textContent,
+                    netWeight: netWeightValue.textContent,
+                    amount: amountValue.textContent
+                };
+                
+                const text = `Description: ${data.description}\nCarat: ${data.carat}\nField1: ${data.field1}\nField2: ${data.field2}\nNet Weight: ${data.netWeight}\nAmount: ${data.amount}`;
+                
+                navigator.clipboard.writeText(text)
+                    .then(() => showSuccess('Table data copied to clipboard!'))
+                    .catch(err => showError('Failed to copy data: ' + err));
+            }
+            
+            function downloadData() {
+                const data = {
+                    description: descriptionValue.textContent,
+                    carat: caratValue.textContent,
+                    field1: field1Value.textContent,
+                    field2: field2Value.textContent,
+                    netWeight: netWeightValue.textContent,
+                    amount: amountValue.textContent
+                };
+                
+                const text = `Description: ${data.description}\nCarat: ${data.carat}\nField1: ${data.field1}\nField2: ${data.field2}\nNet Weight: ${data.netWeight}\nAmount: ${data.amount}`;
+                
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'table-data.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showSuccess('Table data downloaded successfully!');
+            }
+            
             function clearAll() {
                 fileInput.value = '';
                 imagePreview.style.display = 'none';
                 noPreview.style.display = 'block';
-                noPreview.innerHTML = '<i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i><p>Image preview will appear here</p>';
-                fileList.style.display = 'none';
+                noPreview.innerHTML = '<i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i><p>Table image preview will appear here</p>';
                 resultBox.textContent = 'Your extracted text will appear here...';
                 extractBtn.disabled = true;
                 hideMessages();
                 updateStats();
-            }
-            
-            function clearHistory() {
-                localStorage.removeItem('ocrHistory');
-                document.getElementById('historyList').innerHTML = 
-                    '<p style="text-align: center; color: #999; padding: 20px;">Your OCR history will appear here</p>';
-                showSuccess('History cleared!');
+                
+                // Clear extracted data
+                descriptionValue.textContent = '-';
+                caratValue.textContent = '-';
+                field1Value.textContent = '-';
+                field2Value.textContent = '-';
+                netWeightValue.textContent = '-';
+                amountValue.textContent = '-';
             }
             
             function updateStats() {
@@ -1003,56 +1018,6 @@
                 charCount.textContent = chars;
                 wordCount.textContent = words;
                 lineCount.textContent = lines;
-            }
-            
-            function saveToHistory(filename, text) {
-                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]');
-                const historyItem = {
-                    id: Date.now(),
-                    filename: filename,
-                    text: text,
-                    timestamp: new Date().toLocaleString()
-                };
-                
-                history.unshift(historyItem);
-                if (history.length > 10) history.pop(); // Keep only last 10 items
-                
-                localStorage.setItem('ocrHistory', JSON.stringify(history));
-                updateHistoryDisplay();
-            }
-            
-            function updateHistoryDisplay() {
-                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]');
-                const historyList = document.getElementById('historyList');
-                
-                if (history.length === 0) {
-                    historyList.innerHTML = 
-                        '<p style="text-align: center; color: #999; padding: 20px;">Your OCR history will appear here</p>';
-                    return;
-                }
-                
-                historyList.innerHTML = '';
-                history.forEach(item => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    historyItem.innerHTML = `
-                        <div style="font-weight: 600;">${item.filename}</div>
-                        <div class="history-preview">${item.text.substring(0, 100)}${item.text.length > 100 ? '...' : ''}</div>
-                        <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${item.timestamp}</div>
-                    `;
-                    
-                    historyItem.addEventListener('click', () => {
-                        resultBox.textContent = item.text;
-                        updateStats();
-                        // Switch to result tab
-                        tabs.forEach(t => t.classList.remove('active'));
-                        tabContents.forEach(c => c.classList.remove('active'));
-                        document.querySelector('[data-tab="result"]').classList.add('active');
-                        document.getElementById('resultTab').classList.add('active');
-                    });
-                    
-                    historyList.appendChild(historyItem);
-                });
             }
             
             function showError(message) {
@@ -1071,9 +1036,6 @@
                 errorMessage.style.display = 'none';
                 successMessage.style.display = 'none';
             }
-            
-            // Initialize history display
-            updateHistoryDisplay();
         });
     </script>
 </body>
