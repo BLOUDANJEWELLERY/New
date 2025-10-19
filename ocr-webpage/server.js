@@ -1,7 +1,7 @@
-import express from "express";
-import multer from "multer";
-import fs from "fs";
-import { ocrSpace } from "ocr-space-api-wrapper";
+const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+const { ocrSpace } = require("ocr-space-api-wrapper");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -13,8 +13,9 @@ app.post("/ocr", upload.single("file"), async (req, res) => {
 
   try {
     const result = await ocrSpace(req.file.path, {
-      apiKey: "K89185730788957", // Your OCR.Space API key
+      apiKey: "K89185730788957",
       language: "eng+ara",
+      isOverlayRequired: false,
     });
 
     fs.unlinkSync(req.file.path); // delete uploaded file
