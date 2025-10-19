@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced OCR Image to Text Converter</title>
+    <title>OCR Image to Text Converter</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -65,26 +65,6 @@
             font-size: 1.1rem;
         }
 
-        .api-key-section {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .api-key-input {
-            flex: 1;
-            max-width: 400px;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
         .main-content {
             padding: 25px;
             display: grid;
@@ -123,6 +103,7 @@
             transition: var(--transition);
             cursor: pointer;
             background-color: #f9f9f9;
+            position: relative;
         }
 
         .upload-area:hover, .upload-area.active {
@@ -143,7 +124,13 @@
         }
 
         .file-input {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
 
         .btn {
@@ -494,18 +481,33 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+        }
+
+        .mobile-file-button {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .mobile-file-button {
+                display: block;
+                margin-top: 15px;
+            }
+            
+            .desktop-file-button {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-text-height"></i> Enhanced OCR Text Extractor</h1>
+            <h1><i class="fas fa-text-height"></i> OCR Text Extractor</h1>
             <p>Upload images and extract text with advanced editing options</p>
-            <div class="api-key-section">
-                <input type="text" id="apiKeyInput" class="api-key-input" placeholder="Enter your OCR.space API key">
-                <button class="btn" id="saveApiKey"><i class="fas fa-save"></i> Save Key</button>
-            </div>
         </header>
 
         <div class="main-content">
@@ -517,7 +519,12 @@
                         <p class="upload-text">Drag & drop your image here or click to browse</p>
                         <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF, PDF</p>
                         <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf" multiple>
-                        <button class="btn" id="browseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                        <div class="mobile-file-button">
+                            <button class="btn" id="mobileBrowseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                        </div>
+                        <div class="desktop-file-button">
+                            <button class="btn" id="browseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                        </div>
                     </div>
 
                     <div class="preview-container">
@@ -587,12 +594,6 @@
                             <div class="checkbox-group">
                                 <input type="checkbox" id="isTable">
                                 <label for="isTable">Optimize for Tables/Receipts</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="isOverlayRequired">
-                                <label for="isOverlayRequired">Get Word Coordinates (Advanced)</label>
                             </div>
                         </div>
                     </div>
@@ -665,7 +666,7 @@
         </div>
 
         <footer>
-            <p>Powered by OCR.space API | Enhanced with additional features</p>
+            <p>Powered by OCR.space API | Personal OCR Tool</p>
         </footer>
     </div>
 
@@ -675,6 +676,7 @@
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('fileInput');
             const browseBtn = document.getElementById('browseBtn');
+            const mobileBrowseBtn = document.getElementById('mobileBrowseBtn');
             const imagePreview = document.getElementById('imagePreview');
             const noPreview = document.getElementById('noPreview');
             const extractBtn = document.getElementById('extractBtn');
@@ -683,8 +685,6 @@
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
             const progressBar = document.getElementById('progressBar');
-            const apiKeyInput = document.getElementById('apiKeyInput');
-            const saveApiKeyBtn = document.getElementById('saveApiKey');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const clearAllBtn = document.getElementById('clearAllBtn');
@@ -697,16 +697,16 @@
             const tabs = document.querySelectorAll('.tab');
             const tabContents = document.querySelectorAll('.tab-content');
             
-            // API configuration
-            let API_KEY = localStorage.getItem('ocrApiKey') || '';
+            // API configuration - REPLACE WITH YOUR ACTUAL API KEY
+            const API_KEY = 'K87899142388957'; // Your OCR.space API key
             const API_URL = 'https://api.ocr.space/parse/image';
             
             // Initialize
-            apiKeyInput.value = API_KEY;
             updateStats();
             
             // Event listeners
             browseBtn.addEventListener('click', () => fileInput.click());
+            mobileBrowseBtn.addEventListener('click', () => fileInput.click());
             
             fileInput.addEventListener('change', function() {
                 if (this.files && this.files.length > 0) {
@@ -733,7 +733,6 @@
             });
             
             extractBtn.addEventListener('click', performOCR);
-            saveApiKeyBtn.addEventListener('click', saveApiKey);
             copyBtn.addEventListener('click', copyText);
             downloadBtn.addEventListener('click', downloadText);
             clearAllBtn.addEventListener('click', clearAll);
@@ -780,6 +779,11 @@
                     return;
                 }
                 
+                // Update file input with valid files only
+                const dataTransfer = new DataTransfer();
+                validFiles.forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+                
                 // Display first image preview
                 if (validFiles[0].type.startsWith('image/')) {
                     const reader = new FileReader();
@@ -807,126 +811,65 @@
                             <div class="file-name">${file.name}</div>
                             <div class="file-actions">
                                 <button class="file-action-btn preview-file" data-index="${index}">
-                                    <i class="fas fa <i class="fas fa-eye"></i>
-                                </-eye"></i>
+                                    <i class="fas fa-eye"></i>
                                 </button>
-                                <button classbutton>
-                                <button class="file-action-btn remove-file="file-action-btn remove-file" data" data-index="${index}">
-                                    <i class-index="${index}">
-                                    <i class="fas fa-times"></="fas fa-times"></i>
-                                </button>
-                            </div>
-                       i>
+                                <button class="file-action-btn remove-file" data-index="${index}">
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </div>
                         `;
-                        fileItems `;
                         fileItems.appendChild(fileItem);
                     });
                     
-                   .appendChild(fileItem);
-                    });
-                    
                     // Add event listeners for file actions
- // Add event listeners for file actions
-                    document.querySelectorAll                    document.querySelectorAll('.pre('.preview-file').forEachview-file').forEach(btn(btn => {
-                        btn => {
-                        btn.addEventListener.addEventListener('click', function()('click', function() {
-                            const {
-                            const index = parseInt index = parseInt(this.getAttribute('(this.getAttribute('data-indexdata-index'));
-                            previewFile'));
-                            previewFile(validFiles(validFiles[index]);
-                       [index]);
+                    document.querySelectorAll('.preview-file').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            previewFile(validFiles[index]);
                         });
-                    });
- });
                     });
                     
-                    document                    
-                    document.querySelectorAll('..querySelectorAll('.remove-fileremove-file').forEach(btn').forEach(btn => {
-                        => {
-                        btn.addEventListener(' btn.addEventListener('click', functionclick', function() {
-() {
-                            const index =                            const index = parseInt(this.getAttribute parseInt(this.getAttribute('data('data-index'));
-                            valid-index'));
-                            validFiles.sFiles.splice(index, plice(index, 1);
-1);
-                            handleFileSelection                            handleFileSelection(validFiles);
+                    document.querySelectorAll('.remove-file').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            validFiles.splice(index, 1);
+                            
+                            // Update file input
+                            const dataTransfer = new DataTransfer();
+                            validFiles.forEach(file => dataTransfer.items.add(file));
+                            fileInput.files = dataTransfer.files;
+                            
+                            handleFileSelection(validFiles);
                         });
                     });
-(validFiles);
-                        });
-                } else {
-                    file                    });
                 } else {
                     fileList.style.display = 'none';
                 }
                 
-                // Enable the extract buttonList.style.display = 'none';
-                }
-                
                 // Enable the extract button
-                extract
                 extractBtn.disabled = false;
                 hideMessages();
             }
             
             function previewFile(file) {
                 if (file.type.startsWith('image/')) {
-                    const reader =Btn.disabled = false;
-                hideMessages();
-            }
-            
-            function previewFile(file) {
-                if (file.type.startsWith('image/')) {
-                    const reader = new new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display FileReader();
+                    const reader = new FileReader();
                     reader.onload = function(e) {
                         imagePreview.src = e.target.result;
                         imagePreview.style.display = 'block';
                         noPreview.style.display = 'none';
                     };
                     reader.readAsDataURL(file);
-                = 'block';
-                        noPreview.style.display = 'none';
-                    };
-                    reader.readAsDataURL(file } else {
-                    imagePreview.style.display = 'none';
-                    noPreview.style.display = 'block';
-                    noPreview.innerHTML = '<i class="fas fa-file-p);
                 } else {
                     imagePreview.style.display = 'none';
                     noPreview.style.display = 'block';
-                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10df" style="font-size: 48px; margin-bottom: 10px;"></i><p>px;"></i><p>PDFPDF file selected</p>';
+                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10px;"></i><p>PDF file selected</p>';
                 }
             }
             
             async function performOCR() {
                 if (!fileInput.files || fileInput.files.length === 0) {
                     showError('Please select at least one file first.');
-                    return;
-                }
-                
- file selected</p>';
-                }
-            }
-            
-            async function performOCR() {
-                if (!fileInput.files || fileInput.files.length === 0) {
-                    showError('Please select at least one file first.');
-                    return;
-                }
-                if (!API_KEY) {
-                    showError('Please enter your OCR.space API key.');
-                    return;
-                }
-                
-                // Show loading indicator
-                loadingIndicator.style.display =                
-                if (!API_KEY) {
-                    showError('Please enter your OCR.space API key.');
                     return;
                 }
                 
@@ -934,426 +877,204 @@
                 loadingIndicator.style.display = 'block';
                 extractBtn.disabled = true;
                 hideMessages();
-                resultBox.textContent 'block';
-                extractBtn.disabled = true;
-                hideMessages();
-                resultBox = 'Processing...';
+                resultBox.textContent = 'Processing...';
                 
                 try {
                     const files = Array.from(fileInput.files);
                     let allResults = '';
                     
-                    for (let i = 0; i < files.length; i++).textContent = 'Processing...';
-                
-                try {
-                    const files = Array.from(fileInput.files);
-                    let allResults = '';
-                    
-                    for (let i = 0; i < files {
+                    for (let i = 0; i < files.length; i++) {
                         const file = files[i];
                         const progress = ((i + 1) / files.length) * 100;
                         progressBar.style.width = `${progress}%`;
                         
                         // Prepare form data
-                        const formData.length; i++) {
-                        const file = files[i];
-                        const progress = ((i + 1) / files.length) * 100;
-                        progressBar.style.width = `${progress}%`;
-                        
-                        // Prepare form data
- = new FormData();
+                        const formData = new FormData();
                         formData.append('apikey', API_KEY);
                         formData.append('file', file);
                         formData.append('language', document.getElementById('language').value);
-                        formData.append                        const formData = new FormData();
-                        formData.append('apikey', API_KEY);
-                        formData.append('file', file);
-                        formData.append('language', document.getElementById('language').value);
-                        form('OCREngine', document.getElementById('ocrEngine').value);
-                        formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
                         formData.append('OCREngine', document.getElementById('ocrEngine').value);
                         formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
-Data.append('isTable', document.getElementById('isTable').checked);
-                        formData.append('isOverlayRequired', document.getElementById('is                        formData.append('isTable', document.getElementById('isTable').checked);
-                        formData.append('isOverlayRequired', document.getElementById('isOverOverlayRequired').layRequired').checked);
+                        formData.append('isTable', document.getElementById('isTable').checked);
+                        formData.append('isOverlayRequired', false);
                         
                         // Make API request
-                        const response =checked);
-                        
-                        // Make API request
-                        const response = await fetch await fetch(API_URL, {
-(API_URL, {
+                        const response = await fetch(API_URL, {
                             method: 'POST',
-                            body                            method: 'POST',
-: formData
-                        });
                             body: formData
-                                               
-                        const data = await });
+                        });
                         
-                        const data = response.json();
+                        const data = await response.json();
                         
-                        // await response.json();
-                        
- Process response
-                        if (                        // Process response
-                        ifdata.IsErroredOnProcessing (data.IsErroredOnProcessing) {
-) {
-                            throw new Error(data.ErrorMessage || '                            throw new Error(data.ErrorMessage || 'An error occurred during OCR processingAn error occurred during OCR.');
+                        // Process response
+                        if (data.IsErroredOnProcessing) {
+                            throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
                         }
                         
-                        if processing.');
-                        }
-                        
-                        if (data.ParsedResults (data.ParsedResults && data.ParsedResults.length && data.ParsedResults > 0) {
-                            const.length > 0) {
-                            const parsedResult = data parsedResult = data.Pars.ParsedResults[0edResults[0];
-                ];
+                        if (data.ParsedResults && data.ParsedResults.length > 0) {
+                            const parsedResult = data.ParsedResults[0];
                             
-                            if (            
-                            if (parparsedResult.ParsedsedResult.ParsedText)Text) {
-                                if ( {
-                                if (files.lengthfiles.length > 1) > 1) {
-                                    allResults += ` {
-                                    allResults += `=== ${=== ${file.name} ===\file.name} ===\n\n${parsedResult.Pn\n${parsedResult.ParsedText}\narsedText}\n\n`;
-\n`;
+                            if (parsedResult.ParsedText) {
+                                if (files.length > 1) {
+                                    allResults += `=== ${file.name} ===\n\n${parsedResult.ParsedText}\n\n`;
                                 } else {
-                                                                   } else {
-                                    allResults = parsed allResults = parsedResult.ParsResult.ParsedText;
+                                    allResults = parsedResult.ParsedText;
                                 }
                                 
-                                // SaveedText;
-                                }
-                                
-                                // Save to history to history
-                                saveToHistory(file.name, parsedResult.P
+                                // Save to history
                                 saveToHistory(file.name, parsedResult.ParsedText);
-                            }arsedText);
                             } else {
- else {
-                                throw new Error                                throw new Error('No('No text was found in text was found in the image the image.');
+                                throw new Error('No text was found in the image.');
                             }
-                       .');
-                            }
-                        } else } else {
-                            throw new Error('No results returned from {
+                        } else {
                             throw new Error('No results returned from OCR API.');
- OCR API.');
                         }
-                                           }
                     }
                     
-                    result }
-                    
-                    resultBox.textBox.textContent = allResultsContent = allResults;
-                   ;
-                    showSuccess(` showSuccess(`Text extractedText extracted successfully from successfully from ${files.length} file(s)!`);
- ${files.length} file(s)!`);
+                    resultBox.textContent = allResults;
+                    showSuccess(`Text extracted successfully from ${files.length} file(s)!`);
                     updateStats();
                     
-                                   updateStats();
-                    
-                } catch } catch ( (error) {
-                    consoleerror) {
-                    console.error('OCR.error('OCR Error:', error Error:', error);
-);
+                } catch (error) {
+                    console.error('OCR Error:', error);
                     showError('OCR processing failed: ' + error.message);
-                    resultBox.textContent = '                    showError('OCR processing failed: ' + error.message);
-                    resultBox.textContent = 'Error occurred during textError occurred during text extraction.';
- extraction.';
+                    resultBox.textContent = 'Error occurred during text extraction.';
                 } finally {
-                    loadingIndicator.style.display                } finally {
-                    loadingIndicator.style.display = 'none = 'none';
-                    extractBtn';
-                    extractBtn.disabled.disabled = false;
-                    = false;
-                    progressBar progressBar.style.width = '0%';
-                }
-           .style.width = '0%';
+                    loadingIndicator.style.display = 'none';
+                    extractBtn.disabled = false;
+                    progressBar.style.width = '0%';
                 }
             }
             
- }
-            
-            function saveApi            function saveApiKey() {
-Key() {
-                API_KEY = api                API_KEY = apiKeyKeyInput.value.trimInput.value.trim();
-                if (API_KEY) {
-                   ();
-                if (API_KEY) {
-                    localStorage.setItem('ocr localStorage.setItem('ocrApiKeyApiKey', API_KEY);
-', API_KEY);
-                    show                    showSuccess('API keySuccess('API key saved successfully saved successfully!');
-                }!');
+            function copyText() {
+                const text = resultBox.textContent;
+                if (text && text !== 'Your extracted text will appear here...') {
+                    navigator.clipboard.writeText(text)
+                        .then(() => showSuccess('Text copied to clipboard!'))
+                        .catch(err => showError('Failed to copy text: ' + err));
                 } else {
-                    showError(' else {
-                    showError('Please enter a valid API key.');
-               Please enter a valid API key }
-            }
-            
-            function.');
+                    showError('No text to copy.');
                 }
-            }
-            
- copyText() {
-                const            function copyText() {
- text = resultBox.textContent                const text = resultBox.textContent;
-                if (text;
-                if (text && && text !== 'Your extracted text !== 'Your extracted text text will appear here...') {
- will appear here...') {
-                    navigator.clipboard                    navigator.clipboard.writeText(text)
-                        ..writeText(text)
-                        .then(() => showSuccess('then(() => showSuccess('Text copied to clipboard!'))
-Text copied to clipboard!'))
-                        .catch(err => showError('Failed to copy text                        .catch(err => showError('Failed to copy text: ' + err: ' + err));
-               ));
-                } else {
-                    } else {
-                    showError showError('No text to('No text to copy.');
- copy.');
-                }
-            }
-            
-            function download                }
             }
             
             function downloadText() {
-               Text() {
-                const text = const text = resultBox.text resultBox.textContent;
-                ifContent;
-                if (text && text !== 'Your extracted text (text && text !== 'Your extracted text will appear here will appear here...') {
-...') {
-                    const blob                    const blob = new Blob = new Blob([text([text], { type:], { type: 'text/plain 'text/plain' });
-' });
-                    const url                    const url = URL.createObjectURL(blob);
- = URL.createObjectURL(bl                    const a = document.createElementob);
-                    const a =('a');
-                    a.h document.createElement('aref = url;
-                    a');
+                const text = resultBox.textContent;
+                if (text && text !== 'Your extracted text will appear here...') {
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'extracted.download = 'extracted-text.txt-text.txt';
-                    document.body.appendChild(a';
-                   );
-                    a.click();
-                    document.body.removeChild(a);
+                    a.download = 'extracted-text.txt';
                     document.body.appendChild(a);
                     a.click();
-                    document.body.remove URL.revokeObjectURL(url);
-                    showSuccess('Text downloaded successfully!');
-Child(a);
+                    document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                     showSuccess('Text downloaded successfully!');
                 } else {
-                    show                } else {
                     showError('No text to download.');
-               Error('No text to download }
-            }
-            
-            function clearAll.');
                 }
             }
             
-() {
-                fileInput.value            function clearAll() {
+            function clearAll() {
                 fileInput.value = '';
-                image = '';
-                imagePreview.stylePreview.style.display = 'none.display = 'none';
-               ';
-                noPreview.style.display noPreview.style.display = 'block';
-                noPreview.innerHTML = 'block';
-                no = '<i class="fasPreview.innerHTML = '<i class="fas fa-image" style fa-image" style="font-size: ="font-size: 48px;48px; margin-bottom:  margin-bottom: 10px10px;"></i><p;"></i><p>Image preview will appear here</p>Image preview will appear here>';
-                file</p>';
-                fileList.style.display =List.style.display = 'none 'none';
-                resultBox';
-                resultBox.textContent =.textContent = 'Your extracted text 'Your extracted text will appear here...';
-                extractBtn will appear here...';
-               .disabled = true;
+                imagePreview.style.display = 'none';
+                noPreview.style.display = 'block';
+                noPreview.innerHTML = '<i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i><p>Image preview will appear here</p>';
+                fileList.style.display = 'none';
+                resultBox.textContent = 'Your extracted text will appear here...';
                 extractBtn.disabled = true;
                 hideMessages();
-                update hideMessages();
-                updateStatsStats();
+                updateStats();
             }
             
-           ();
-            }
-            
-            function clear function clearHistory() {
-               History() {
+            function clearHistory() {
                 localStorage.removeItem('ocrHistory');
-                localStorage.removeItem('ocr document.getElementById('historyList').History');
-                document.getElementById('historyList').innerHTMLinnerHTML = 
-                    '<p style = 
-                    '<p style="text-align:="text-align: center; color: center; color: #999; padding: 20px #999; padding: 20px;">Your OCR history will appear here;">Your OCR history will appear</p>';
-                showSuccess(' here</p>';
-                showHistory cleared!');
-            }
-            
-            function updateStats()Success('History cleared!');
+                document.getElementById('historyList').innerHTML = 
+                    '<p style="text-align: center; color: #999; padding: 20px;">Your OCR history will appear here</p>';
+                showSuccess('History cleared!');
             }
             
             function updateStats() {
-                const text {
                 const text = resultBox.textContent;
-                const = resultBox.textContent;
                 const chars = text.length;
- chars = text.length;
-                const words = text.trim                const words = text.trim() ? text.trim().split() ? text.trim().split(/\s+/).length : 0;
-                const(/\s+/).length : 0;
-                const lines = text.trim() ? lines = text.trim() ? text.split('\n').length text.split('\n').length : 0;
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                const lines = text.trim() ? text.split('\n').length : 0;
                 
-                charCount.textContent = chars : 0;
-                
-                charCount.textContent =;
-                wordCount.textContent chars;
+                charCount.textContent = chars;
                 wordCount.textContent = words;
-                = words;
-                line lineCount.textContent = lines;
+                lineCount.textContent = lines;
             }
             
-            function saveToCount.textContent = lines;
-            }
-            
-            function saveToHistoryHistory(filename, text(filename, text) {
-                const history = JSON) {
-                const history = JSON.parse(localStorage.getItem('ocrHistory').parse(localStorage.getItem('ocrHistory || '[]');
-                const') || '[]');
+            function saveToHistory(filename, text) {
+                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]');
                 const historyItem = {
-                    historyItem = {
-                    id: Date.now(),
                     id: Date.now(),
                     filename: filename,
-                    text filename: filename,
                     text: text,
-                    timestamp:: text,
-                    timestamp: new Date().toLocaleString new Date().toLocaleString()
-                };
-                
-                history()
+                    timestamp: new Date().toLocaleString()
                 };
                 
                 history.unshift(historyItem);
-                if.unshift(historyItem (history.length > 10);
-                if (history.length >) history.pop(); // Keep 10) history.pop(); only last 10 items
- // Keep only last 10 items
+                if (history.length > 10) history.pop(); // Keep only last 10 items
                 
-                               
-                localStorage.setItem('ocrHistory', JSON localStorage.setItem('ocrHistory', JSON.stringify(.stringify(history));
-                updatehistory));
+                localStorage.setItem('ocrHistory', JSON.stringify(history));
                 updateHistoryDisplay();
             }
             
-            functionHistoryDisplay();
-            }
-            
             function updateHistoryDisplay() {
-                const history = JSON.parse(localStorage.getItem(' updateHistoryDisplay() {
-                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]ocrHistory') || '[]');
-');
-                const historyList =                const historyList = document document.getElementById('historyList');
-.getElementById('historyList');
+                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]');
+                const historyList = document.getElementById('historyList');
                 
-                               
                 if (history.length === 0) {
-                    if (history.length === 0) {
-                    historyList historyList.innerHTML = 
-.innerHTML = 
-                                               '<p style="text '<p style="text-align:-align: center; color: #999; padding:  center; color: #999; padding: 20px;">20px;">Your OCR history will appearYour OCR history will appear here</p>';
-                    return here</p>';
+                    historyList.innerHTML = 
+                        '<p style="text-align: center; color: #999; padding: 20px;">Your OCR history will appear here</p>';
                     return;
-               ;
                 }
                 
-                history }
-                
-                historyList.innerHTMLList.innerHTML = '';
-                history = '';
+                historyList.innerHTML = '';
                 history.forEach(item => {
-                    const history.forEach(item => {
-                   Item = document.createElement('div const historyItem = document.createElement('div');
-                    historyItem');
+                    const historyItem = document.createElement('div');
                     historyItem.className = 'history-item';
-                   .className = 'history-item';
-                    historyItem.innerHTML = historyItem.innerHTML = `
-                        `
-                        <div style=" <div style="font-weightfont-weight: 600;">${item.filename}</div>
-                        <div class="history-p: 600;">${item.filename}</div>
-                        <div class="history-preview">${item.text.substring(0, 100)}review">${item.text.substring(0, 100)}${item.text.length > 100 ? '...'${item.text.length > 100 ? '...' : ''}</div>
+                    historyItem.innerHTML = `
+                        <div style="font-weight: 600;">${item.filename}</div>
+                        <div class="history-preview">${item.text.substring(0, 100)}${item.text.length > 100 ? '...' : ''}</div>
                         <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${item.timestamp}</div>
                     `;
                     
-                    historyItem.addEventListener : ''}</div>
-                        <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${item.timestamp}</div>
-                    `;
-                    
-                    historyItem('click', () => {
-                        resultBox.textContent = item.text;
-                        updateStats();
-                        // Switch to result tab
-                        tabs.forEach.addEventListener('click', () => {
+                    historyItem.addEventListener('click', () => {
                         resultBox.textContent = item.text;
                         updateStats();
                         // Switch to result tab
                         tabs.forEach(t => t.classList.remove('active'));
-                        tabContents.forEach(c =>(t => t.classList.remove('active'));
                         tabContents.forEach(c => c.classList.remove('active'));
- c.classList.remove('active'));
-                        document.querySelector('[data-tab="result"]').class                        document.querySelector('[data-tab="result"]').classList.add('activeList.add('active');
-                        document.getElementById('resultTab').');
-                        document.getElementById('resultTab').classListclassList.add('active');
-                    });
-                    
-                    historyList.add('active');
+                        document.querySelector('[data-tab="result"]').classList.add('active');
+                        document.getElementById('resultTab').classList.add('active');
                     });
                     
                     historyList.appendChild(historyItem);
-.appendChild(historyItem);
-                               });
-            }
-            
-            });
+                });
             }
             
             function showError(message) {
-                error function showError(message) {
-Message.textContent = message;
                 errorMessage.textContent = message;
-                errorMessage.style                errorMessage.style.display =.display = 'block';
-                'block';
-                successMessage successMessage.style.display = '.style.display = 'none';
-            }
-none';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
             }
             
             function showSuccess(message) {
-                success            
-            function showSuccess(message) {
-                successMessage.textContent = messageMessage.textContent = message;
-                successMessage.style.display =;
+                successMessage.textContent = message;
                 successMessage.style.display = 'block';
                 errorMessage.style.display = 'none';
             }
             
-            'block';
+            function hideMessages() {
                 errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
             }
             
-            function hideMessages() function hideMessages() {
-                errorMessage {
-               .style.display = 'none errorMessage.style.display = 'none';
-                successMessage.style.display';
-                successMessage.style.display = 'none = 'none';
-            }
-            
-';
-            }
-            
-                       // Initialize history display
- // Initialize history display
+            // Initialize history display
             updateHistoryDisplay();
         });
-               updateHistoryDisplay();
-        });
     </script>
-</ </script>
-</bodybody>
+</body>
 </html>
