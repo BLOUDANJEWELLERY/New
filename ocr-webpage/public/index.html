@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCR Webpage</title>
+<style>
+body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+.container { max-width: 600px; width: 100%; }
+#output { margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 150px; white-space: pre-wrap; background: #fafafa; }
+button { margin-top: 10px; padding: 10px 20px; background: goldenrod; color: white; border: none; border-radius: 5px; cursor: pointer; }
+button:hover { background: darkgoldenrod; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>OCR Test (English + Arabic + Numbers)</h2>
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="performOCR()">Extract Text</button>
+  <pre id="output">Result will appear here...</pre>
+</div>
+
+<script>
+async function performOCR() {
+  const file = document.getElementById('fileInput').files[0];
+  if (!file) { alert('Please select an image first.'); return; }
+
+  const output = document.getElementById('output');
+  output.textContent = 'Processing...';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch('/ocr', { method: 'POST', body: formData });
+    const data = await res.json();
+    output.textContent = data.text || 'No text detected.';
+  } catch (err) {
+    output.textContent = 'Error: ' + err.message;
+  }
+}
+</script>
+
+</body>
+</html>
