@@ -3,13 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Image to Text Converter</title>
+    <title>Enhanced OCR Image to Text Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6a11cb;
+            --primary-light: #8a3cff;
+            --secondary: #2575fc;
+            --dark: #333;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --border-radius: 10px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
         }
 
         body {
@@ -19,22 +35,24 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: var(--dark);
         }
 
         .container {
             background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
             overflow: hidden;
         }
 
         header {
-            background: linear-gradient(to right, #4a6ee0, #6a11cb);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
             padding: 25px;
             text-align: center;
+            position: relative;
         }
 
         header h1 {
@@ -47,8 +65,53 @@
             font-size: 1.1rem;
         }
 
+        .api-key-section {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .api-key-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
         .main-content {
             padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .upload-area {
@@ -57,26 +120,26 @@
             padding: 40px 20px;
             text-align: center;
             margin-bottom: 25px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             cursor: pointer;
             background-color: #f9f9f9;
         }
 
         .upload-area:hover, .upload-area.active {
-            border-color: #6a11cb;
+            border-color: var(--primary);
             background-color: #f0f0ff;
         }
 
         .upload-icon {
             font-size: 48px;
-            color: #6a11cb;
+            color: var(--primary);
             margin-bottom: 15px;
         }
 
         .upload-text {
             font-size: 1.1rem;
             margin-bottom: 15px;
-            color: #555;
+            color: var(--gray);
         }
 
         .file-input {
@@ -84,15 +147,18 @@
         }
 
         .btn {
-            background: linear-gradient(to right, #4a6ee0, #6a11cb);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
             border: none;
             padding: 12px 25px;
             border-radius: 6px;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn:hover {
@@ -107,24 +173,46 @@
             box-shadow: none;
         }
 
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
         .preview-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 25px;
         }
 
         .image-preview {
-            flex: 1;
-            min-width: 300px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .image-preview img {
-            width: 100%;
-            height: auto;
+            max-width: 100%;
+            max-height: 300px;
             display: block;
         }
 
@@ -137,7 +225,7 @@
 
         .ocr-options h3 {
             margin-bottom: 15px;
-            color: #333;
+            color: var(--dark);
         }
 
         .form-group {
@@ -148,7 +236,7 @@
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
-            color: #555;
+            color: var(--dark);
         }
 
         .form-control {
@@ -157,28 +245,63 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
         }
 
         .result-container {
-            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        .result-container h3 {
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
-            color: #333;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
         }
 
         .result-box {
-            background-color: #f9f9f9;
+            background-color: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
-            min-height: 200px;
-            max-height: 400px;
+            flex: 1;
             overflow-y: auto;
             white-space: pre-wrap;
             font-family: 'Courier New', monospace;
             line-height: 1.5;
+            min-height: 300px;
+            max-height: 400px;
+            transition: var(--transition);
+        }
+
+        .result-box:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
         }
 
         .loading {
@@ -189,7 +312,7 @@
 
         .spinner {
             border: 5px solid #f3f3f3;
-            border-top: 5px solid #6a11cb;
+            border-top: 5px solid var(--primary);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -202,39 +325,174 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            color: #e74c3c;
-            background-color: #fdf0ed;
+        .progress-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .message {
             padding: 15px;
             border-radius: 8px;
             margin-top: 20px;
             display: none;
         }
 
+        .error-message {
+            color: var(--danger);
+            background-color: #fdf0ed;
+            border: 1px solid #fadbd8;
+        }
+
         .success-message {
-            color: #27ae60;
+            color: var(--success);
             background-color: #eafaf1;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
+            border: 1px solid #d4efdf;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .file-list {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .file-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .file-action-btn:hover {
+            color: var(--primary);
         }
 
         footer {
             text-align: center;
             padding: 15px;
-            color: #777;
+            color: var(--gray);
             font-size: 0.9rem;
             border-top: 1px solid #eee;
         }
 
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .history-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background: #f5f5f5;
+        }
+
+        .history-preview {
+            font-size: 0.9rem;
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         @media (max-width: 768px) {
-            .preview-container {
+            .main-content {
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .panel {
+                padding: 15px;
+            }
+            
+            .result-actions {
                 flex-direction: column;
             }
             
-            .image-preview {
-                min-width: 100%;
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -242,126 +500,217 @@
 <body>
     <div class="container">
         <header>
-            <h1>OCR Image to Text Converter</h1>
-            <p>Upload an image and extract text using OCR.space API</p>
+            <h1><i class="fas fa-text-height"></i> Enhanced OCR Text Extractor</h1>
+            <p>Upload images and extract text with advanced editing options</p>
+            <div class="api-key-section">
+                <input type="text" id="apiKeyInput" class="api-key-input" placeholder="Enter your OCR.space API key">
+                <button class="btn" id="saveApiKey"><i class="fas fa-save"></i> Save Key</button>
+            </div>
         </header>
 
         <div class="main-content">
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📁</div>
-                <p class="upload-text">Drag & drop your image here or click to browse</p>
-                <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF, PDF</p>
-                <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf">
-                <button class="btn" id="browseBtn">Browse Files</button>
-            </div>
+            <div class="left-panel">
+                <div class="panel">
+                    <h2 class="panel-title"><i class="fas fa-upload"></i> Upload Image</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <p class="upload-text">Drag & drop your image here or click to browse</p>
+                        <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF, PDF</p>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf" multiple>
+                        <button class="btn" id="browseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                    </div>
 
-            <div class="preview-container">
-                <div class="image-preview">
-                    <img id="imagePreview" src="" alt="Image preview" style="display: none;">
+                    <div class="preview-container">
+                        <div class="image-preview">
+                            <img id="imagePreview" src="" alt="Image preview" style="display: none;">
+                            <div id="noPreview" style="color: #999; text-align: center; padding: 20px;">
+                                <i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                <p>Image preview will appear here</p>
+                            </div>
+                        </div>
+                        
+                        <div class="file-list" id="fileList" style="display: none;">
+                            <h3>Selected Files</h3>
+                            <div id="fileItems"></div>
+                        </div>
+                    </div>
+
+                    <div class="ocr-options">
+                        <h3><i class="fas fa-cog"></i> OCR Settings</h3>
+                        <div class="form-group">
+                            <label for="language">Language</label>
+                            <select id="language" class="form-control">
+                                <option value="eng">English</option>
+                                <option value="ara">Arabic</option>
+                                <option value="bul">Bulgarian</option>
+                                <option value="chs">Chinese (Simplified)</option>
+                                <option value="cht">Chinese (Traditional)</option>
+                                <option value="hrv">Croatian</option>
+                                <option value="cze">Czech</option>
+                                <option value="dan">Danish</option>
+                                <option value="dut">Dutch</option>
+                                <option value="fin">Finnish</option>
+                                <option value="fre">French</option>
+                                <option value="ger">German</option>
+                                <option value="gre">Greek</option>
+                                <option value="hun">Hungarian</option>
+                                <option value="ita">Italian</option>
+                                <option value="jpn">Japanese</option>
+                                <option value="kor">Korean</option>
+                                <option value="pol">Polish</option>
+                                <option value="por">Portuguese</option>
+                                <option value="rus">Russian</option>
+                                <option value="slv">Slovenian</option>
+                                <option value="spa">Spanish</option>
+                                <option value="swe">Swedish</option>
+                                <option value="tha">Thai</option>
+                                <option value="tur">Turkish</option>
+                                <option value="ukr">Ukrainian</option>
+                                <option value="vnm">Vietnamese</option>
+                                <option value="auto">Auto-detect (Engine 2 only)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ocrEngine">OCR Engine</label>
+                            <select id="ocrEngine" class="form-control">
+                                <option value="1">Engine 1 (Default, faster)</option>
+                                <option value="2">Engine 2 (Better for special characters)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="detectOrientation">
+                                <label for="detectOrientation">Detect Text Orientation</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="isTable">
+                                <label for="isTable">Optimize for Tables/Receipts</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="isOverlayRequired">
+                                <label for="isOverlayRequired">Get Word Coordinates (Advanced)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn" id="extractBtn" disabled><i class="fas fa-bolt"></i> Extract Text</button>
+                    <button class="btn btn-outline" id="clearAllBtn"><i class="fas fa-trash"></i> Clear All</button>
+
+                    <div class="loading" id="loadingIndicator">
+                        <div class="spinner"></div>
+                        <p>Processing your image... This may take a few seconds.</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="progressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="message error-message" id="errorMessage"></div>
+                    <div class="message success-message" id="successMessage"></div>
                 </div>
             </div>
 
-            <div class="ocr-options">
-                <h3>OCR Settings</h3>
-                <div class="form-group">
-                    <label for="language">Language</label>
-                    <select id="language" class="form-control">
-                        <option value="eng">English</option>
-                        <option value="ara">Arabic</option>
-                        <option value="bul">Bulgarian</option>
-                        <option value="chs">Chinese (Simplified)</option>
-                        <option value="cht">Chinese (Traditional)</option>
-                        <option value="hrv">Croatian</option>
-                        <option value="cze">Czech</option>
-                        <option value="dan">Danish</option>
-                        <option value="dut">Dutch</option>
-                        <option value="fin">Finnish</option>
-                        <option value="fre">French</option>
-                        <option value="ger">German</option>
-                        <option value="gre">Greek</option>
-                        <option value="hun">Hungarian</option>
-                        <option value="ita">Italian</option>
-                        <option value="jpn">Japanese</option>
-                        <option value="kor">Korean</option>
-                        <option value="pol">Polish</option>
-                        <option value="por">Portuguese</option>
-                        <option value="rus">Russian</option>
-                        <option value="slv">Slovenian</option>
-                        <option value="spa">Spanish</option>
-                        <option value="swe">Swedish</option>
-                        <option value="tha">Thai</option>
-                        <option value="tur">Turkish</option>
-                        <option value="ukr">Ukrainian</option>
-                        <option value="vnm">Vietnamese</option>
-                        <option value="auto">Auto-detect (Engine 2 only)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="ocrEngine">OCR Engine</label>
-                    <select id="ocrEngine" class="form-control">
-                        <option value="1">Engine 1 (Default, faster)</option>
-                        <option value="2">Engine 2 (Better for special characters)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="detectOrientation">
-                        Detect Text Orientation
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="isTable">
-                        Optimize for Tables/Receipts
-                    </label>
-                </div>
-            </div>
+            <div class="right-panel">
+                <div class="panel">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="result">Extracted Text</div>
+                        <div class="tab" data-tab="history">History</div>
+                    </div>
 
-            <button class="btn" id="extractBtn" disabled>Extract Text</button>
+                    <div class="tab-content active" id="resultTab">
+                        <div class="result-header">
+                            <h2 class="panel-title"><i class="fas fa-file-alt"></i> Results</h2>
+                            <div class="result-actions">
+                                <button class="btn btn-success" id="copyBtn"><i class="fas fa-copy"></i> Copy</button>
+                                <button class="btn btn-warning" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box" id="resultBox" contenteditable="true">
+                            Your extracted text will appear here...
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Characters</span>
+                                <span class="stat-value" id="charCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Words</span>
+                                <span class="stat-value" id="wordCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Lines</span>
+                                <span class="stat-value" id="lineCount">0</span>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-                <p>Processing your image... This may take a few seconds.</p>
-            </div>
-
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-
-            <div class="result-container">
-                <h3>Extracted Text</h3>
-                <div class="result-box" id="resultBox">
-                    Your extracted text will appear here...
+                    <div class="tab-content" id="historyTab">
+                        <h2 class="panel-title"><i class="fas fa-history"></i> OCR History</h2>
+                        <div id="historyList">
+                            <p style="text-align: center; color: #999; padding: 20px;">
+                                Your OCR history will appear here
+                            </p>
+                        </div>
+                        <button class="btn btn-outline" id="clearHistoryBtn" style="margin-top: 15px;">
+                            <i class="fas fa-trash"></i> Clear History
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>Powered by OCR.space API | Note: You'll need to add your own API key</p>
+            <p>Powered by OCR.space API | Enhanced with additional features</p>
         </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('fileInput');
             const browseBtn = document.getElementById('browseBtn');
             const imagePreview = document.getElementById('imagePreview');
+            const noPreview = document.getElementById('noPreview');
             const extractBtn = document.getElementById('extractBtn');
             const resultBox = document.getElementById('resultBox');
             const loadingIndicator = document.getElementById('loadingIndicator');
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
+            const progressBar = document.getElementById('progressBar');
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            const saveApiKeyBtn = document.getElementById('saveApiKey');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const fileList = document.getElementById('fileList');
+            const fileItems = document.getElementById('fileItems');
+            const charCount = document.getElementById('charCount');
+            const wordCount = document.getElementById('wordCount');
+            const lineCount = document.getElementById('lineCount');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
             
             // API configuration
-            const API_KEY = 'K89185730788957'; // Replace with your actual API key
+            let API_KEY = localStorage.getItem('ocrApiKey') || '';
             const API_URL = 'https://api.ocr.space/parse/image';
+            
+            // Initialize
+            apiKeyInput.value = API_KEY;
+            updateStats();
             
             // Event listeners
             browseBtn.addEventListener('click', () => fileInput.click());
             
             fileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    handleFileSelection(this.files[0]);
+                if (this.files && this.files.length > 0) {
+                    handleFileSelection(this.files);
                 }
             });
             
@@ -378,50 +727,206 @@
                 e.preventDefault();
                 uploadArea.classList.remove('active');
                 
-                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    handleFileSelection(e.dataTransfer.files[0]);
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleFileSelection(e.dataTransfer.files);
                 }
             });
             
             extractBtn.addEventListener('click', performOCR);
+            saveApiKeyBtn.addEventListener('click', saveApiKey);
+            copyBtn.addEventListener('click', copyText);
+            downloadBtn.addEventListener('click', downloadText);
+            clearAllBtn.addEventListener('click', clearAll);
+            clearHistoryBtn.addEventListener('click', clearHistory);
             
-            function handleFileSelection(file) {
-                // Validate file type
+            resultBox.addEventListener('input', updateStats);
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tabId + 'Tab').classList.add('active');
+                });
+            });
+            
+            function handleFileSelection(files) {
+                // Validate files
                 const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/tiff', 'application/pdf'];
-                if (!validTypes.includes(file.type)) {
-                    showError('Please select a valid image file (JPG, PNG, GIF, BMP, TIFF) or PDF.');
+                const validFiles = [];
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    if (!validTypes.includes(file.type)) {
+                        showError(`File "${file.name}" is not a supported format.`);
+                        continue;
+                    }
+                    
+                    if (file.size > 10 * 1024 * 1024) {
+                        showError(`File "${file.name}" exceeds 10MB limit.`);
+                        continue;
+                    }
+                    
+                    validFiles.push(file);
+                }
+                
+                if (validFiles.length === 0) {
+                    showError('No valid files selected.');
                     return;
                 }
                 
-                // Validate file size (max 10MB for free API)
-                if (file.size > 10 * 1024 * 1024) {
-                    showError('File size exceeds 10MB limit. Please choose a smaller file.');
-                    return;
-                }
-                
-                // Display image preview for image files
-                if (file.type.startsWith('image/')) {
+                // Display first image preview
+                if (validFiles[0].type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         imagePreview.src = e.target.result;
                         imagePreview.style.display = 'block';
+                        noPreview.style.display = 'none';
                     };
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(validFiles[0]);
                 } else {
-                    // For PDF files, show a placeholder
-                    imagePreview.src = '';
                     imagePreview.style.display = 'none';
-                    resultBox.textContent = 'PDF file selected. Click "Extract Text" to process.';
+                    noPreview.style.display = 'block';
+                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10px;"></i><p>PDF file selected</p>';
+                }
+                
+                // Display file list if multiple files
+                if (validFiles.length > 1) {
+                    fileList.style.display = 'block';
+                    fileItems.innerHTML = '';
+                    
+                    validFiles.forEach((file, index) => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-actions">
+                                <button class="file-action-btn preview-file" data-index="${index}">
+                                    <i class="fas fa <i class="fas fa-eye"></i>
+                                </-eye"></i>
+                                </button>
+                                <button classbutton>
+                                <button class="file-action-btn remove-file="file-action-btn remove-file" data" data-index="${index}">
+                                    <i class-index="${index}">
+                                    <i class="fas fa-times"></="fas fa-times"></i>
+                                </button>
+                            </div>
+                       i>
+                                </button>
+                            </div>
+                        `;
+                        fileItems `;
+                        fileItems.appendChild(fileItem);
+                    });
+                    
+                   .appendChild(fileItem);
+                    });
+                    
+                    // Add event listeners for file actions
+ // Add event listeners for file actions
+                    document.querySelectorAll                    document.querySelectorAll('.pre('.preview-file').forEachview-file').forEach(btn(btn => {
+                        btn => {
+                        btn.addEventListener.addEventListener('click', function()('click', function() {
+                            const {
+                            const index = parseInt index = parseInt(this.getAttribute('(this.getAttribute('data-indexdata-index'));
+                            previewFile'));
+                            previewFile(validFiles(validFiles[index]);
+                       [index]);
+                        });
+                    });
+ });
+                    });
+                    
+                    document                    
+                    document.querySelectorAll('..querySelectorAll('.remove-fileremove-file').forEach(btn').forEach(btn => {
+                        => {
+                        btn.addEventListener(' btn.addEventListener('click', functionclick', function() {
+() {
+                            const index =                            const index = parseInt(this.getAttribute parseInt(this.getAttribute('data('data-index'));
+                            valid-index'));
+                            validFiles.sFiles.splice(index, plice(index, 1);
+1);
+                            handleFileSelection                            handleFileSelection(validFiles);
+                        });
+                    });
+(validFiles);
+                        });
+                } else {
+                    file                    });
+                } else {
+                    fileList.style.display = 'none';
+                }
+                
+                // Enable the extract buttonList.style.display = 'none';
                 }
                 
                 // Enable the extract button
+                extract
                 extractBtn.disabled = false;
                 hideMessages();
             }
             
+            function previewFile(file) {
+                if (file.type.startsWith('image/')) {
+                    const reader =Btn.disabled = false;
+                hideMessages();
+            }
+            
+            function previewFile(file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        noPreview.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                = 'block';
+                        noPreview.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file } else {
+                    imagePreview.style.display = 'none';
+                    noPreview.style.display = 'block';
+                    noPreview.innerHTML = '<i class="fas fa-file-p);
+                } else {
+                    imagePreview.style.display = 'none';
+                    noPreview.style.display = 'block';
+                    noPreview.innerHTML = '<i class="fas fa-file-pdf" style="font-size: 48px; margin-bottom: 10df" style="font-size: 48px; margin-bottom: 10px;"></i><p>px;"></i><p>PDFPDF file selected</p>';
+                }
+            }
+            
             async function performOCR() {
-                if (!fileInput.files[0]) {
-                    showError('Please select a file first.');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    showError('Please select at least one file first.');
+                    return;
+                }
+                
+ file selected</p>';
+                }
+            }
+            
+            async function performOCR() {
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    showError('Please select at least one file first.');
+                    return;
+                }
+                if (!API_KEY) {
+                    showError('Please enter your OCR.space API key.');
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingIndicator.style.display =                
+                if (!API_KEY) {
+                    showError('Please enter your OCR.space API key.');
                     return;
                 }
                 
@@ -429,71 +934,426 @@
                 loadingIndicator.style.display = 'block';
                 extractBtn.disabled = true;
                 hideMessages();
-                resultBox.textContent = 'Processing...';
+                resultBox.textContent 'block';
+                extractBtn.disabled = true;
+                hideMessages();
+                resultBox = 'Processing...';
                 
                 try {
-                    // Prepare form data
-                    const formData = new FormData();
-                    formData.append('apikey', API_KEY);
-                    formData.append('file', fileInput.files[0]);
-                    formData.append('language', document.getElementById('language').value);
-                    formData.append('OCREngine', document.getElementById('ocrEngine').value);
-                    formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
-                    formData.append('isTable', document.getElementById('isTable').checked);
-                    formData.append('isOverlayRequired', false);
+                    const files = Array.from(fileInput.files);
+                    let allResults = '';
                     
-                    // Make API request
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
+                    for (let i = 0; i < files.length; i++).textContent = 'Processing...';
+                
+                try {
+                    const files = Array.from(fileInput.files);
+                    let allResults = '';
                     
-                    const data = await response.json();
-                    
-                    // Process response
-                    if (data.IsErroredOnProcessing) {
-                        throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
-                    }
-                    
-                    if (data.ParsedResults && data.ParsedResults.length > 0) {
-                        const parsedResult = data.ParsedResults[0];
+                    for (let i = 0; i < files {
+                        const file = files[i];
+                        const progress = ((i + 1) / files.length) * 100;
+                        progressBar.style.width = `${progress}%`;
                         
-                        if (parsedResult.ParsedText) {
-                            resultBox.textContent = parsedResult.ParsedText;
-                            showSuccess('Text extracted successfully!');
-                        } else {
-                            throw new Error('No text was found in the image.');
+                        // Prepare form data
+                        const formData.length; i++) {
+                        const file = files[i];
+                        const progress = ((i + 1) / files.length) * 100;
+                        progressBar.style.width = `${progress}%`;
+                        
+                        // Prepare form data
+ = new FormData();
+                        formData.append('apikey', API_KEY);
+                        formData.append('file', file);
+                        formData.append('language', document.getElementById('language').value);
+                        formData.append                        const formData = new FormData();
+                        formData.append('apikey', API_KEY);
+                        formData.append('file', file);
+                        formData.append('language', document.getElementById('language').value);
+                        form('OCREngine', document.getElementById('ocrEngine').value);
+                        formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
+                        formData.append('OCREngine', document.getElementById('ocrEngine').value);
+                        formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
+Data.append('isTable', document.getElementById('isTable').checked);
+                        formData.append('isOverlayRequired', document.getElementById('is                        formData.append('isTable', document.getElementById('isTable').checked);
+                        formData.append('isOverlayRequired', document.getElementById('isOverOverlayRequired').layRequired').checked);
+                        
+                        // Make API request
+                        const response =checked);
+                        
+                        // Make API request
+                        const response = await fetch await fetch(API_URL, {
+(API_URL, {
+                            method: 'POST',
+                            body                            method: 'POST',
+: formData
+                        });
+                            body: formData
+                                               
+                        const data = await });
+                        
+                        const data = response.json();
+                        
+                        // await response.json();
+                        
+ Process response
+                        if (                        // Process response
+                        ifdata.IsErroredOnProcessing (data.IsErroredOnProcessing) {
+) {
+                            throw new Error(data.ErrorMessage || '                            throw new Error(data.ErrorMessage || 'An error occurred during OCR processingAn error occurred during OCR.');
                         }
-                    } else {
-                        throw new Error('No results returned from OCR API.');
+                        
+                        if processing.');
+                        }
+                        
+                        if (data.ParsedResults (data.ParsedResults && data.ParsedResults.length && data.ParsedResults > 0) {
+                            const.length > 0) {
+                            const parsedResult = data parsedResult = data.Pars.ParsedResults[0edResults[0];
+                ];
+                            
+                            if (            
+                            if (parparsedResult.ParsedsedResult.ParsedText)Text) {
+                                if ( {
+                                if (files.lengthfiles.length > 1) > 1) {
+                                    allResults += ` {
+                                    allResults += `=== ${=== ${file.name} ===\file.name} ===\n\n${parsedResult.Pn\n${parsedResult.ParsedText}\narsedText}\n\n`;
+\n`;
+                                } else {
+                                                                   } else {
+                                    allResults = parsed allResults = parsedResult.ParsResult.ParsedText;
+                                }
+                                
+                                // SaveedText;
+                                }
+                                
+                                // Save to history to history
+                                saveToHistory(file.name, parsedResult.P
+                                saveToHistory(file.name, parsedResult.ParsedText);
+                            }arsedText);
+                            } else {
+ else {
+                                throw new Error                                throw new Error('No('No text was found in text was found in the image the image.');
+                            }
+                       .');
+                            }
+                        } else } else {
+                            throw new Error('No results returned from {
+                            throw new Error('No results returned from OCR API.');
+ OCR API.');
+                        }
+                                           }
                     }
-                } catch (error) {
-                    console.error('OCR Error:', error);
+                    
+                    result }
+                    
+                    resultBox.textBox.textContent = allResultsContent = allResults;
+                   ;
+                    showSuccess(` showSuccess(`Text extractedText extracted successfully from successfully from ${files.length} file(s)!`);
+ ${files.length} file(s)!`);
+                    updateStats();
+                    
+                                   updateStats();
+                    
+                } catch } catch ( (error) {
+                    consoleerror) {
+                    console.error('OCR.error('OCR Error:', error Error:', error);
+);
                     showError('OCR processing failed: ' + error.message);
-                    resultBox.textContent = 'Error occurred during text extraction.';
+                    resultBox.textContent = '                    showError('OCR processing failed: ' + error.message);
+                    resultBox.textContent = 'Error occurred during textError occurred during text extraction.';
+ extraction.';
                 } finally {
-                    loadingIndicator.style.display = 'none';
-                    extractBtn.disabled = false;
+                    loadingIndicator.style.display                } finally {
+                    loadingIndicator.style.display = 'none = 'none';
+                    extractBtn';
+                    extractBtn.disabled.disabled = false;
+                    = false;
+                    progressBar progressBar.style.width = '0%';
+                }
+           .style.width = '0%';
                 }
             }
             
+ }
+            
+            function saveApi            function saveApiKey() {
+Key() {
+                API_KEY = api                API_KEY = apiKeyKeyInput.value.trimInput.value.trim();
+                if (API_KEY) {
+                   ();
+                if (API_KEY) {
+                    localStorage.setItem('ocr localStorage.setItem('ocrApiKeyApiKey', API_KEY);
+', API_KEY);
+                    show                    showSuccess('API keySuccess('API key saved successfully saved successfully!');
+                }!');
+                } else {
+                    showError(' else {
+                    showError('Please enter a valid API key.');
+               Please enter a valid API key }
+            }
+            
+            function.');
+                }
+            }
+            
+ copyText() {
+                const            function copyText() {
+ text = resultBox.textContent                const text = resultBox.textContent;
+                if (text;
+                if (text && && text !== 'Your extracted text !== 'Your extracted text text will appear here...') {
+ will appear here...') {
+                    navigator.clipboard                    navigator.clipboard.writeText(text)
+                        ..writeText(text)
+                        .then(() => showSuccess('then(() => showSuccess('Text copied to clipboard!'))
+Text copied to clipboard!'))
+                        .catch(err => showError('Failed to copy text                        .catch(err => showError('Failed to copy text: ' + err: ' + err));
+               ));
+                } else {
+                    } else {
+                    showError showError('No text to('No text to copy.');
+ copy.');
+                }
+            }
+            
+            function download                }
+            }
+            
+            function downloadText() {
+               Text() {
+                const text = const text = resultBox.text resultBox.textContent;
+                ifContent;
+                if (text && text !== 'Your extracted text (text && text !== 'Your extracted text will appear here will appear here...') {
+...') {
+                    const blob                    const blob = new Blob = new Blob([text([text], { type:], { type: 'text/plain 'text/plain' });
+' });
+                    const url                    const url = URL.createObjectURL(blob);
+ = URL.createObjectURL(bl                    const a = document.createElementob);
+                    const a =('a');
+                    a.h document.createElement('aref = url;
+                    a');
+                    a.href = url;
+                    a.download = 'extracted.download = 'extracted-text.txt-text.txt';
+                    document.body.appendChild(a';
+                   );
+                    a.click();
+                    document.body.removeChild(a);
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.remove URL.revokeObjectURL(url);
+                    showSuccess('Text downloaded successfully!');
+Child(a);
+                    URL.revokeObjectURL(url);
+                    showSuccess('Text downloaded successfully!');
+                } else {
+                    show                } else {
+                    showError('No text to download.');
+               Error('No text to download }
+            }
+            
+            function clearAll.');
+                }
+            }
+            
+() {
+                fileInput.value            function clearAll() {
+                fileInput.value = '';
+                image = '';
+                imagePreview.stylePreview.style.display = 'none.display = 'none';
+               ';
+                noPreview.style.display noPreview.style.display = 'block';
+                noPreview.innerHTML = 'block';
+                no = '<i class="fasPreview.innerHTML = '<i class="fas fa-image" style fa-image" style="font-size: ="font-size: 48px;48px; margin-bottom:  margin-bottom: 10px10px;"></i><p;"></i><p>Image preview will appear here</p>Image preview will appear here>';
+                file</p>';
+                fileList.style.display =List.style.display = 'none 'none';
+                resultBox';
+                resultBox.textContent =.textContent = 'Your extracted text 'Your extracted text will appear here...';
+                extractBtn will appear here...';
+               .disabled = true;
+                extractBtn.disabled = true;
+                hideMessages();
+                update hideMessages();
+                updateStatsStats();
+            }
+            
+           ();
+            }
+            
+            function clear function clearHistory() {
+               History() {
+                localStorage.removeItem('ocrHistory');
+                localStorage.removeItem('ocr document.getElementById('historyList').History');
+                document.getElementById('historyList').innerHTMLinnerHTML = 
+                    '<p style = 
+                    '<p style="text-align:="text-align: center; color: center; color: #999; padding: 20px #999; padding: 20px;">Your OCR history will appear here;">Your OCR history will appear</p>';
+                showSuccess(' here</p>';
+                showHistory cleared!');
+            }
+            
+            function updateStats()Success('History cleared!');
+            }
+            
+            function updateStats() {
+                const text {
+                const text = resultBox.textContent;
+                const = resultBox.textContent;
+                const chars = text.length;
+ chars = text.length;
+                const words = text.trim                const words = text.trim() ? text.trim().split() ? text.trim().split(/\s+/).length : 0;
+                const(/\s+/).length : 0;
+                const lines = text.trim() ? lines = text.trim() ? text.split('\n').length text.split('\n').length : 0;
+                
+                charCount.textContent = chars : 0;
+                
+                charCount.textContent =;
+                wordCount.textContent chars;
+                wordCount.textContent = words;
+                = words;
+                line lineCount.textContent = lines;
+            }
+            
+            function saveToCount.textContent = lines;
+            }
+            
+            function saveToHistoryHistory(filename, text(filename, text) {
+                const history = JSON) {
+                const history = JSON.parse(localStorage.getItem('ocrHistory').parse(localStorage.getItem('ocrHistory || '[]');
+                const') || '[]');
+                const historyItem = {
+                    historyItem = {
+                    id: Date.now(),
+                    id: Date.now(),
+                    filename: filename,
+                    text filename: filename,
+                    text: text,
+                    timestamp:: text,
+                    timestamp: new Date().toLocaleString new Date().toLocaleString()
+                };
+                
+                history()
+                };
+                
+                history.unshift(historyItem);
+                if.unshift(historyItem (history.length > 10);
+                if (history.length >) history.pop(); // Keep 10) history.pop(); only last 10 items
+ // Keep only last 10 items
+                
+                               
+                localStorage.setItem('ocrHistory', JSON localStorage.setItem('ocrHistory', JSON.stringify(.stringify(history));
+                updatehistory));
+                updateHistoryDisplay();
+            }
+            
+            functionHistoryDisplay();
+            }
+            
+            function updateHistoryDisplay() {
+                const history = JSON.parse(localStorage.getItem(' updateHistoryDisplay() {
+                const history = JSON.parse(localStorage.getItem('ocrHistory') || '[]ocrHistory') || '[]');
+');
+                const historyList =                const historyList = document document.getElementById('historyList');
+.getElementById('historyList');
+                
+                               
+                if (history.length === 0) {
+                    if (history.length === 0) {
+                    historyList historyList.innerHTML = 
+.innerHTML = 
+                                               '<p style="text '<p style="text-align:-align: center; color: #999; padding:  center; color: #999; padding: 20px;">20px;">Your OCR history will appearYour OCR history will appear here</p>';
+                    return here</p>';
+                    return;
+               ;
+                }
+                
+                history }
+                
+                historyList.innerHTMLList.innerHTML = '';
+                history = '';
+                history.forEach(item => {
+                    const history.forEach(item => {
+                   Item = document.createElement('div const historyItem = document.createElement('div');
+                    historyItem');
+                    historyItem.className = 'history-item';
+                   .className = 'history-item';
+                    historyItem.innerHTML = historyItem.innerHTML = `
+                        `
+                        <div style=" <div style="font-weightfont-weight: 600;">${item.filename}</div>
+                        <div class="history-p: 600;">${item.filename}</div>
+                        <div class="history-preview">${item.text.substring(0, 100)}review">${item.text.substring(0, 100)}${item.text.length > 100 ? '...'${item.text.length > 100 ? '...' : ''}</div>
+                        <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${item.timestamp}</div>
+                    `;
+                    
+                    historyItem.addEventListener : ''}</div>
+                        <div style="font-size: 0.8rem; color: #999; margin-top: 5px;">${item.timestamp}</div>
+                    `;
+                    
+                    historyItem('click', () => {
+                        resultBox.textContent = item.text;
+                        updateStats();
+                        // Switch to result tab
+                        tabs.forEach.addEventListener('click', () => {
+                        resultBox.textContent = item.text;
+                        updateStats();
+                        // Switch to result tab
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tabContents.forEach(c =>(t => t.classList.remove('active'));
+                        tabContents.forEach(c => c.classList.remove('active'));
+ c.classList.remove('active'));
+                        document.querySelector('[data-tab="result"]').class                        document.querySelector('[data-tab="result"]').classList.add('activeList.add('active');
+                        document.getElementById('resultTab').');
+                        document.getElementById('resultTab').classListclassList.add('active');
+                    });
+                    
+                    historyList.add('active');
+                    });
+                    
+                    historyList.appendChild(historyItem);
+.appendChild(historyItem);
+                               });
+            }
+            
+            });
+            }
+            
             function showError(message) {
+                error function showError(message) {
+Message.textContent = message;
                 errorMessage.textContent = message;
-                errorMessage.style.display = 'block';
-                successMessage.style.display = 'none';
+                errorMessage.style                errorMessage.style.display =.display = 'block';
+                'block';
+                successMessage successMessage.style.display = '.style.display = 'none';
+            }
+none';
             }
             
             function showSuccess(message) {
-                successMessage.textContent = message;
+                success            
+            function showSuccess(message) {
+                successMessage.textContent = messageMessage.textContent = message;
+                successMessage.style.display =;
                 successMessage.style.display = 'block';
                 errorMessage.style.display = 'none';
             }
             
-            function hideMessages() {
+            'block';
                 errorMessage.style.display = 'none';
-                successMessage.style.display = 'none';
             }
+            
+            function hideMessages() function hideMessages() {
+                errorMessage {
+               .style.display = 'none errorMessage.style.display = 'none';
+                successMessage.style.display';
+                successMessage.style.display = 'none = 'none';
+            }
+            
+';
+            }
+            
+                       // Initialize history display
+ // Initialize history display
+            updateHistoryDisplay();
+        });
+               updateHistoryDisplay();
         });
     </script>
-</body>
+</ </script>
+</bodybody>
 </html>
