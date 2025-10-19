@@ -1,57 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OCR Test</title>
-<style>
-body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-#output { margin-top: 20px; border: 1px solid #ccc; padding: 10px; min-height: 100px; width: 100%; max-width: 500px; white-space: pre-wrap; }
-button { margin-top: 10px; padding: 10px 20px; background: goldenrod; color: white; border: none; border-radius: 5px; cursor: pointer; }
-button:hover { background: darkgoldenrod; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Image to Text Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #4a6ee0, #6a11cb);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            padding: 25px;
+        }
+
+        .upload-area {
+            border: 2px dashed #c4c4c4;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+        .upload-area:hover, .upload-area.active {
+            border-color: #6a11cb;
+            background-color: #f0f0ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #6a11cb;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #4a6ee0, #6a11cb);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .image-preview {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .ocr-options {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .ocr-options h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .result-container {
+            margin-top: 25px;
+        }
+
+        .result-container h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .result-box {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6a11cb;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background-color: #fdf0ed;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            background-color: #eafaf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .preview-container {
+                flex-direction: column;
+            }
+            
+            .image-preview {
+                min-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>OCR Image to Text Converter</h1>
+            <p>Upload an image and extract text using OCR.space API</p>
+        </header>
 
-<h2>Test OCR (English + Arabic + Numbers)</h2>
-<input type="file" id="fileInput" accept="image/*">
-<button onclick="performOCR()">Extract Text</button>
-<pre id="output">Result will appear here...</pre>
+        <div class="main-content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <p class="upload-text">Drag & drop your image here or click to browse</p>
+                <p class="upload-text">Supported formats: JPG, PNG, GIF, BMP, TIFF, PDF</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf">
+                <button class="btn" id="browseBtn">Browse Files</button>
+            </div>
 
-<script>
-async function performOCR() {
-  const file = document.getElementById('fileInput').files[0];
-  if (!file) {
-    alert('Please select an image first.');
-    return;
-  }
+            <div class="preview-container">
+                <div class="image-preview">
+                    <img id="imagePreview" src="" alt="Image preview" style="display: none;">
+                </div>
+            </div>
 
-  const output = document.getElementById('output');
-  output.textContent = 'Processing...';
+            <div class="ocr-options">
+                <h3>OCR Settings</h3>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language" class="form-control">
+                        <option value="eng">English</option>
+                        <option value="ara">Arabic</option>
+                        <option value="bul">Bulgarian</option>
+                        <option value="chs">Chinese (Simplified)</option>
+                        <option value="cht">Chinese (Traditional)</option>
+                        <option value="hrv">Croatian</option>
+                        <option value="cze">Czech</option>
+                        <option value="dan">Danish</option>
+                        <option value="dut">Dutch</option>
+                        <option value="fin">Finnish</option>
+                        <option value="fre">French</option>
+                        <option value="ger">German</option>
+                        <option value="gre">Greek</option>
+                        <option value="hun">Hungarian</option>
+                        <option value="ita">Italian</option>
+                        <option value="jpn">Japanese</option>
+                        <option value="kor">Korean</option>
+                        <option value="pol">Polish</option>
+                        <option value="por">Portuguese</option>
+                        <option value="rus">Russian</option>
+                        <option value="slv">Slovenian</option>
+                        <option value="spa">Spanish</option>
+                        <option value="swe">Swedish</option>
+                        <option value="tha">Thai</option>
+                        <option value="tur">Turkish</option>
+                        <option value="ukr">Ukrainian</option>
+                        <option value="vnm">Vietnamese</option>
+                        <option value="auto">Auto-detect (Engine 2 only)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ocrEngine">OCR Engine</label>
+                    <select id="ocrEngine" class="form-control">
+                        <option value="1">Engine 1 (Default, faster)</option>
+                        <option value="2">Engine 2 (Better for special characters)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="detectOrientation">
+                        Detect Text Orientation
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isTable">
+                        Optimize for Tables/Receipts
+                    </label>
+                </div>
+            </div>
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("language", "eng+ara");
-  formData.append("isOverlayRequired", "false");
+            <button class="btn" id="extractBtn" disabled>Extract Text</button>
 
-  try {
-    const res = await fetch("https://api.ocr.space/parse/image", {
-      method: "POST",
-      headers: { apikey: "K89185730788957" }, // replace with your OCR.Space key
-      body: formData
-    });
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Processing your image... This may take a few seconds.</p>
+            </div>
 
-    const data = await res.json();
-    if (data.ParsedResults && data.ParsedResults.length > 0) {
-      output.textContent = data.ParsedResults[0].ParsedText || 'No text found.';
-    } else {
-      output.textContent = 'No text detected.';
-    }
-  } catch (err) {
-    output.textContent = 'Error: ' + err.message;
-  }
-}
-</script>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
 
+            <div class="result-container">
+                <h3>Extracted Text</h3>
+                <div class="result-box" id="resultBox">
+                    Your extracted text will appear here...
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by OCR.space API | Note: You'll need to add your own API key</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const imagePreview = document.getElementById('imagePreview');
+            const extractBtn = document.getElementById('extractBtn');
+            const resultBox = document.getElementById('resultBox');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // API configuration
+            const API_KEY = 'K89185730788957'; // Replace with your actual API key
+            const API_URL = 'https://api.ocr.space/parse/image';
+            
+            // Event listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    handleFileSelection(this.files[0]);
+                }
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('active');
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('active');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('active');
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFileSelection(e.dataTransfer.files[0]);
+                }
+            });
+            
+            extractBtn.addEventListener('click', performOCR);
+            
+            function handleFileSelection(file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/tiff', 'application/pdf'];
+                if (!validTypes.includes(file.type)) {
+                    showError('Please select a valid image file (JPG, PNG, GIF, BMP, TIFF) or PDF.');
+                    return;
+                }
+                
+                // Validate file size (max 10MB for free API)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                    return;
+                }
+                
+                // Display image preview for image files
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // For PDF files, show a placeholder
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                    resultBox.textContent = 'PDF file selected. Click "Extract Text" to process.';
+                }
+                
+                // Enable the extract button
+                extractBtn.disabled = false;
+                hideMessages();
+            }
+            
+            async function performOCR() {
+                if (!fileInput.files[0]) {
+                    showError('Please select a file first.');
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                extractBtn.disabled = true;
+                hideMessages();
+                resultBox.textContent = 'Processing...';
+                
+                try {
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('apikey', API_KEY);
+                    formData.append('file', fileInput.files[0]);
+                    formData.append('language', document.getElementById('language').value);
+                    formData.append('OCREngine', document.getElementById('ocrEngine').value);
+                    formData.append('detectOrientation', document.getElementById('detectOrientation').checked);
+                    formData.append('isTable', document.getElementById('isTable').checked);
+                    formData.append('isOverlayRequired', false);
+                    
+                    // Make API request
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Process response
+                    if (data.IsErroredOnProcessing) {
+                        throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
+                    }
+                    
+                    if (data.ParsedResults && data.ParsedResults.length > 0) {
+                        const parsedResult = data.ParsedResults[0];
+                        
+                        if (parsedResult.ParsedText) {
+                            resultBox.textContent = parsedResult.ParsedText;
+                            showSuccess('Text extracted successfully!');
+                        } else {
+                            throw new Error('No text was found in the image.');
+                        }
+                    } else {
+                        throw new Error('No results returned from OCR API.');
+                    }
+                } catch (error) {
+                    console.error('OCR Error:', error);
+                    showError('OCR processing failed: ' + error.message);
+                    resultBox.textContent = 'Error occurred during text extraction.';
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                    extractBtn.disabled = false;
+                }
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+            
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+            
+            function hideMessages() {
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
