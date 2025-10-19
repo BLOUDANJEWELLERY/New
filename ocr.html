@@ -65,6 +65,27 @@
             font-size: 1.1rem;
         }
 
+        .api-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffc107;
+        }
+
+        .status-indicator.connected {
+            background: #28a745;
+        }
+
         .main-content {
             padding: 25px;
             display: grid;
@@ -346,6 +367,12 @@
             border: 1px solid #d4efdf;
         }
 
+        .info-message {
+            color: #31708f;
+            background-color: #d9edf7;
+            border: 1px solid #bce8f1;
+        }
+
         .stats {
             display: flex;
             justify-content: space-between;
@@ -440,6 +467,14 @@
             display: block;
         }
 
+        .test-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 padding: 15px;
@@ -490,6 +525,10 @@
         <header>
             <h1><i class="fas fa-table"></i> Table OCR Data Extractor</h1>
             <p>Upload table images and extract structured data</p>
+            <div class="api-status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Checking API status...</span>
+            </div>
         </header>
 
         <div class="main-content">
@@ -563,6 +602,13 @@
 
                     <div class="message error-message" id="errorMessage"></div>
                     <div class="message success-message" id="successMessage"></div>
+                    <div class="message info-message" id="infoMessage"></div>
+
+                    <div class="test-section">
+                        <h3><i class="fas fa-vial"></i> Test OCR Functionality</h3>
+                        <p>If OCR is not working, try this test image:</p>
+                        <button class="btn btn-outline" id="testBtn"><i class="fas fa-play-circle"></i> Test with Sample Image</button>
+                    </div>
                 </div>
             </div>
 
@@ -663,12 +709,16 @@
             const loadingIndicator = document.getElementById('loadingIndicator');
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
+            const infoMessage = document.getElementById('infoMessage');
             const progressBar = document.getElementById('progressBar');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const copyDataBtn = document.getElementById('copyDataBtn');
             const downloadDataBtn = document.getElementById('downloadDataBtn');
             const clearAllBtn = document.getElementById('clearAllBtn');
+            const testBtn = document.getElementById('testBtn');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
             const charCount = document.getElementById('charCount');
             const wordCount = document.getElementById('wordCount');
             const lineCount = document.getElementById('lineCount');
@@ -689,6 +739,7 @@
             
             // Initialize
             updateStats();
+            checkAPIStatus();
             
             // Event listeners
             browseBtn.addEventListener('click', () => fileInput.click());
@@ -724,6 +775,7 @@
             copyDataBtn.addEventListener('click', copyData);
             downloadDataBtn.addEventListener('click', downloadData);
             clearAllBtn.addEventListener('click', clearAll);
+            testBtn.addEventListener('click', testOCR);
             
             resultBox.addEventListener('input', updateStats);
             
@@ -739,6 +791,25 @@
                     document.getElementById(tabId + 'Tab').classList.add('active');
                 });
             });
+            
+            async function checkAPIStatus() {
+                try {
+                    // Try a simple request to check if API is accessible
+                    const testResponse = await fetch('https://api.ocr.space/parse/image', {
+                        method: 'OPTIONS'
+                    });
+                    
+                    if (testResponse.ok) {
+                        statusIndicator.classList.add('connected');
+                        statusText.textContent = 'API is accessible';
+                    } else {
+                        statusText.textContent = 'API might be having issues';
+                    }
+                } catch (error) {
+                    statusText.textContent = 'Cannot reach OCR API';
+                    showInfo('Warning: Cannot connect to OCR API. This might be a network issue.');
+                }
+            }
             
             function handleFileSelection(file) {
                 // Validate file
@@ -793,17 +864,37 @@
                     formData.append('isTable', document.getElementById('isTable').checked);
                     formData.append('isOverlayRequired', false);
                     
+                    // Add timeout to the fetch request
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                    
                     // Make API request
                     const response = await fetch(API_URL, {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        signal: controller.signal
                     });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     
                     const data = await response.json();
                     
                     // Process response
                     if (data.IsErroredOnProcessing) {
-                        throw new Error(data.ErrorMessage || 'An error occurred during OCR processing.');
+                        let errorMsg = data.ErrorMessage || 'An error occurred during OCR processing.';
+                        
+                        // Provide more specific error messages
+                        if (errorMsg.includes('load failed') || errorMsg.includes('file')) {
+                            errorMsg = 'Failed to process the image file. Please check if the file is valid and try again.';
+                        } else if (errorMsg.includes('key') || errorMsg.includes('API')) {
+                            errorMsg = 'API key issue. Please check if your API key is valid.';
+                        }
+                        
+                        throw new Error(errorMsg);
                     }
                     
                     if (data.ParsedResults && data.ParsedResults.length > 0) {
@@ -831,11 +922,75 @@
                     }
                 } catch (error) {
                     console.error('OCR Error:', error);
-                    showError('OCR processing failed: ' + error.message);
+                    
+                    let userFriendlyError = 'OCR processing failed: ' + error.message;
+                    
+                    if (error.name === 'AbortError') {
+                        userFriendlyError = 'Request timed out. Please try again with a smaller image or check your internet connection.';
+                    } else if (error.message.includes('Failed to fetch')) {
+                        userFriendlyError = 'Network error. Please check your internet connection and try again.';
+                    }
+                    
+                    showError(userFriendlyError);
                     resultBox.textContent = 'Error occurred during text extraction.';
                 } finally {
                     loadingIndicator.style.display = 'none';
                     extractBtn.disabled = false;
+                }
+            }
+            
+            async function testOCR() {
+                // Use a sample image URL for testing
+                const sampleImageUrl = 'https://dl.a9t9.com/ocr/solarcell.jpg';
+                
+                showInfo('Testing OCR with sample image...');
+                loadingIndicator.style.display = 'block';
+                
+                try {
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('apikey', API_KEY);
+                    formData.append('url', sampleImageUrl);
+                    formData.append('language', 'eng');
+                    formData.append('OCREngine', '1');
+                    formData.append('isOverlayRequired', false);
+                    
+                    // Make API request
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.IsErroredOnProcessing) {
+                        throw new Error(data.ErrorMessage || 'Test failed');
+                    }
+                    
+                    if (data.ParsedResults && data.ParsedResults.length > 0) {
+                        const parsedResult = data.ParsedResults[0];
+                        
+                        if (parsedResult.ParsedText) {
+                            resultBox.textContent = "OCR Test Successful!\n\n" + parsedResult.ParsedText;
+                            showSuccess('OCR test completed successfully! API is working correctly.');
+                            updateStats();
+                            
+                            // Update API status
+                            statusIndicator.classList.add('connected');
+                            statusText.textContent = 'API is working correctly';
+                            
+                        } else {
+                            throw new Error('No text found in test image');
+                        }
+                    } else {
+                        throw new Error('No results from test');
+                    }
+                } catch (error) {
+                    console.error('Test Error:', error);
+                    showError('OCR test failed: ' + error.message);
+                    resultBox.textContent = 'OCR test failed. Please check your API key and internet connection.';
+                } finally {
+                    loadingIndicator.style.display = 'none';
                 }
             }
             
@@ -997,17 +1152,27 @@
                 errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
+                infoMessage.style.display = 'none';
             }
             
             function showSuccess(message) {
                 successMessage.textContent = message;
                 successMessage.style.display = 'block';
                 errorMessage.style.display = 'none';
+                infoMessage.style.display = 'none';
+            }
+            
+            function showInfo(message) {
+                infoMessage.textContent = message;
+                infoMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
             }
             
             function hideMessages() {
                 errorMessage.style.display = 'none';
                 successMessage.style.display = 'none';
+                infoMessage.style.display = 'none';
             }
         });
     </script>
