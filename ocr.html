@@ -848,72 +848,45 @@
                 netWeightValue.textContent = '-';
                 amountValue.textContent = '-';
                 
-                // Split text into lines
-                const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                // Split text into lines and clean them
+                const lines = text.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
                 
-                // Look for patterns in the text
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].toLowerCase();
-                    
-                    // Look for description (text field, usually at the beginning)
-                    if (i === 0 && !containsNumber(line) && line.length > 3) {
-                        descriptionValue.textContent = lines[i];
-                    }
-                    
-                    // Look for carat (number, might have "carat" in the text)
-                    if (line.includes('carat') || line.includes('ct') || line.includes('karat')) {
-                        // Try to extract number from this line or next line
-                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
-                        if (number) caratValue.textContent = number;
-                    }
-                    
-                    // Look for net weight (number, might have "net" or "weight" in the text)
-                    if (line.includes('net') || line.includes('weight')) {
-                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
-                        if (number) netWeightValue.textContent = number;
-                    }
-                    
-                    // Look for amount (number, might have "amount" or "total" in the text)
-                    if (line.includes('amount') || line.includes('total') || line.includes('price')) {
-                        const number = extractNumber(line) || (i < lines.length - 1 ? extractNumber(lines[i+1]) : null);
-                        if (number) amountValue.textContent = number;
-                    }
-                }
-                
-                // If we haven't found values, try to extract numbers in order
+                // Find all numbers in the text
                 const allNumbers = extractAllNumbers(text);
-                if (allNumbers.length >= 5) {
-                    if (caratValue.textContent === '-') caratValue.textContent = allNumbers[0];
-                    if (field1Value.textContent === '-') field1Value.textContent = allNumbers[1];
-                    if (field2Value.textContent === '-') field2Value.textContent = allNumbers[2];
-                    if (netWeightValue.textContent === '-') netWeightValue.textContent = allNumbers[3];
-                    if (amountValue.textContent === '-') amountValue.textContent = allNumbers[4];
+                
+                // If we have exactly 3 numbers, assign them according to your example
+                if (allNumbers.length >= 3) {
+                    // Based on your example: Carat: 763, Field2: 338.56, Net Weight: 258.58
+                    caratValue.textContent = allNumbers[0];
+                    field2Value.textContent = allNumbers[1];
+                    netWeightValue.textContent = allNumbers[2];
                 }
                 
-                // If description is still empty, use the first non-number line
-                if (descriptionValue.textContent === '-') {
-                    for (let line of lines) {
-                        if (!containsNumber(line) && line.length > 3) {
-                            descriptionValue.textContent = line;
-                            break;
-                        }
+                // Look for description (first text line that doesn't contain numbers)
+                for (let line of lines) {
+                    if (!containsNumber(line) && line.length > 3) {
+                        descriptionValue.textContent = line;
+                        break;
                     }
                 }
-            }
-            
-            function extractNumber(text) {
-                // Match numbers with optional decimal points
-                const match = text.match(/(\d+\.?\d*)/);
-                return match ? match[1] : null;
+                
+                // Look for field1 (if we have a fourth number)
+                if (allNumbers.length >= 4) {
+                    field1Value.textContent = allNumbers[3];
+                }
+                
+                // Look for amount (if we have a fifth number)
+                if (allNumbers.length >= 5) {
+                    amountValue.textContent = allNumbers[4];
+                }
             }
             
             function extractAllNumbers(text) {
-                const numbers = [];
-                const matches = text.matchAll(/(\d+\.?\d*)/g);
-                for (const match of matches) {
-                    numbers.push(match[1]);
-                }
-                return numbers;
+                // Match numbers with optional decimal points
+                const matches = text.match(/(\d+\.?\d*)/g);
+                return matches ? matches : [];
             }
             
             function containsNumber(text) {
