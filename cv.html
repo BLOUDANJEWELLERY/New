@@ -41,6 +41,9 @@
             color: white;
             padding: 30px 40px;
             position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
         
         .header::after {
@@ -51,6 +54,10 @@
             width: 100%;
             height: 5px;
             background: linear-gradient(90deg, #f9a825 0%, #ffd700 100%);
+        }
+        
+        .header-content {
+            flex: 1;
         }
         
         .name {
@@ -84,6 +91,43 @@
             color: #ffd700;
         }
         
+        /* Remove blue underline from phone number */
+        .contact-item a, .contact-item span {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Profile Picture */
+        .profile-pic-container {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+        
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+        }
+        
         /* Content Layout */
         .content {
             display: grid;
@@ -99,11 +143,14 @@
             background-color: #f8f9fa;
             padding: 30px 25px;
             border-left: 1px solid #eaeaea;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
         
         /* Section Styling */
         .section {
             margin-bottom: 30px;
+            page-break-inside: avoid;
         }
         
         .section-title {
@@ -208,7 +255,7 @@
         /* Decorative Elements */
         .airplane-icon {
             position: absolute;
-            right: 40px;
+            right: 180px;
             top: 30px;
             font-size: 60px;
             opacity: 0.2;
@@ -261,16 +308,36 @@
             body {
                 background-color: white;
                 padding: 0;
+                margin: 0;
             }
             
             .a4-container {
                 box-shadow: none;
                 margin: 0;
                 width: 100%;
+                height: 100%;
             }
             
             .download-container {
                 display: none;
+            }
+            
+            .sidebar {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            .skill-item {
+                background-color: #f0f8ff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            .footer {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
         
@@ -281,6 +348,15 @@
                 min-height: auto;
             }
             
+            .header {
+                flex-direction: column;
+            }
+            
+            .profile-pic-container {
+                align-self: center;
+                margin-top: 20px;
+            }
+            
             .content {
                 grid-template-columns: 1fr;
             }
@@ -288,6 +364,10 @@
             .sidebar {
                 border-left: none;
                 border-top: 1px solid #eaeaea;
+            }
+            
+            .airplane-icon {
+                display: none;
             }
         }
     </style>
@@ -297,25 +377,38 @@
         <!-- Header Section -->
         <div class="header">
             <i class="fas fa-plane airplane-icon"></i>
-            <h1 class="name">WALEED SHEERAZ</h1>
-            <div class="title">Prospective Cabin Crew Member</div>
             
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <span>+965-99782299</span>
+            <div class="header-content">
+                <h1 class="name">WALEED SHEERAZ</h1>
+                <div class="title">Prospective Cabin Crew Member</div>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+965-99782299</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>waleedsheeraz06@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-passport"></i>
+                        <span>Pakistani</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>30 October 2006</span>
+                    </div>
                 </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>waleedsheeraz06@gmail.com</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-passport"></i>
-                    <span>Pakistani</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-birthday-cake"></i>
-                    <span>30 October 2006</span>
+            </div>
+            
+            <!-- Profile Picture -->
+            <div class="profile-pic-container">
+                <img src="profile.jpg" alt="Waleed Sheeraz" class="profile-pic" id="profile-image" onerror="this.style.display='none'; document.getElementById('profile-placeholder').style.display='flex';">
+                <div class="profile-placeholder" id="profile-placeholder" style="display: none;">
+                    <i class="fas fa-user" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <div>Profile Picture</div>
+                    <div>(profile.jpg)</div>
                 </div>
             </div>
         </div>
@@ -433,6 +526,7 @@
         <button class="download-btn" id="download-pdf">
             <i class="fas fa-download"></i> Download as PDF (A4)
         </button>
+        <p style="margin-top: 10px; color: #666; font-size: 14px;">Make sure to save your profile picture as "profile.jpg" in the same folder as this HTML file</p>
     </div>
 
     <!-- Include jsPDF and html2canvas libraries -->
@@ -440,8 +534,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <script>
-        // PDF Download Functionality
-        document.getElementById('download-pdf').addEventListener('click', function() {
+        // PDF Download Functionality - Fixed version
+        document.getElementById('download-pdf').addEventListener('click', async function() {
             const cvElement = document.getElementById('cv-content');
             const button = this;
             
@@ -450,13 +544,58 @@
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
             button.disabled = true;
             
-            // Use html2canvas to capture the CV content
-            html2canvas(cvElement, {
-                scale: 2, // Higher quality
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            }).then(canvas => {
+            try {
+                // First, let's check if the profile image exists and load it if needed
+                const profileImg = document.getElementById('profile-image');
+                if (profileImg && profileImg.src) {
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.onload = resolve;
+                        img.onerror = () => {
+                            console.log('Profile image not found, using placeholder');
+                            resolve();
+                        };
+                        img.src = profileImg.src;
+                    });
+                }
+                
+                // Clone the element to avoid affecting the original
+                const clonedElement = cvElement.cloneNode(true);
+                
+                // Apply print styles to the clone
+                clonedElement.style.width = '210mm';
+                clonedElement.style.boxShadow = 'none';
+                
+                // Temporarily append to body for rendering
+                clonedElement.style.position = 'fixed';
+                clonedElement.style.left = '-9999px';
+                document.body.appendChild(clonedElement);
+                
+                // Use html2canvas with better settings for PDF
+                const canvas = await html2canvas(clonedElement, {
+                    scale: 3, // Higher resolution for better print quality
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    onclone: function(clonedDoc) {
+                        // Ensure all backgrounds are visible in the clone
+                        const sidebar = clonedDoc.querySelector('.sidebar');
+                        if (sidebar) sidebar.style.backgroundColor = '#f8f9fa';
+                        
+                        const skillItems = clonedDoc.querySelectorAll('.skill-item');
+                        skillItems.forEach(item => {
+                            item.style.backgroundColor = '#f0f8ff';
+                        });
+                        
+                        const footer = clonedDoc.querySelector('.footer');
+                        if (footer) footer.style.backgroundColor = '#f8f9fa';
+                    }
+                });
+                
+                // Remove the cloned element
+                document.body.removeChild(clonedElement);
+                
                 // Calculate dimensions for A4 paper
                 const imgWidth = 210; // A4 width in mm
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -472,18 +611,32 @@
                 // Save the PDF
                 pdf.save('Waleed_Sheeraz_Cabin_Crew_CV.pdf');
                 
-                // Restore button
-                button.innerHTML = originalText;
-                button.disabled = false;
-                
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('There was an error generating the PDF. Please try again.');
-                
+            } finally {
                 // Restore button
                 button.innerHTML = originalText;
                 button.disabled = false;
-            });
+            }
+        });
+        
+        // Check if profile image exists
+        window.addEventListener('load', function() {
+            const profileImg = document.getElementById('profile-image');
+            if (profileImg) {
+                // Test if the image loads successfully
+                profileImg.onerror = function() {
+                    this.style.display = 'none';
+                    document.getElementById('profile-placeholder').style.display = 'flex';
+                };
+                
+                // Check if image is already loaded but failed
+                if (profileImg.complete && profileImg.naturalHeight === 0) {
+                    profileImg.style.display = 'none';
+                    document.getElementById('profile-placeholder').style.display = 'flex';
+                }
+            }
         });
         
         // Print functionality as a fallback
