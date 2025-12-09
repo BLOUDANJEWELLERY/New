@@ -141,7 +141,7 @@
         
         .sidebar {
             background-color: #f8f9fa;
-            padding: 30px 25px;
+            padding: 30px 25px 25px 25px; /* Reduced bottom padding */
             border-left: 1px solid #eaeaea;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -149,7 +149,7 @@
         
         /* Section Styling */
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 25px; /* Reduced margin */
             page-break-inside: avoid;
         }
         
@@ -157,7 +157,7 @@
             color: #0056a6;
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Reduced margin */
             padding-bottom: 8px;
             border-bottom: 2px solid #ffd700;
             display: flex;
@@ -173,18 +173,19 @@
         .summary-text {
             text-align: justify;
             font-size: 15px;
+            line-height: 1.5;
         }
         
         /* Skills */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px; /* Reduced gap */
         }
         
         .skill-item {
             background-color: #f0f8ff;
-            padding: 10px 15px;
+            padding: 8px 12px; /* Reduced padding */
             border-radius: 4px;
             border-left: 4px solid #0056a6;
             font-size: 14px;
@@ -192,7 +193,7 @@
         
         /* Education */
         .education-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Reduced margin */
         }
         
         .education-year {
@@ -201,30 +202,30 @@
         }
         
         .education-details {
-            margin-top: 5px;
+            margin-top: 3px; /* Reduced margin */
             font-size: 14.5px;
         }
         
         /* Languages */
         .language-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Reduced margin */
         }
         
         .language-name {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 4px; /* Reduced margin */
             color: #333;
         }
         
         .language-level {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px; /* Reduced gap */
         }
         
         .level-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px; /* Smaller dots */
+            height: 10px; /* Smaller dots */
             border-radius: 50%;
             background-color: #ddd;
         }
@@ -236,12 +237,14 @@
         /* Personal Strengths */
         .strengths-list {
             list-style-type: none;
+            margin-bottom: 5px; /* Added margin to prevent cutoff */
         }
         
         .strengths-list li {
-            margin-bottom: 10px;
-            padding-left: 25px;
+            margin-bottom: 8px; /* Reduced margin */
+            padding-left: 22px; /* Reduced padding */
             position: relative;
+            font-size: 14.5px;
         }
         
         .strengths-list li:before {
@@ -265,9 +268,9 @@
         /* Footer */
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: 15px 20px; /* Reduced padding */
             color: #666;
-            font-size: 14px;
+            font-size: 13px; /* Slightly smaller font */
             border-top: 1px solid #eaeaea;
             background-color: #f8f9fa;
         }
@@ -471,7 +474,7 @@
                             <span class="level-dot filled"></span>
                             <span class="level-dot filled"></span>
                             <span class="level-dot filled"></span>
-                            <span style="margin-left: 10px;">Good</span>
+                            <span style="margin-left: 8px;">Good</span>
                         </div>
                     </div>
                     <div class="language-item">
@@ -482,7 +485,7 @@
                             <span class="level-dot filled"></span>
                             <span class="level-dot filled"></span>
                             <span class="level-dot filled"></span>
-                            <span style="margin-left: 10px;">Fluent</span>
+                            <span style="margin-left: 8px;">Fluent</span>
                         </div>
                     </div>
                     <div class="language-item">
@@ -493,7 +496,7 @@
                             <span class="level-dot filled"></span>
                             <span class="level-dot filled"></span>
                             <span class="level-dot"></span>
-                            <span style="margin-left: 10px;">Conversational</span>
+                            <span style="margin-left: 8px;">Conversational</span>
                         </div>
                     </div>
                     <div class="language-item">
@@ -504,13 +507,13 @@
                             <span class="level-dot filled"></span>
                             <span class="level-dot"></span>
                             <span class="level-dot"></span>
-                            <span style="margin-left: 10px;">Basic</span>
+                            <span style="margin-left: 8px;">Basic</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Personal Strengths -->
-                <div class="section">
+                <div class="section" style="margin-bottom: 15px;"> <!-- Reduced margin for last section -->
                     <h2 class="section-title">
                         <i class="fas fa-thumbs-up"></i> Personal Strengths
                     </h2>
@@ -520,7 +523,7 @@
                         <li>Positive presence</li>
                         <li>Strong work ethic</li>
                         <li>Good listener</li>
-                        <li>Motivated and energetic</li>
+                        <li style="margin-bottom: 2px;">Motivated and energetic</li> <!-- Reduced margin for last item -->
                     </ul>
                 </div>
             </div>
@@ -601,6 +604,18 @@
                         
                         const footer = clonedDoc.querySelector('.footer');
                         if (footer) footer.style.backgroundColor = '#f8f9fa';
+                        
+                        // Additional adjustments for PDF to prevent cutoff
+                        const strengthsList = clonedDoc.querySelector('.strengths-list');
+                        if (strengthsList) {
+                            strengthsList.style.paddingBottom = '5px';
+                        }
+                        
+                        // Adjust the last list item specifically
+                        const lastListItem = clonedDoc.querySelector('.strengths-list li:last-child');
+                        if (lastListItem) {
+                            lastListItem.style.marginBottom = '2px';
+                        }
                     }
                 });
                 
