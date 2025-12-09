@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waleed Sheeraz - Cabin Crew CV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Arial', 'Helvetica', sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 40px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        border-bottom: 4px solid #2563eb;
+        padding-bottom: 20px;
+        margin-bottom: 25px;
+    }
+
+    .header h1 {
+        font-size: 2.5em;
+        color: #1f2937;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .header .subtitle {
+        font-size: 1.3em;
+        color: #2563eb;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .contact-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        font-size: 0.9em;
+        color: #374151;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .contact-item svg {
+        width: 16px;
+        height: 16px;
+        color: #2563eb;
+    }
+
+    .section {
+        margin-bottom: 25px;
+    }
+
+    .section h2 {
+        font-size: 1.5em;
+        color: #1f2937;
+        font-weight: bold;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #d1d5db;
+        padding-bottom: 5px;
+    }
+
+    .section p {
+        color: #374151;
+        text-align: justify;
+        line-height: 1.7;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .skill-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: #374151;
+    }
+
+    .skill-item .icon {
+        color: #2563eb;
+        font-weight: bold;
+    }
+
+    .education-item h3 {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 5px;
+    }
+
+    .education-item p {
+        color: #374151;
+        margin-bottom: 3px;
+    }
+
+    .education-item .year {
+        color: #6b7280;
+        font-size: 0.9em;
+    }
+
+    .languages {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .language-item {
+        text-align: center;
+    }
+
+    .language-item .lang-name {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 5px;
+    }
+
+    .language-item .lang-level {
+        color: #6b7280;
+        font-size: 0.9em;
+    }
+
+    .attributes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .attribute-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: #374151;
+    }
+
+    .attribute-item .bullet {
+        color: #2563eb;
+        font-weight: bold;
+    }
+
+    .footer {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #d1d5db;
+        text-align: center;
+        font-size: 0.9em;
+        color: #6b7280;
+    }
+
+    @media print {
+        body {
+            background-color: white;
+            padding: 0;
+        }
+
+        .container {
+            box-shadow: none;
+            padding: 20px;
+        }
+
+        @page {
+            margin: 1cm;
+            size: A4;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-info,
+        .skills-grid,
+        .attributes-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .languages {
+            grid-template-columns: 1fr;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>WALEED SHEERAZ</h1>
+            <div class="subtitle">ASPIRING CABIN CREW PROFESSIONAL</div>
+
+```
+        <div class="contact-info">
+            <div class="contact-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                <span>+965-99782299</span>
+            </div>
+            <div class="contact-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span>waleedsheeraz06@gmail.com</span>
+            </div>
+            <div class="contact-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span>Kuwait</span>
+            </div>
+            <div class="contact-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span>Date of Birth: 30 October 2006</span>
+            </div>
+            <div class="contact-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Nationality: Pakistani</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="section">
+        <h2>PROFESSIONAL SUMMARY</h2>
+        <p>
+            Disciplined and motivated individual with strong communication skills and a calm presence under pressure. Passionate about aviation, safety, and delivering exceptional passenger experiences. Quick learner with excellent grooming standards and the ability to maintain composure in challenging situations. Seeking to launch a cabin crew career with Jazeera Airways, contributing professionalism, dedication, and a service-oriented mindset to ensure passenger comfort and safety.
+        </p>
+    </div>
+
+    <!-- Key Competencies -->
+    <div class="section">
+        <h2>KEY COMPETENCIES</h2>
+        <div class="skills-grid">
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Clear and confident communication</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Calm and composed under pressure</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Strong teamwork and cooperation</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Positive attitude and respectful behavior</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Adaptability and fast learning</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Professional grooming and presentation</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Problem-solving mindset</span>
+            </div>
+            <div class="skill-item">
+                <span class="icon">✈</span>
+                <span>Safety awareness and vigilance</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+        <h2>EDUCATION</h2>
+        <div class="education-item">
+            <h3>High School Certificate</h3>
+            <p>Pakistani School and College Kuwait, Kuwait</p>
+            <p class="year">Graduated: 2024</p>
+        </div>
+    </div>
+
+    <!-- Language Proficiency -->
+    <div class="section">
+        <h2>LANGUAGE PROFICIENCY</h2>
+        <div class="languages">
+            <div class="language-item">
+                <div class="lang-name">English</div>
+                <div class="lang-level">Good</div>
+            </div>
+            <div class="language-item">
+                <div class="lang-name">Urdu</div>
+                <div class="lang-level">Fluent (Native)</div>
+            </div>
+            <div class="language-item">
+                <div class="lang-name">Hindi</div>
+                <div class="lang-level">Conversational</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal Attributes -->
+    <div class="section">
+        <h2>PERSONAL ATTRIBUTES</h2>
+        <div class="attributes-grid">
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Well-disciplined and well-mannered</span>
+            </div>
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Quick to adapt and learn</span>
+            </div>
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Positive and energetic presence</span>
+            </div>
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Strong work ethic</span>
+            </div>
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Excellent listener</span>
+            </div>
+            <div class="attribute-item">
+                <span class="bullet">•</span>
+                <span>Highly motivated team player</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>References available upon request</p>
+    </div>
+</div>
+```
+
+</body>
+</html>
