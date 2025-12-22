@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Code Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #0f172a;
+      color: white;
+    }
+    .box {
+      background: #020617;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 320px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2563eb;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #qrcode {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>QR Generator</h2>
+    <input id="text" placeholder="Enter text or link" />
+    <button onclick="generateQR()">Generate</button>
+    <div id="qrcode"></div>
+  </div>
+
+  <script>
+    let qr;
+
+    function generateQR() {
+      const text = document.getElementById("text").value;
+      document.getElementById("qrcode").innerHTML = "";
+
+      if (!text) return;
+
+      qr = new QRCode(document.getElementById("qrcode"), {
+        text: text,
+        width: 200,
+        height: 200,
+      });
+    }
+  </script>
+
+</body>
+</html>
