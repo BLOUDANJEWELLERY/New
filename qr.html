@@ -1,72 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>QR Code Generator</title>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #0f172a;
-      color: white;
-    }
-    .box {
-      background: #020617;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      width: 320px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #2563eb;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #qrcode {
-      margin-top: 15px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Advanced QR Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+  body {
+    background: #020617;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .box {
+    background: #0f172a;
+    padding: 20px;
+    border-radius: 12px;
+    width: 340px;
+  }
+  input, select, button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+  }
+  button {
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+  }
+  canvas {
+    margin-top: 10px;
+    display: block;
+  }
+</style>
 </head>
+
 <body>
+<div class="box">
+  <h3>QR Generator</h3>
 
-  <div class="box">
-    <h2>QR Generator</h2>
-    <input id="text" placeholder="Enter text or link" />
-    <button onclick="generateQR()">Generate</button>
-    <div id="qrcode"></div>
-  </div>
+  <select id="type">
+    <option value="text">Text / URL</option>
+    <option value="wifi">Wi-Fi</option>
+    <option value="email">Email</option>
+  </select>
 
-  <script>
-    let qr;
+  <input id="data" placeholder="Enter value" />
+  <input type="file" id="logo" accept="image/*" />
 
-    function generateQR() {
-      const text = document.getElementById("text").value;
-      document.getElementById("qrcode").innerHTML = "";
+  <button onclick="generateQR()">Generate</button>
+  <button onclick="downloadQR()">Download PNG</button>
 
-      if (!text) return;
+  <div id="qr" style="display:none"></div>
+  <canvas id="canvas" width="250" height="250"></canvas>
+</div>
 
-      qr = new QRCode(document.getElementById("qrcode"), {
-        text: text,
-        width: 200,
-        height: 200,
-      });
-    }
-  </script>
+<script>
+function formatQRData() {
+  const type = document.getElementById("type").value;
+  const data = document.getElementById("data").value;
 
+  if (type === "wifi") {
+    return `WIFI:T:WPA;S:${data};P:password;;`;
+  }
+  if (type === "email") {
+    return `mailto:${data}`;
+  }
+  return data;
+}
+
+function generateQR() {
+  const qrDiv = document.getElementById("qr");
+  qrDiv.innerHTML = "";
+
+  const text = formatQRData();
+  if (!text) return;
+
+  new QRCode(qrDiv, {
+    text,
+    width: 250,
+    height: 250,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  setTimeout(drawToCanvas, 200);
+}
+
+function drawToCanvas() {
+  const qrImg = document.querySelector("#qr img");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(qrImg, 0, 0, 250, 250);
+
+  const file = document.getElementById("logo").files[0];
+  if (!file) return;
+
+  const img = new Image();
+  img.onload = () => {
+    const size = 60;
+    const x = (250 - size) / 2;
+    const y = (250 - size) / 2;
+    ctx.drawImage(img, x, y, size, size);
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+function downloadQR() {
+  const canvas = document.getElementById("canvas");
+  const link = document.createElement("a");
+  link.download = "qr-code.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+</script>
 </body>
 </html>
