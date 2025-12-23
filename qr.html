@@ -2,39 +2,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Professional QR Generator</title>
+<title>QR Code Generator</title>
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 
 <style>
 body {
-  background: #020617;
-  color: white;
+  background: #f8fafc;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  padding: 40px;
+  color: #0f172a;
 }
 .box {
-  background: #0f172a;
-  padding: 20px;
+  background: #ffffff;
+  padding: 22px;
   border-radius: 14px;
-  width: 380px;
+  width: 420px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+h3 {
+  margin-bottom: 10px;
+}
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+small {
+  font-size: 12px;
+  color: #475569;
 }
 input, select, button {
   width: 100%;
-  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 10px;
   padding: 10px;
   border-radius: 6px;
-  border: none;
+  border: 1px solid #cbd5f5;
 }
 button {
   background: #2563eb;
   color: white;
+  border: none;
   cursor: pointer;
 }
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.logo-grid img {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.logo-grid img.active {
+  border: 2px solid #2563eb;
+}
 #qr {
-  margin-top: 12px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
 }
@@ -44,44 +72,54 @@ button {
 
 <body>
 <div class="box">
+
 <h3>QR Code Generator</h3>
 
+<label>QR Type</label>
+<small>Select what the QR should do when scanned</small>
 <select id="qrType" onchange="toggleFields()">
   <option value="text">Text / URL</option>
   <option value="wifi">Wi-Fi</option>
   <option value="email">Email</option>
   <option value="phone">Phone</option>
   <option value="sms">SMS</option>
-  <option value="vcard">vCard</option>
-  <option value="payment">Payment</option>
-  <option value="custom">Custom</option>
+  <option value="social">Social / Platform Link</option>
 </select>
 
-<input id="main" placeholder="Enter value" />
+<div id="mainField">
+  <label>Value</label>
+  <small>Enter website link, text, email address, phone number, or profile URL</small>
+  <input id="mainInput" placeholder="https://example.com">
+</div>
 
 <div id="wifiFields" class="hidden">
-  <input id="ssid" placeholder="Wi-Fi Name (SSID)" />
-  <input id="wifiPass" placeholder="Password" />
+  <label>Wi-Fi Name (SSID)</label>
+  <small>The exact name of the Wi-Fi network</small>
+  <input id="ssid">
+
+  <label>Password</label>
+  <small>Leave empty if network is open</small>
+  <input id="wifiPass">
+
+  <label>Security</label>
+  <small>Select the network security type</small>
   <select id="wifiType">
-    <option value="WPA">WPA/WPA2</option>
+    <option value="WPA">WPA / WPA2</option>
     <option value="WEP">WEP</option>
     <option value="nopass">No Password</option>
   </select>
 </div>
 
-<div id="vcardFields" class="hidden">
-  <input id="vname" placeholder="Full Name" />
-  <input id="vphone" placeholder="Phone" />
-  <input id="vemail" placeholder="Email" />
-</div>
-
-<label>QR Color</label>
+<label>QR Dot Color</label>
+<small>Main color of the QR code</small>
 <input type="color" id="qrColor" value="#000000">
 
-<label>Background</label>
+<label>Background Color</label>
+<small>Background behind the QR</small>
 <input type="color" id="bgColor" value="#ffffff">
 
 <label>Dot Style</label>
+<small>Visual style of the QR dots</small>
 <select id="dotStyle">
   <option value="square">Square</option>
   <option value="dots">Dots</option>
@@ -90,80 +128,84 @@ button {
   <option value="classy-rounded">Classy Rounded</option>
 </select>
 
-<label>Center Logo</label>
-<input type="file" id="logo" accept="image/*">
+<label>Choose a Logo</label>
+<small>Select a built-in logo or upload your own</small>
 
-<button onclick="generateQR()">Generate</button>
+<div class="logo-grid" id="logoGrid">
+  <img src="/logos/mail.png">
+  <img src="/logos/gmail.png">
+  <img src="/logos/phone.png">
+  <img src="/logos/sms.png">
+  <img src="/logos/linkedin.png">
+  <img src="/logos/fiverr.png">
+  <img src="/logos/freelancer.png">
+  <img src="/logos/instagram.png">
+  <img src="/logos/facebook.png">
+  <img src="/logos/snapchat.png">
+  <img src="/logos/whatsapp.png">
+  <img src="/logos/wifi.png">
+</div>
+
+<input type="file" id="customLogo" accept="image/*">
+
+<button onclick="generateQR()">Generate QR</button>
 <button onclick="downloadQR()">Download PNG</button>
 
 <div id="qr"></div>
 </div>
 
 <script>
+let selectedLogo = "";
+
+document.querySelectorAll(".logo-grid img").forEach(img => {
+  img.onclick = () => {
+    document.querySelectorAll(".logo-grid img").forEach(i => i.classList.remove("active"));
+    img.classList.add("active");
+    selectedLogo = img.src;
+  };
+});
+
 const qrCode = new QRCodeStyling({
   width: 260,
   height: 260,
-  dotsOptions: { color: "#000", type: "square" },
-  backgroundOptions: { color: "#fff" },
   imageOptions: {
     imageSize: 0.22,
-    margin: 6,
-    crossOrigin: "anonymous"
+    margin: 6
   },
   qrOptions: { errorCorrectionLevel: "H" }
 });
+
 qrCode.append(document.getElementById("qr"));
 
 function toggleFields() {
-  document.querySelectorAll(".hidden").forEach(e => e.classList.add("hidden"));
-  const type = qrType.value;
-  if (type === "wifi") wifiFields.classList.remove("hidden");
-  if (type === "vcard") vcardFields.classList.remove("hidden");
+  wifiFields.classList.add("hidden");
+  if (qrType.value === "wifi") wifiFields.classList.remove("hidden");
 }
 
 function buildPayload() {
-  const type = qrType.value;
-  const main = mainInput.value;
-
-  switch (type) {
+  switch (qrType.value) {
     case "wifi":
       return `WIFI:T:${wifiType.value};S:${ssid.value};P:${wifiPass.value};;`;
     case "email":
-      return `mailto:${main}`;
+      return `mailto:${mainInput.value}`;
     case "phone":
-      return `tel:${main}`;
+      return `tel:${mainInput.value}`;
     case "sms":
-      return `SMSTO:${main}`;
-    case "vcard":
-      return `BEGIN:VCARD
-VERSION:3.0
-FN:${vname.value}
-TEL:${vphone.value}
-EMAIL:${vemail.value}
-END:VCARD`;
-    case "payment":
-      return main; // UPI / PayPal / Bank payload
-    case "custom":
-      return main;
+      return `SMSTO:${mainInput.value}`;
     default:
-      return main;
+      return mainInput.value;
   }
 }
 
 function generateQR() {
   const payload = buildPayload();
-  if (!payload) return;
+  const file = customLogo.files[0];
 
   qrCode.update({
     data: payload,
-    dotsOptions: {
-      color: qrColor.value,
-      type: dotStyle.value
-    },
-    backgroundOptions: {
-      color: bgColor.value
-    },
-    image: logo.files[0] ? URL.createObjectURL(logo.files[0]) : ""
+    dotsOptions: { color: qrColor.value, type: dotStyle.value },
+    backgroundOptions: { color: bgColor.value },
+    image: file ? URL.createObjectURL(file) : selectedLogo
   });
 }
 
@@ -172,13 +214,12 @@ function downloadQR() {
 }
 
 const qrType = document.getElementById("qrType");
-const mainInput = document.getElementById("main");
+const mainInput = document.getElementById("mainInput");
 const ssid = document.getElementById("ssid");
 const wifiPass = document.getElementById("wifiPass");
 const wifiType = document.getElementById("wifiType");
-const vname = document.getElementById("vname");
-const vphone = document.getElementById("vphone");
-const vemail = document.getElementById("vemail");
+const wifiFields = document.getElementById("wifiFields");
+const customLogo = document.getElementById("customLogo");
 </script>
 </body>
 </html>
