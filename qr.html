@@ -39,7 +39,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
 }
@@ -64,7 +64,7 @@ body {
 
 .app-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 30px;
   background: white;
   border-radius: var(--radius);
@@ -73,7 +73,7 @@ body {
   padding: 30px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .app-container {
     grid-template-columns: 1fr;
   }
@@ -124,7 +124,7 @@ label {
   font-style: italic;
 }
 
-input, select, button {
+input, select, button, textarea {
   width: 100%;
   padding: 12px 16px;
   border-radius: 8px;
@@ -134,7 +134,7 @@ input, select, button {
   transition: all 0.2s;
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -160,6 +160,7 @@ input:focus, select:focus {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 button {
@@ -173,6 +174,8 @@ button {
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
+  flex: 1;
+  min-width: 140px;
 }
 
 button:hover {
@@ -270,6 +273,7 @@ button.danger:hover {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
   min-height: 350px;
+  position: relative;
 }
 
 #qr {
@@ -400,11 +404,115 @@ input[type="range"]::-webkit-slider-thumb {
   margin-bottom: 0;
 }
 
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.template-option {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  border: 2px solid var(--gray-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.template-option:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.1);
+}
+
+.template-option.active {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(139, 92, 246, 0.05));
+}
+
+.template-icon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.template-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.template-description {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.logo-color-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.logo-color-picker.hidden {
+  display: none;
+}
+
+.color-preview {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 2px solid var(--gray-light);
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
-  .option-row {
+  .option-row, .button-group {
     flex-direction: column;
     gap: 10px;
   }
+  
+  button {
+    min-width: 100%;
+  }
+  
+  .app-container {
+    padding: 15px;
+  }
+  
+  .template-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.template-demo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--light);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.design-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.design-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
 }
 </style>
 </head>
@@ -461,6 +569,16 @@ input[type="range"]::-webkit-slider-thumb {
         </div>
       </div>
       
+      <!-- Design Templates Section -->
+      <div class="section">
+        <h3 class="section-title"><i class="fas fa-palette"></i> Design Templates</h3>
+        <p class="hint">Choose a pre-designed template or create your own custom design</p>
+        
+        <div class="template-grid" id="templateGrid">
+          <!-- Templates will be populated by JavaScript -->
+        </div>
+      </div>
+      
       <!-- Logo Section -->
       <div class="section">
         <h3 class="section-title"><i class="fas fa-image"></i> Logo & Style</h3>
@@ -471,6 +589,13 @@ input[type="range"]::-webkit-slider-thumb {
           <div class="logo-grid" id="logoGrid">
             <!-- Logos will be populated by JavaScript -->
           </div>
+        </div>
+        
+        <!-- Logo Color Picker -->
+        <div class="logo-color-picker hidden" id="logoColorPicker">
+          <label for="logoColor">Logo Color</label>
+          <div class="color-preview" id="logoColorPreview" onclick="document.getElementById('logoColor').click()"></div>
+          <input type="color" id="logoColor" value="#2563eb" style="opacity: 0; width: 0; height: 0;" onchange="updateLogoColor()">
         </div>
         
         <div class="form-group">
@@ -500,7 +625,7 @@ input[type="range"]::-webkit-slider-thumb {
       
       <!-- Color Customization -->
       <div class="section">
-        <h3 class="section-title"><i class="fas fa-palette"></i> Colors</h3>
+        <h3 class="section-title"><i class="fas fa-paint-brush"></i> Colors</h3>
         
         <div class="color-picker">
           <div class="color-input">
@@ -589,6 +714,13 @@ input[type="range"]::-webkit-slider-thumb {
           <p>Your QR code will appear here</p>
           <p class="hint">Configure settings and click "Generate QR Code"</p>
         </div>
+        
+        <!-- Design Preview -->
+        <div class="design-preview" id="designPreview" style="display: none;">
+          <div class="design-dot" style="background: var(--foreground-color, #2563eb);"></div>
+          <div class="design-dot" style="background: var(--foreground-color, #2563eb);"></div>
+          <div class="design-dot" style="background: var(--foreground-color, #2563eb);"></div>
+        </div>
       </div>
       
       <div class="qr-info" id="qrInfo" style="display: none;">
@@ -619,59 +751,196 @@ let qrCode = null;
 let selectedLogo = "";
 let customLogoFile = null;
 let qrGenerated = false;
+let currentQRBlob = null; // Fixed: Store current QR blob for sharing
+let currentTemplate = "professional";
+
+// SVG icon cache
+const svgIcons = {
+  wifi: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0-6a6 6 0 0 0-6 6h12a6 6 0 0 0-6-6zm0-2a10 10 0 0 0-10 10h20A10 10 0 0 0 12 13zm0-2c4.97 0 9 2.686 9 6v1H3v-1c0-3.314 4.03-6 9-6z"/></svg>`,
+  email: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm17 4.238l-7.928 7.1L4 7.216V19h16V7.238zM4.511 5l7.55 6.662L19.502 5H4.511z"/></svg>`,
+  phone: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16.42v3.536a1 1 0 0 1-.93.998c-.437.03-.794.046-1.07.046-8.837 0-16-7.163-16-16 0-.276.015-.633.046-1.07A1 1 0 0 1 4.044 3H7.58a.5.5 0 0 1 .498.45c.023.23.044.413.064.552A13.901 13.901 0 0 0 9.35 8.003c.095.2.033.439-.147.567l-2.158 1.542a13.047 13.047 0 0 0 6.844 6.844l1.54-2.154a.462.462 0 0 1 .573-.149 13.901 13.901 0 0 0 4 1.205c.139.02.322.041.55.064a.5.5 0 0 1 .449.498z"/></svg>`,
+  whatsapp: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.032 12.203c-.338.922-.735 1.402-1.494 1.818.223-.607.672-1.508.762-2.727.182-2.181-1.316-2.265-1.887-2.265-1.069 0-2.004.736-2.004 2.625 0 .774.196 1.365.196 1.365s-1.019 3.941 1.205 4.873c2.224.932 4.018-.44 4.737-1.404.678-1.008 1.069-2.625 1.069-2.625s-2.024.735-2.024-2.266zm-6.03 7.772c-.985.44-1.717.84-2.224 1.428-.338.393.365.619.869.252.64-.462 1.617-1.05 2.681-1.645-1.183-.461-2.326-1.175-2.326-1.175zm16.718-12.147c0 5.514-4.486 10-10 10a9.946 9.946 0 0 1-5.334-1.545s-3.85 1.029-5.07.367c0 0-1.126-.63.157-2.951 0 0-1.481-2.408-.63-5.268.83-2.86 2.9-4.247 4.776-4.247 1.802 0 2.989 1.152 3.701 2.097 0 0 2.167-.994 4.808-.756 2.202.21 3.418 1.679 3.692 3.098z"/></svg>`,
+  sms: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6.455 19L2 22.5V4a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.455zm-.692-2H20V5H4v13.385L5.763 17zM8 10h8v2H8v-2z"/></svg>`,
+  vcard: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 14.252v2.09A6 6 0 0 0 6 22l-2-.001a8 8 0 0 1 10-7.748zM12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z"/></svg>`,
+  location: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.9l4.95-4.95a7 7 0 1 0-9.9 0L12 20.9zm0 2.828l-6.364-6.364a9 9 0 1 1 12.728 0L12 23.728zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg>`,
+  event: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h4V1h2v2h6V1h2v2zm3 6V5h-3v2h-2V5H9v2H7V5H4v4h16zm0 2H4v8h16v-8zM6 13h5v4H6v-4z"/></svg>`,
+  facebook: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg>`,
+  instagram: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>`,
+  linkedin: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.335 18.339H15.67v-4.177c0-.996-.02-2.278-1.39-2.278-1.389 0-1.601 1.084-1.601 2.205v4.25h-2.666V9.75h2.56v1.17h.035c.358-.674 1.228-1.387 2.528-1.387 2.7 0 3.2 1.778 3.2 4.091v4.715zM7.003 8.575a1.546 1.546 0 0 1-1.548-1.549 1.548 1.548 0 1 1 1.547 1.549zm1.336 9.764H5.666V9.75H8.34v8.589zM19.67 3H4.329C3.593 3 3 3.58 3 4.297v15.406C3 20.42 3.594 21 4.328 21h15.338C20.4 21 21 20.42 21 19.703V4.297C21 3.58 20.4 3 19.666 3h.003z"/></svg>`,
+  twitter: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22.162 5.656a8.384 8.384 0 0 1-2.402.658A4.196 4.196 0 0 0 21.6 4c-.82.488-1.719.83-2.656 1.015a4.182 4.182 0 0 0-7.126 3.814 11.874 11.874 0 0 1-8.62-4.37 4.168 4.168 0 0 0-.566 2.103c0 1.45.738 2.731 1.86 3.481a4.168 4.168 0 0 1-1.894-.523v.052a4.185 4.185 0 0 0 3.355 4.101 4.21 4.21 0 0 1-1.89.072A4.185 4.185 0 0 0 7.97 16.65a8.394 8.394 0 0 1-6.191 1.732 11.83 11.83 0 0 0 6.41 1.88c7.693 0 11.9-6.373 11.9-11.9 0-.18-.005-.362-.013-.54a8.496 8.496 0 0 0 2.087-2.165z"/></svg>`,
+  youtube: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/></svg>`,
+  github: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.338 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z"/></svg>`,
+  paypal: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.75-2.203 8.796-6.502zm-2.96-5.09c.762.662 1.153 1.714 1.115 2.853 0 2.04-1.265 3.938-3.13 4.99a6.159 6.159 0 0 1-4.632.797 9.956 9.956 0 0 0 2.913-4.744 9.732 9.732 0 0 0 1.06-3.183c.077-.922.183-1.125.257-1.146.054-.016.12-.016.185.016.11.054.187.138.261.236.11.146.201.364.273.548.073.183.133.36.173.522.101.382.19.74.316 1.126zM6.388 0h5.785c.338 0 .526.167.676.481.821 1.82 1.65 3.65 2.486 5.482.165.362.248.698.248 1.05 0 1.242-.36 2.418-1.03 3.54-.945 1.59-2.594 2.66-4.64 3.017a7.432 7.432 0 0 1-2.93-.23c-.238-.079-.41-.241-.453-.525-.046-.283.037-.524.223-.698.282-.26.596-.373.943-.373h.88c3.24 0 5.131-1.31 5.827-4.64.57-2.746-.358-4.726-2.73-5.92-1.933-.973-4.255-1.263-6.732-.797a6.148 6.148 0 0 0-1.443.448c-.238.095-.41.32-.435.574-.025.253.091.491.307.615.257.146.54.21.828.209h.176c-1.2.5-2.086 1.645-2.446 3.12-.418 1.73.154 3.556 1.534 4.64 1.21.966 2.87 1.24 4.565.972 1.19-.186 2.288-.692 3.166-1.547a6.335 6.335 0 0 0 1.832-3.67c0-1.38-.524-2.68-1.422-3.66-.966-1.05-2.256-1.665-3.664-1.78-.177-.015-.354-.023-.533-.023H6.388z"/></svg>`,
+  bitcoin: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-6v2h2v-2h1a2.5 2.5 0 0 0 2-4 2.5 2.5 0 0 0-2-4h-1V6h-2v2H8v8h3zm-1-3h4a.5.5 0 1 1 0 1h-4v-1zm0-3h4a.5.5 0 1 1 0 1h-4v-1z"/></svg>`,
+  globe: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2.29-2.333A17.9 17.9 0 0 1 8.027 13H4.062a8.008 8.008 0 0 0 5.648 6.667zM10.03 13c.151 2.439.848 4.73 1.97 6.752A15.905 15.905 0 0 0 13.97 13h-3.94zm9.908 0h-3.965a17.9 17.9 0 0 1-1.683 6.667A8.008 8.008 0 0 0 19.938 13zM4.062 11h3.965A17.9 17.9 0 0 1 9.71 4.333 8.008 8.008 0 0 0 4.062 11zm5.969 0h3.938A15.905 15.905 0 0 0 12 4.248 15.905 15.905 0 0 0 10.03 11zm4.259-6.667A17.9 17.9 0 0 1 15.973 11h3.965a8.008 8.008 0 0 0-5.648-6.667z"/></svg>`
+};
+
+// Design templates
+const designTemplates = [
+  {
+    id: "professional",
+    name: "Professional",
+    description: "Clean and business-friendly",
+    foreground: "#2563eb",
+    background: "#ffffff",
+    dotsStyle: "rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-briefcase"
+  },
+  {
+    id: "modern",
+    name: "Modern",
+    description: "Sleek contemporary design",
+    foreground: "#8b5cf6",
+    background: "#f8fafc",
+    dotsStyle: "dots",
+    cornersStyle: "dot",
+    icon: "fas fa-star"
+  },
+  {
+    id: "minimal",
+    name: "Minimal",
+    description: "Simple and elegant",
+    foreground: "#0f172a",
+    background: "#ffffff",
+    dotsStyle: "square",
+    cornersStyle: "square",
+    icon: "fas fa-minimize"
+  },
+  {
+    id: "vibrant",
+    name: "Vibrant",
+    description: "Bright and eye-catching",
+    foreground: "#ec4899",
+    background: "#fdf2f8",
+    dotsStyle: "classy-rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-palette"
+  },
+  {
+    id: "dark",
+    name: "Dark Mode",
+    description: "Perfect for dark interfaces",
+    foreground: "#ffffff",
+    background: "#1e293b",
+    dotsStyle: "rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-moon"
+  },
+  {
+    id: "nature",
+    name: "Nature",
+    description: "Eco-friendly green theme",
+    foreground: "#10b981",
+    background: "#f0fdf4",
+    dotsStyle: "classy",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-leaf"
+  },
+  {
+    id: "gift",
+    name: "Gift Box",
+    description: "Perfect for presents & offers",
+    foreground: "#dc2626",
+    background: "#fef2f2",
+    dotsStyle: "classy-rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-gift"
+  },
+  {
+    id: "scanme",
+    name: "Scan Me",
+    description: "Clear call-to-action style",
+    foreground: "#f59e0b",
+    background: "#fffbeb",
+    dotsStyle: "rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-camera"
+  },
+  {
+    id: "luxury",
+    name: "Luxury",
+    description: "Premium gold theme",
+    foreground: "#d97706",
+    background: "#fef3c7",
+    dotsStyle: "classy",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-gem"
+  },
+  {
+    id: "gradient",
+    name: "Gradient",
+    description: "Modern gradient effect",
+    foreground: "#6366f1",
+    background: "#ffffff",
+    dotsStyle: "rounded",
+    cornersStyle: "extra-rounded",
+    icon: "fas fa-gradient"
+  }
+];
 
 // Available logos with categories
 const logos = [
   { id: 'none', name: 'No Logo', path: '', icon: 'fas fa-ban', category: 'general' },
-  { id: 'url', name: 'Website', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/globe.svg', icon: 'fas fa-globe', category: 'web' },
-  { id: 'wifi', name: 'Wi-Fi', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/wifi.svg', icon: 'fas fa-wifi', category: 'network' },
-  { id: 'email', name: 'Email', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/mail.svg', icon: 'fas fa-envelope', category: 'communication' },
-  { id: 'phone', name: 'Phone', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/phone.svg', icon: 'fas fa-phone', category: 'communication' },
-  { id: 'whatsapp', name: 'WhatsApp', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-whatsapp.svg', icon: 'fab fa-whatsapp', category: 'communication' },
-  { id: 'sms', name: 'SMS', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/message.svg', icon: 'fas fa-sms', category: 'communication' },
-  { id: 'vcard', name: 'Contact', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/user.svg', icon: 'fas fa-address-card', category: 'communication' },
-  { id: 'location', name: 'Location', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/map-pin.svg', icon: 'fas fa-map-marker-alt', category: 'location' },
-  { id: 'event', name: 'Event', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/calendar.svg', icon: 'fas fa-calendar', category: 'productivity' },
-  { id: 'facebook', name: 'Facebook', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-facebook.svg', icon: 'fab fa-facebook', category: 'social' },
-  { id: 'instagram', name: 'Instagram', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-instagram.svg', icon: 'fab fa-instagram', category: 'social' },
-  { id: 'linkedin', name: 'LinkedIn', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-linkedin.svg', icon: 'fab fa-linkedin', category: 'social' },
-  { id: 'twitter', name: 'Twitter', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-twitter.svg', icon: 'fab fa-twitter', category: 'social' },
-  { id: 'youtube', name: 'YouTube', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-youtube.svg', icon: 'fab fa-youtube', category: 'social' },
-  { id: 'github', name: 'GitHub', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-github.svg', icon: 'fab fa-github', category: 'development' },
-  { id: 'paypal', name: 'PayPal', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-paypal.svg', icon: 'fab fa-paypal', category: 'payment' },
-  { id: 'bitcoin', name: 'Bitcoin', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/currency-bitcoin.svg', icon: 'fab fa-bitcoin', category: 'payment' },
+  { id: 'url', name: 'Website', path: '', icon: 'fas fa-globe', category: 'web' },
+  { id: 'wifi', name: 'Wi-Fi', path: '', icon: 'fas fa-wifi', category: 'network' },
+  { id: 'email', name: 'Email', path: '', icon: 'fas fa-envelope', category: 'communication' },
+  { id: 'phone', name: 'Phone', path: '', icon: 'fas fa-phone', category: 'communication' },
+  { id: 'whatsapp', name: 'WhatsApp', path: '', icon: 'fab fa-whatsapp', category: 'communication' },
+  { id: 'sms', name: 'SMS', path: '', icon: 'fas fa-sms', category: 'communication' },
+  { id: 'vcard', name: 'Contact', path: '', icon: 'fas fa-address-card', category: 'communication' },
+  { id: 'location', name: 'Location', path: '', icon: 'fas fa-map-marker-alt', category: 'location' },
+  { id: 'event', name: 'Event', path: '', icon: 'fas fa-calendar', category: 'productivity' },
+  { id: 'facebook', name: 'Facebook', path: '', icon: 'fab fa-facebook', category: 'social' },
+  { id: 'instagram', name: 'Instagram', path: '', icon: 'fab fa-instagram', category: 'social' },
+  { id: 'linkedin', name: 'LinkedIn', path: '', icon: 'fab fa-linkedin', category: 'social' },
+  { id: 'twitter', name: 'Twitter', path: '', icon: 'fab fa-twitter', category: 'social' },
+  { id: 'youtube', name: 'YouTube', path: '', icon: 'fab fa-youtube', category: 'social' },
+  { id: 'github', name: 'GitHub', path: '', icon: 'fab fa-github', category: 'development' },
+  { id: 'paypal', name: 'PayPal', path: '', icon: 'fab fa-paypal', category: 'payment' },
+  { id: 'bitcoin', name: 'Bitcoin', path: '', icon: 'fab fa-bitcoin', category: 'payment' },
 ];
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
   initLogoGrid();
+  initTemplateGrid();
   initQRCode();
   setupEventListeners();
   showHint('Select QR code type and enter content to get started');
+  
+  // Initialize logo color preview
+  updateLogoColorPreview();
 });
 
-// Initialize logo grid
+// Initialize logo grid with SVG icons
 function initLogoGrid() {
   const logoGrid = document.getElementById('logoGrid');
   logoGrid.innerHTML = '';
   
   logos.forEach(logo => {
-    const logoElement = document.createElement('img');
+    const logoElement = document.createElement('div');
     logoElement.className = 'logo-option';
     logoElement.title = logo.name;
+    logoElement.dataset.id = logo.id;
     
-    if (logo.path) {
-      logoElement.src = logo.path;
-      logoElement.onerror = function() {
-        // Fallback to icon if image fails to load
-        this.style.display = 'none';
-      };
-    } else {
+    if (logo.id === 'none') {
       // For "no logo" option
-      logoElement.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjZjFmNWY5Ii848cGF0aCBkPSJNMTggMjJIMzJWMzZIMThWMjJaIiBmaWxsPSIjY2RkMWU2Ii8+PHBhdGggZD0iTTIzIDI3SDI3VjMxSDIzVjI3WiIgZmlsbD0iIzhjOTdhYSIvPjxwYXRoIGQ9Ik0zMiAyN0gzNlYzMUgzMlYyN1oiIGZpbGw9IiM4Yzk3YWEiLz48L3N2Zz4=';
+      logoElement.innerHTML = `<i class="${logo.icon}" style="font-size: 1.5rem; color: #64748b;"></i>`;
+    } else if (svgIcons[logo.id]) {
+      // Create SVG with default color
+      const svgContainer = document.createElement('div');
+      svgContainer.innerHTML = svgIcons[logo.id];
+      const svg = svgContainer.querySelector('svg');
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      svg.style.fill = '#2563eb'; // Default color
+      logoElement.appendChild(svg);
+    } else {
+      // Fallback to icon
+      logoElement.innerHTML = `<i class="${logo.icon}" style="font-size: 1.5rem; color: #2563eb;"></i>`;
     }
     
-    logoElement.dataset.id = logo.id;
     logoElement.addEventListener('click', () => selectLogo(logo.id));
     
     logoGrid.appendChild(logoElement);
@@ -679,6 +948,30 @@ function initLogoGrid() {
   
   // Select "none" by default
   selectLogo('none');
+}
+
+// Initialize template grid
+function initTemplateGrid() {
+  const templateGrid = document.getElementById('templateGrid');
+  templateGrid.innerHTML = '';
+  
+  designTemplates.forEach(template => {
+    const templateElement = document.createElement('div');
+    templateElement.className = `template-option ${template.id === currentTemplate ? 'active' : ''}`;
+    templateElement.dataset.id = template.id;
+    
+    templateElement.innerHTML = `
+      <div class="template-demo" style="background: ${template.background};">
+        <i class="${template.icon}" style="color: ${template.foreground}; font-size: 1.5rem;"></i>
+      </div>
+      <div class="template-name">${template.name}</div>
+      <div class="template-description">${template.description}</div>
+    `;
+    
+    templateElement.addEventListener('click', () => applyTemplate(template.id));
+    
+    templateGrid.appendChild(templateElement);
+  });
 }
 
 // Initialize QR code instance
@@ -758,6 +1051,44 @@ function hideError() {
   document.getElementById('errorMessage').classList.remove('show');
 }
 
+// Apply design template
+function applyTemplate(templateId) {
+  const template = designTemplates.find(t => t.id === templateId);
+  if (!template) return;
+  
+  currentTemplate = templateId;
+  
+  // Update UI elements
+  document.getElementById('foregroundColor').value = template.foreground;
+  document.getElementById('backgroundColor').value = template.background;
+  document.getElementById('dotsStyle').value = template.dotsStyle;
+  document.getElementById('cornersStyle').value = template.cornersStyle;
+  
+  // Update template grid selection
+  document.querySelectorAll('.template-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.id === templateId);
+  });
+  
+  // Update design preview
+  const designPreview = document.getElementById('designPreview');
+  designPreview.style.setProperty('--foreground-color', template.foreground);
+  
+  // Update logo color if using colored SVG logo
+  const logoColor = document.getElementById('logoColor');
+  if (logoColor && !customLogoFile) {
+    logoColor.value = template.foreground;
+    updateLogoColorPreview();
+    updateSVGLogoColor(template.foreground);
+  }
+  
+  // Auto-update if QR already generated
+  if (qrGenerated) {
+    updateQR();
+  }
+  
+  showHint(`Applied "${template.name}" template`);
+}
+
 // Select logo
 function selectLogo(logoId) {
   const logo = logos.find(l => l.id === logoId);
@@ -765,11 +1096,7 @@ function selectLogo(logoId) {
   
   // Update UI
   logoOptions.forEach(opt => {
-    if (opt.dataset.id === logoId) {
-      opt.classList.add('active');
-    } else {
-      opt.classList.remove('active');
-    }
+    opt.classList.toggle('active', opt.dataset.id === logoId);
   });
   
   // Clear custom logo
@@ -777,12 +1104,72 @@ function selectLogo(logoId) {
   customLogoFile = null;
   
   // Set selected logo
-  selectedLogo = logo.path;
+  selectedLogo = logo.id;
+  
+  // Show/hide logo color picker
+  const logoColorPicker = document.getElementById('logoColorPicker');
+  if (logoId === 'none') {
+    logoColorPicker.classList.add('hidden');
+  } else {
+    logoColorPicker.classList.remove('hidden');
+    updateSVGLogoColor(document.getElementById('logoColor').value);
+  }
   
   // Auto-update if QR already generated
   if (qrGenerated) {
     updateQR();
   }
+  
+  showHint(`Selected ${logo.name} logo`);
+}
+
+// Update SVG logo color
+function updateSVGLogoColor(color) {
+  if (selectedLogo === 'none' || customLogoFile) return;
+  
+  const logoOptions = document.querySelectorAll('.logo-option');
+  logoOptions.forEach(opt => {
+    if (opt.dataset.id === selectedLogo) {
+      const svg = opt.querySelector('svg');
+      const icon = opt.querySelector('i');
+      
+      if (svg) {
+        svg.style.fill = color;
+      }
+      if (icon) {
+        icon.style.color = color;
+      }
+    }
+  });
+  
+  updateLogoColorPreview();
+}
+
+// Update logo color preview
+function updateLogoColorPreview() {
+  const color = document.getElementById('logoColor').value;
+  const preview = document.getElementById('logoColorPreview');
+  preview.style.background = color;
+}
+
+// Update logo color from picker
+function updateLogoColor() {
+  const color = document.getElementById('logoColor').value;
+  updateLogoColorPreview();
+  updateSVGLogoColor(color);
+  
+  // Auto-update if QR already generated
+  if (qrGenerated) {
+    updateQR();
+  }
+}
+
+// Get colored SVG data URL
+function getColoredSVGDataURL(logoId, color) {
+  if (logoId === 'none' || !svgIcons[logoId]) return '';
+  
+  const svgText = svgIcons[logoId].replace(/fill="[^"]*"/g, `fill="${color}"`);
+  return `data:image/svg+xml;base64,${btoa(svgText)}`;
 }
 
 // Handle custom logo upload
@@ -812,6 +1199,9 @@ function handleCustomLogo() {
   document.querySelectorAll('.logo-option').forEach(opt => {
     opt.classList.remove('active');
   });
+  
+  // Hide logo color picker for custom logos
+  document.getElementById('logoColorPicker').classList.add('hidden');
   
   // Auto-update if QR already generated
   if (qrGenerated) {
@@ -974,6 +1364,15 @@ function onTypeChange() {
   const logoId = detectLogoFromContent('', type);
   selectLogo(logoId);
   
+  // Auto-apply appropriate template
+  if (type === 'wifi') {
+    applyTemplate('modern');
+  } else if (type === 'email') {
+    applyTemplate('professional');
+  } else if (type === 'whatsapp' || type === 'sms') {
+    applyTemplate('vibrant');
+  }
+  
   hideError();
 }
 
@@ -1134,7 +1533,7 @@ function buildPayload() {
       
     case 'phone':
       const phone = document.getElementById('mainInput').value.trim().replace(/\D/g, '');
-      return `tel:${phone}`;
+      return `tel:+${phone}`;
       
     case 'sms':
       const smsPhone = document.getElementById('mainInput').value.trim().replace(/\D/g, '');
@@ -1188,7 +1587,7 @@ function buildPayload() {
 }
 
 // Generate QR code
-function generateQR() {
+async function generateQR() {
   // Validate input first
   if (!validateInput()) {
     return;
@@ -1200,15 +1599,19 @@ function generateQR() {
   const type = document.getElementById('qrType').value;
   const mainInput = document.getElementById('mainInput')?.value || '';
   
-  if (!customLogoFile && selectedLogo === '') {
+  if (!customLogoFile && selectedLogo === 'none') {
     const detectedLogo = detectLogoFromContent(mainInput, type);
     selectLogo(detectedLogo);
   }
   
   // Get image source
-  let imageSrc = selectedLogo;
+  let imageSrc = '';
   if (customLogoFile) {
     imageSrc = URL.createObjectURL(customLogoFile);
+  } else if (selectedLogo !== 'none') {
+    // Get colored SVG for selected logo
+    const logoColor = document.getElementById('logoColor').value;
+    imageSrc = getColoredSVGDataURL(selectedLogo, logoColor);
   }
   
   // Update QR code
@@ -1257,6 +1660,13 @@ function generateQR() {
     document.getElementById('errorCorrection').selectedOptions[0].text;
   document.getElementById('infoLength').textContent = 
     `${payload.length} characters`;
+  
+  // Generate blob for sharing (FIXED: Always generate fresh blob)
+  try {
+    currentQRBlob = await qrCode.getRawData('png');
+  } catch (error) {
+    console.error('Error generating QR blob:', error);
+  }
   
   qrGenerated = true;
   showHint('QR code generated successfully!');
@@ -1353,7 +1763,7 @@ function downloadQR(format) {
   showHint(`QR code downloaded as ${format.toUpperCase()}!`);
 }
 
-// Share QR code
+// Share QR code (FIXED: Always use fresh blob)
 async function shareQR() {
   if (!qrGenerated) {
     showError('Please generate a QR code first');
@@ -1361,30 +1771,37 @@ async function shareQR() {
   }
   
   try {
-    // Get QR code as blob
-    const blob = await qrCode.getRawData('png');
+    // Generate fresh blob if not available
+    if (!currentQRBlob) {
+      currentQRBlob = await qrCode.getRawData('png');
+    }
     
-    if (navigator.share && navigator.canShare) {
-      const file = new File([blob], 'qr-code.png', { type: 'image/png' });
-      
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'QR Code',
-          text: 'Check out this QR code I created!'
-        });
-        showHint('QR code shared successfully!');
-      } else {
-        throw new Error('Sharing not supported for files');
-      }
+    // Create a fresh File object each time
+    const file = new File([currentQRBlob], 'qr-code.png', { 
+      type: 'image/png',
+      lastModified: Date.now()
+    });
+    
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'QR Code',
+        text: 'Check out this QR code I created!'
+      });
+      showHint('QR code shared successfully!');
     } else {
-      // Fallback: Copy to clipboard
-      await navigator.clipboard.writeText('QR code image copied to clipboard (sharing not supported in this browser)');
-      showHint('QR code info copied to clipboard!');
+      // Fallback: Download
+      downloadQR('png');
+      showHint('Sharing not supported - downloaded instead');
     }
   } catch (error) {
     console.error('Sharing failed:', error);
-    showError('Sharing not supported in your browser');
+    
+    // Fallback to download
+    if (error.name !== 'AbortError') {
+      downloadQR('png');
+      showHint('Sharing failed - downloaded instead');
+    }
   }
 }
 
@@ -1406,6 +1823,7 @@ function resetSettings() {
   // Reset colors
   document.getElementById('foregroundColor').value = '#2563eb';
   document.getElementById('backgroundColor').value = '#ffffff';
+  document.getElementById('logoColor').value = '#2563eb';
   
   // Reset advanced options
   document.getElementById('errorCorrection').value = 'H';
@@ -1414,6 +1832,10 @@ function resetSettings() {
   
   // Reset logo selection
   selectLogo('none');
+  updateLogoColorPreview();
+  
+  // Reset template
+  applyTemplate('professional');
   
   // Reset UI
   document.getElementById('qrPlaceholder').style.display = 'block';
@@ -1437,6 +1859,8 @@ function resetSettings() {
     backgroundOptions: { color: '#ffffff' }
   });
   
+  // Clear blob
+  currentQRBlob = null;
   qrGenerated = false;
   showHint('Settings reset to default');
 }
