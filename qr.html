@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Smart QR Generator</title>
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 
@@ -13,15 +13,23 @@ body {
   color: #0f172a;
 }
 .box {
-  max-width: 460px;
-  margin: auto;
   background: white;
+  max-width: 440px;
+  margin: auto;
   padding: 24px;
   border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
-label { font-weight: bold; font-size: 13px; }
-small { display: block; font-size: 12px; color: #475569; margin-bottom: 4px; }
+label {
+  font-weight: bold;
+  font-size: 13px;
+}
+small {
+  display: block;
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 4px;
+}
 input, select, button {
   width: 100%;
   padding: 10px;
@@ -52,7 +60,7 @@ button {
 }
 .hidden { display: none; }
 #qr {
-  margin-top: 16px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
 }
@@ -65,7 +73,8 @@ button {
 <h3>QR Code Generator</h3>
 
 <label>QR Type</label>
-<select id="qrType">
+<small>Choose what action the QR should perform</small>
+<select id="qrType" onchange="onTypeChange()">
   <option value="text">Text / URL</option>
   <option value="wifi">Wi-Fi</option>
   <option value="email">Email</option>
@@ -74,17 +83,21 @@ button {
   <option value="whatsapp">WhatsApp</option>
 </select>
 
-<div id="valueField">
+<div id="mainField">
   <label>Value</label>
-  <small id="valueHint">Enter text or URL</small>
-  <input id="valueInput">
+  <small id="mainHint">Enter text, link, or number</small>
+  <input id="mainInput">
 </div>
 
 <div id="wifiFields" class="hidden">
   <label>Wi-Fi Name (SSID)</label>
+  <small>Exact network name</small>
   <input id="ssid">
+
   <label>Password</label>
+  <small>Leave empty if open network</small>
   <input id="wifiPass">
+
   <label>Security</label>
   <select id="wifiType">
     <option value="WPA">WPA / WPA2</option>
@@ -93,21 +106,20 @@ button {
   </select>
 </div>
 
-<label>Logo</label>
-<small>Auto-selected — you can change or remove</small>
+<label>Choose Logo</label>
+<small>Suggested automatically — you can change or remove it</small>
 
 <div class="logo-grid" id="logoGrid">
-  <img src="logos/none.png" data-logo="">
-  <img src="logos/mail.png">
+  <img src="logos/none.png" data-logo="none">
+  <img src="logos/email.png">
   <img src="logos/gmail.png">
   <img src="logos/phone.png">
   <img src="logos/sms.png">
   <img src="logos/whatsapp.png">
   <img src="logos/wifi.png">
-  <img src="logos/instagram.png">
   <img src="logos/linkedin.png">
+  <img src="logos/instagram.png">
   <img src="logos/facebook.png">
-  <img src="logos/snapchat.png">
   <img src="logos/fiverr.png">
   <img src="logos/freelancer.png">
 </div>
@@ -121,61 +133,55 @@ button {
 </div>
 
 <script>
-/* ---------- STATE ---------- */
-let manualLogo = null;
+let selectedLogo = "logos/none.png";
 
-/* ---------- LOGO GRID ---------- */
-document.querySelectorAll("#logoGrid img").forEach(img => {
+document.querySelectorAll(".logo-grid img").forEach(img => {
   img.onclick = () => {
-    document.querySelectorAll("#logoGrid img").forEach(i => i.classList.remove("active"));
+    document.querySelectorAll(".logo-grid img").forEach(i => i.classList.remove("active"));
     img.classList.add("active");
-    manualLogo = img.dataset.logo === "" ? "" : img.src;
+    selectedLogo = img.dataset.logo === "none" ? "" : img.src;
   };
 });
 
-/* ---------- QR ---------- */
 const qrCode = new QRCodeStyling({
   width: 260,
   height: 260,
   imageOptions: { imageSize: 0.22, margin: 6 },
   qrOptions: { errorCorrectionLevel: "H" }
 });
+
 qrCode.append(document.getElementById("qr"));
 
-/* ---------- AUTO LOGO ---------- */
-function autoLogo(type, value) {
-  value = value.toLowerCase();
-
-  if (type === "wifi") return "/logos/wifi.png";
-  if (type === "whatsapp") return "/logos/whatsapp.png";
-  if (type === "phone") return "/logos/phone.png";
-  if (type === "sms") return "/logos/sms.png";
-
-  if (type === "email") {
-    return value.includes("gmail") ? "/logos/gmail.png" : "/logos/mail.png";
-  }
-
+function autoLogoFromValue(value) {
   const map = [
-    ["instagram", "instagram"],
-    ["linkedin", "linkedin"],
-    ["facebook", "facebook"],
-    ["snapchat", "snapchat"],
-    ["fiverr", "fiverr"],
-    ["freelancer", "freelancer"],
-    ["whatsapp", "whatsapp"]
+    { key: "instagram", logo: "logos/instagram.png" },
+    { key: "linkedin", logo: "logos/linkedin.png" },
+    { key: "fiverr", logo: "logos/fiverr.png" },
+    { key: "freelancer", logo: "logos/freelancer.png" },
+    { key: "facebook", logo: "logos/facebook.png" }
   ];
-
-  for (const [key, file] of map) {
-    if (value.includes(key)) return `/logos/${file}.png`;
+  for (const m of map) {
+    if (value.includes(m.key)) return m.logo;
   }
-
   return "";
 }
 
-/* ---------- PAYLOAD ---------- */
-function payload() {
-  const v = valueInput.value.trim();
+function onTypeChange() {
+  wifiFields.classList.add("hidden");
+  mainHint.textContent = "Enter value";
 
+  if (qrType.value === "wifi") {
+    wifiFields.classList.remove("hidden");
+    selectedLogo = "logos/wifi.png";
+  }
+  if (qrType.value === "whatsapp") {
+    mainHint.textContent = "Enter WhatsApp number with country code (e.g. 965XXXXXXXX)";
+    selectedLogo = "logos/whatsapp.png";
+  }
+}
+
+function buildPayload() {
+  const v = mainInput.value.trim();
   switch (qrType.value) {
     case "wifi":
       return `WIFI:T:${wifiType.value};S:${ssid.value};P:${wifiPass.value};;`;
@@ -188,45 +194,33 @@ function payload() {
     case "whatsapp":
       return `https://wa.me/${v.replace(/\D/g,"")}`;
     default:
+      selectedLogo = autoLogoFromValue(v) || selectedLogo;
       return v;
   }
 }
 
-/* ---------- GENERATE ---------- */
 function generateQR() {
-  const data = payload();
-  if (!data) return;
+  const payload = buildPayload();
+  const file = customLogo.files[0];
 
-  const uploaded = customLogo.files[0];
-  const finalLogo =
-    uploaded ? URL.createObjectURL(uploaded)
-    : manualLogo !== null ? manualLogo
-    : autoLogo(qrType.value, valueInput.value);
-
-  qrCode.update({ data, image: finalLogo });
+  qrCode.update({
+    data: payload,
+    image: file ? URL.createObjectURL(file) : selectedLogo
+  });
 }
-
-/* ---------- UI ---------- */
-qrType.onchange = () => {
-  wifiFields.classList.toggle("hidden", qrType.value !== "wifi");
-  valueField.classList.toggle("hidden", qrType.value === "wifi");
-  manualLogo = null;
-};
 
 function downloadQR() {
   qrCode.download({ name: "qr-code", extension: "png" });
 }
 
-/* ---------- DOM ---------- */
 const qrType = document.getElementById("qrType");
-const valueInput = document.getElementById("valueInput");
-const valueField = document.getElementById("valueField");
+const mainInput = document.getElementById("mainInput");
+const mainHint = document.getElementById("mainHint");
 const ssid = document.getElementById("ssid");
 const wifiPass = document.getElementById("wifiPass");
 const wifiType = document.getElementById("wifiType");
 const wifiFields = document.getElementById("wifiFields");
 const customLogo = document.getElementById("customLogo");
 </script>
-
 </body>
 </html>
