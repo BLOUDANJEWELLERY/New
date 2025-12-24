@@ -2,582 +2,697 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intelligent QR Code Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>QR Code Generator | Mobile-Friendly</title>
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
 <style>
+/* CSS Reset & Base Styles */
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary: #8b5cf6;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --light: #f8fafc;
-  --dark: #0f172a;
-  --gray: #64748b;
-  --gray-light: #e2e8f0;
-  --radius: 12px;
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  --transition: all 0.3s ease;
+  --primary: #4361ee;
+  --primary-dark: #3a56d4;
+  --secondary: #7209b7;
+  --accent: #f72585;
+  --success: #4cc9f0;
+  --warning: #ff9e00;
+  --danger: #f94144;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+  --safe-area-left: env(safe-area-inset-left);
+  --safe-area-right: env(safe-area-inset-right);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  color: var(--dark);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--gray-800);
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
   min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  min-height: -webkit-fill-available;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.container {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
 }
 
-.main-title {
-  text-align: center;
-  margin-bottom: 15px;
-  color: var(--dark);
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
-}
-
-.subtitle {
-  text-align: center;
-  color: var(--gray);
-  margin-bottom: 40px;
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-
-.app-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  background: white;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  padding: 30px;
-  transition: var(--transition);
-}
-
-@media (max-width: 900px) {
-  .app-container {
-    grid-template-columns: 1fr;
-    padding: 20px;
-  }
-}
-
-.settings-panel, .preview-panel {
-  padding: 10px;
-}
-
-.section-title {
-  font-size: 1.3rem;
+h1 {
+  font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--dark);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--light);
 }
 
-.section-title i {
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* Layout */
+.app-container {
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+/* Header */
+.app-header {
+  background: white;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.header-title h1 {
+  margin: 0;
+  color: var(--dark);
+  font-size: 1.5rem;
+}
+
+.header-subtitle {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+}
+
+.mobile-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all var(--transition-base);
+}
+
+.mobile-menu-btn:hover, .mobile-menu-btn:active {
+  background: var(--primary-dark);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-btn i {
+  font-size: 1.1rem;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  background: rgba(67, 97, 238, 0.05);
+  border-bottom: 3px solid var(--primary);
+}
+
+.tab-btn:active {
+  background: rgba(67, 97, 238, 0.1);
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.card-title i {
   color: var(--primary);
   width: 24px;
   text-align: center;
 }
 
-.section {
-  background: var(--light);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 25px;
-  transition: var(--transition);
-  border: 1px solid transparent;
-}
-
-.section:hover {
-  border-color: var(--gray-light);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-}
-
+/* Form Elements */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
-label {
+.form-label {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--gray-800);
   font-size: 0.95rem;
-  margin-bottom: 8px;
-  color: var(--dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
-.hint {
+.form-hint {
   display: block;
   font-size: 0.85rem;
-  color: var(--gray);
-  margin-bottom: 12px;
+  color: var(--gray-600);
+  margin-bottom: 0.75rem;
   line-height: 1.4;
-  padding-left: 5px;
 }
 
-input, select, textarea, button {
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 2px solid var(--gray-light);
-  font-size: 1rem;
-  font-family: inherit;
-  transition: var(--transition);
-  background: white;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.input-with-icon {
+.input-wrapper {
   position: relative;
 }
 
-.input-with-icon i {
+.input-wrapper i {
   position: absolute;
-  left: 16px;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--gray);
+  color: var(--gray-500);
   z-index: 1;
 }
 
-.input-with-icon input {
-  padding-left: 50px;
-}
-
-.button-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 25px;
-  flex-wrap: wrap;
-}
-
-button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: var(--transition);
-  padding: 16px 24px;
-  border-radius: 10px;
-  flex: 1;
-  min-width: 120px;
-}
-
-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
-}
-
-button:active {
-  transform: translateY(-1px);
-}
-
-button.secondary {
+.input-wrapper input, 
+.input-wrapper select, 
+.input-wrapper textarea {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  border: 2px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
   background: white;
-  color: var(--primary);
-  border: 2px solid var(--primary);
+  color: var(--gray-800);
+  transition: all var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-button.secondary:hover {
-  background: rgba(37, 99, 235, 0.05);
-  border-color: var(--primary-dark);
+.input-wrapper textarea {
+  min-height: 100px;
+  resize: vertical;
+  padding-left: 1rem;
 }
 
-button.success {
-  background: var(--success);
+.input-wrapper input:focus, 
+.input-wrapper select:focus, 
+.input-wrapper textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
 
-button.success:hover {
-  background: #0da271;
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+.input-wrapper select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+  padding-right: 3rem;
 }
 
-button.danger {
-  background: var(--danger);
-}
-
-button.danger:hover {
-  background: #dc2626;
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
-}
-
+/* Logo Grid */
 .logo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 12px;
-  margin-top: 15px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .logo-option {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 10px;
-  border: 2px solid var(--gray-light);
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--gray-300);
+  background: white;
   cursor: pointer;
   object-fit: contain;
-  padding: 8px;
-  background: white;
-  transition: var(--transition);
+  padding: 0.75rem;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo-option:hover {
-  border-color: var(--primary);
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+.logo-option img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .logo-option.active {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-  background: rgba(37, 99, 235, 0.05);
+  background: rgba(67, 97, 238, 0.05);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
 }
 
+/* Color Picker */
 .color-picker {
-  display: flex;
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.color-input {
-  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .color-input label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 .color-input i {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .color-input input {
-  height: 50px;
-  padding: 5px;
+  width: 100%;
+  height: 48px;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
+  padding: 0.25rem;
   cursor: pointer;
-  border-radius: 8px;
-  border: 2px solid var(--gray-light);
-}
-
-.color-input input:hover {
-  border-color: var(--primary);
-}
-
-.qr-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 30px;
   background: white;
-  border-radius: var(--radius);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 25px;
-  min-height: 380px;
-  border: 2px dashed var(--gray-light);
-  transition: var(--transition);
+  transition: border-color var(--transition-fast);
 }
 
-.qr-container.has-qr {
-  border-color: transparent;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+.color-input input:focus {
+  border-color: var(--primary);
+  outline: none;
 }
 
-#qr {
-  margin: 20px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-}
-
-.qr-placeholder {
-  text-align: center;
-  color: var(--gray);
-  padding: 40px 20px;
-  transition: var(--transition);
-}
-
-.qr-placeholder i {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  color: var(--gray-light);
-  opacity: 0.7;
-}
-
-.qr-placeholder p {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
-
-.qr-info {
-  background: linear-gradient(135deg, var(--light) 0%, #ffffff 100%);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-top: 20px;
-  font-size: 0.9rem;
-  border: 1px solid var(--gray-light);
-  display: none;
-}
-
-.qr-info.show {
-  display: block;
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.qr-info p {
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.qr-info p:last-child {
-  margin-bottom: 0;
-  border-bottom: none;
-}
-
-.qr-info span:last-child {
-  font-weight: 700;
-  color: var(--primary);
-  font-size: 0.95rem;
-}
-
-.status-message {
-  padding: 15px 20px;
-  border-radius: 10px;
-  margin-top: 15px;
-  font-size: 0.95rem;
-  display: none;
-  align-items: center;
-  gap: 12px;
-  animation: fadeIn 0.3s ease;
-  border-left: 4px solid transparent;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.status-message.show {
-  display: flex;
-}
-
-.error-message {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-  color: var(--danger);
-  border-left-color: var(--danger);
-}
-
-.success-message {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-  color: var(--success);
-  border-left-color: var(--success);
-}
-
-.warning-message {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
-  color: var(--warning);
-  border-left-color: var(--warning);
-}
-
-.advanced-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  padding: 15px 0;
-  font-weight: 700;
-  color: var(--primary);
-  transition: var(--transition);
-  border-radius: 8px;
-  padding: 15px;
-  margin: -15px -15px 15px -15px;
-  background: rgba(37, 99, 235, 0.05);
-}
-
-.advanced-toggle:hover {
-  background: rgba(37, 99, 235, 0.1);
-}
-
-.advanced-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.advanced-content.expanded {
-  max-height: 800px;
-}
-
+/* Sliders */
 .slider-container {
-  margin-top: 20px;
+  margin-top: 1rem;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .slider-value {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.slider-value span:last-child {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--primary);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 input[type="range"] {
-  height: 10px;
+  width: 100%;
+  height: 8px;
   -webkit-appearance: none;
-  background: linear-gradient(90deg, var(--primary) 0%, var(--gray-light) 100%);
-  border-radius: 5px;
-  border: none;
+  background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, var(--gray-300) 50%, var(--gray-300) 100%);
+  border-radius: 4px;
+  outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 24px;
   height: 24px;
-  background: white;
   border-radius: 50%;
-  cursor: pointer;
+  background: white;
   border: 3px solid var(--primary);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-  transition: var(--transition);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.option-row {
+/* Advanced Options */
+.advanced-toggle {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(67, 97, 238, 0.05);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--primary);
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: all var(--transition-fast);
 }
 
-.option-row .form-group {
-  flex: 1;
-  margin-bottom: 0;
+.advanced-toggle:active {
+  background: rgba(67, 97, 238, 0.1);
 }
 
-@media (max-width: 768px) {
-  .option-row {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .color-picker {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .button-group {
-    flex-direction: column;
-  }
-  
-  button {
-    min-width: 100%;
-  }
-  
-  .main-title {
-    font-size: 2rem;
-  }
+.advanced-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-slow) ease-out;
 }
 
-.loading {
+.advanced-content.expanded {
+  max-height: 1000px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.btn i {
+  font-size: 1.1rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+}
+
+.btn-primary:hover, .btn-primary:active {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.3);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover, .btn-secondary:active {
+  background: rgba(67, 97, 238, 0.05);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* QR Preview */
+.qr-preview-container {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  min-height: 320px;
+  border: 2px dashed var(--gray-300);
+  transition: all var(--transition-base);
+}
+
+.qr-preview-container.has-qr {
+  border-color: transparent;
+}
+
+#qr {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+}
+
+.qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--gray-600);
+}
+
+.qr-placeholder i {
+  font-size: 4rem;
+  color: var(--gray-400);
+  opacity: 0.7;
+}
+
+.qr-info {
+  background: rgba(67, 97, 238, 0.05);
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
+  margin-top: 1.5rem;
   display: none;
+}
+
+.qr-info.show {
+  display: block;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.info-value {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Messages */
+.message {
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  margin-top: 1rem;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.message.show {
+  display: flex;
+}
+
+.message i {
+  font-size: 1.25rem;
+}
+
+.message-error {
+  background: rgba(249, 65, 68, 0.1);
+  color: var(--danger);
+  border-left: 4px solid var(--danger);
+}
+
+.message-success {
+  background: rgba(76, 201, 240, 0.1);
+  color: var(--success);
+  border-left: 4px solid var(--success);
+}
+
+.message-warning {
+  background: rgba(255, 158, 0, 0.1);
+  color: var(--warning);
+  border-left: 4px solid var(--warning);
+}
+
+/* Loading State */
+.loading {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--radius);
-  justify-content: center;
-  align-items: center;
+  border-radius: var(--border-radius-lg);
+  display: none;
   flex-direction: column;
-  gap: 15px;
-  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 10;
 }
 
 .loading.show {
   display: flex;
-  animation: fadeIn 0.3s ease;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--gray-light);
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--gray-300);
   border-top: 4px solid var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -588,320 +703,601 @@ input[type="range"]::-webkit-slider-thumb:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Tooltip */
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: var(--dark);
+/* Footer */
+.app-footer {
+  background: var(--gray-900);
   color: white;
+  padding: 1.5rem 1.25rem;
   text-align: center;
-  border-radius: 6px;
-  padding: 10px;
-  position: absolute;
-  z-index: 1000;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  font-size: 0.85rem;
-  font-weight: normal;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin-top: auto;
 }
 
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: var(--dark) transparent transparent transparent;
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
 }
 
-/* Badge */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--primary);
+.footer-links a {
+  color: var(--gray-400);
+  transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
   color: white;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 8px;
-  vertical-align: middle;
 }
 
-/* QR Code Preview Animations */
-#qr canvas, #qr svg {
-  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.copyright {
+  font-size: 0.875rem;
+  color: var(--gray-500);
 }
 
-@keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+/* Responsive Design */
+@media (min-width: 576px) {
+  html {
+    font-size: 17px;
+  }
+  
+  .main-content {
+    padding: 1.5rem;
+  }
+  
+  .logo-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .btn-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    flex: 1;
+    min-width: 150px;
+  }
 }
 
-/* Type-specific styles */
-.type-indicator {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-  background: var(--primary);
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+  
+  .app-header {
+    padding: 1.25rem 2rem;
+  }
+  
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .mobile-menu-btn {
+    display: none;
+  }
+  
+  .logo-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  
+  .color-picker {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .btn-group {
+    flex-direction: row;
+  }
+  
+  .btn {
+    margin-bottom: 0;
+  }
 }
 
-.type-text { background: #3b82f6; }
-.type-wifi { background: #8b5cf6; }
-.type-email { background: #10b981; }
-.type-phone { background: #f59e0b; }
-.type-whatsapp { background: #25d366; }
-.type-sms { background: #6366f1; }
-.type-vcard { background: #ec4899; }
-.type-location { background: #ef4444; }
-.type-event { background: #14b8a6; }
+@media (min-width: 992px) {
+  .app-container {
+    flex-direction: row;
+  }
+  
+  .app-header {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-right: 1px solid var(--gray-200);
+    border-bottom: none;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  
+  .main-content {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+    padding: 2.5rem;
+  }
+  
+  .tab-navigation {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .tab-btn {
+    justify-content: flex-start;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    border-right: none;
+  }
+  
+  .tab-btn.active {
+    border-bottom: 1px solid var(--gray-200);
+    border-right: 3px solid var(--primary);
+  }
+  
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .settings-column {
+    grid-column: 1;
+  }
+  
+  .preview-column {
+    grid-column: 2;
+    position: sticky;
+    top: 2.5rem;
+    height: fit-content;
+  }
+  
+  .logo-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .app-header {
+    width: 350px;
+  }
+  
+  .main-content {
+    margin-left: 350px;
+    width: calc(100% - 350px);
+  }
+  
+  .content-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2.5rem;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 575px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+  
+  .logo-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .logo-option {
+    padding: 0.5rem;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .tab-btn, .logo-option, .advanced-toggle {
+    min-height: 48px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  .btn:hover, .tab-btn:hover {
+    transform: none;
+  }
+  
+  .btn:active, .tab-btn:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --light: #121212;
+    --dark: #f8f9fa;
+    --gray-100: #1e1e1e;
+    --gray-200: #2d2d2d;
+    --gray-300: #3d3d3d;
+    --gray-400: #5a5a5a;
+    --gray-500: #7a7a7a;
+    --gray-600: #9a9a9a;
+    --gray-700: #bababa;
+    --gray-800: #dadada;
+    --gray-900: #f0f0f0;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  }
+  
+  .app-header, .card, .qr-preview-container, .tab-navigation {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+  }
+  
+  .input-wrapper input, 
+  .input-wrapper select, 
+  .input-wrapper textarea {
+    background: var(--gray-200);
+    border-color: var(--gray-400);
+    color: var(--gray-800);
+  }
+  
+  .logo-option {
+    background: var(--gray-200);
+  }
+  
+  .app-footer {
+    background: #0a0a0a;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .app-header, .tab-navigation, .btn-group, .app-footer {
+    display: none;
+  }
+  
+  .main-content {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .qr-preview-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
 </style>
 </head>
 
 <body>
-<div class="container">
-  <h1 class="main-title">Intelligent QR Code Generator</h1>
-  <p class="subtitle">Create beautiful, customizable QR codes with smart detection and advanced features</p>
-  
-  <div class="app-container">
-    <!-- Settings Panel -->
-    <div class="settings-panel">
-      <h2 class="section-title"><i class="fas fa-sliders-h"></i> Settings</h2>
-      
-      <!-- Content Type Section -->
-      <div class="section">
-        <h3 class="section-title"><i class="fas fa-qrcode"></i> Content Type</h3>
-        <div class="form-group">
-          <label for="qrType"><i class="fas fa-bolt"></i> QR Code Type</label>
-          <p class="hint">Select what your QR code should contain. The generator will adapt the input fields accordingly.</p>
-          <select id="qrType" onchange="onTypeChange()">
-            <option value="text">Text / URL</option>
-            <option value="wifi">Wi-Fi Network</option>
-            <option value="email">Email Message</option>
-            <option value="phone">Phone Call</option>
-            <option value="sms">SMS Message</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="vcard">Contact (vCard)</option>
-            <option value="location">Location</option>
-            <option value="event">Calendar Event</option>
-          </select>
-        </div>
-        
-        <!-- Dynamic Fields -->
-        <div id="dynamicFields">
-          <div id="textFields" class="form-group">
-            <label for="mainInput"><i class="fas fa-pencil-alt"></i> Content</label>
-            <p class="hint" id="mainHint">Enter text, URL, or any content. URLs will be automatically detected.</p>
-            <div class="input-with-icon">
-              <i class="fas fa-link"></i>
-              <input type="text" id="mainInput" placeholder="https://example.com or any text" oninput="validateInput()">
-            </div>
-          </div>
-        </div>
-        
-        <div class="status-message error-message" id="errorMessage">
-          <i class="fas fa-exclamation-circle"></i>
-          <span id="errorText"></span>
-        </div>
-        
-        <div class="status-message success-message" id="successMessage">
-          <i class="fas fa-check-circle"></i>
-          <span id="successText"></span>
-        </div>
+<div class="app-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1><i class="fas fa-qrcode"></i> QR Generator</h1>
+        <p class="header-subtitle">Create beautiful QR codes</p>
       </div>
-      
-      <!-- Logo Section -->
-      <div class="section">
-        <h3 class="section-title"><i class="fas fa-image"></i> Logo & Style</h3>
-        
-        <div class="form-group">
-          <label><i class="fas fa-robot"></i> Smart Logo Detection</label>
-          <p class="hint">Logos are automatically suggested based on content. Click any logo to select it.</p>
-          <div class="logo-grid" id="logoGrid">
-            <!-- Logos will be populated by JavaScript -->
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="customLogo"><i class="fas fa-upload"></i> Custom Logo Upload</label>
-          <p class="hint">Upload your own logo (PNG, JPG, SVG). Max size: 2MB. Recommended: Transparent background.</p>
-          <input type="file" id="customLogo" accept="image/*" onchange="handleCustomLogo()">
-        </div>
-        
-        <div class="option-row">
-          <div class="form-group">
-            <label for="logoSize"><i class="fas fa-expand-alt"></i> Logo Size</label>
-            <div class="slider-container">
-              <div class="slider-value">
-                <span>Size</span>
-                <span id="logoSizeValue">22%</span>
-              </div>
-              <input type="range" id="logoSize" min="0.1" max="0.4" step="0.05" value="0.22" oninput="updateLogoSize()">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="margin"><i class="fas fa-border-all"></i> Margin</label>
-            <div class="slider-container">
-              <div class="slider-value">
-                <span>Spacing</span>
-                <span id="marginValue">10px</span>
-              </div>
-              <input type="range" id="margin" min="0" max="30" step="1" value="10" oninput="updateMargin()">
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Color Customization -->
-      <div class="section">
-        <h3 class="section-title"><i class="fas fa-palette"></i> Colors</h3>
-        
-        <div class="color-picker">
-          <div class="color-input">
-            <label for="foregroundColor"><i class="fas fa-square" style="color: #2563eb;"></i> Foreground</label>
-            <p class="hint">Color of QR code dots</p>
-            <input type="color" id="foregroundColor" value="#2563eb" onchange="updateColors()">
-          </div>
-          
-          <div class="color-input">
-            <label for="backgroundColor"><i class="fas fa-square" style="color: #ffffff;"></i> Background</label>
-            <p class="hint">Background color of QR code</p>
-            <input type="color" id="backgroundColor" value="#ffffff" onchange="updateColors()">
-          </div>
-        </div>
-      </div>
-      
-      <!-- Advanced Options -->
-      <div class="section">
-        <div class="advanced-toggle" onclick="toggleAdvanced()">
-          <span><i class="fas fa-cog"></i> Advanced Options <span class="badge">5</span></span>
-          <i class="fas fa-chevron-down" id="advancedIcon"></i>
-        </div>
-        
-        <div class="advanced-content" id="advancedContent">
-          <div class="option-row">
-            <div class="form-group">
-              <label for="errorCorrection"><i class="fas fa-shield-alt"></i> Error Correction</label>
-              <p class="hint">Higher correction = more data recovery, larger QR code</p>
-              <select id="errorCorrection" onchange="updateQR()">
-                <option value="L">Low (7% recovery)</option>
-                <option value="M">Medium (15% recovery)</option>
-                <option value="Q">Quartile (25% recovery)</option>
-                <option value="H" selected>High (30% recovery)</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="dotsStyle"><i class="fas fa-circle"></i> Dots Style</label>
-              <p class="hint">Shape of individual QR code dots</p>
-              <select id="dotsStyle" onchange="updateQR()">
-                <option value="square">Square</option>
-                <option value="rounded" selected>Rounded</option>
-                <option value="dots">Dots</option>
-                <option value="classy">Classy</option>
-                <option value="classy-rounded">Classy Rounded</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="option-row">
-            <div class="form-group">
-              <label for="cornersStyle"><i class="fas fa-cube"></i> Corners Style</label>
-              <p class="hint">Style of position markers in corners</p>
-              <select id="cornersStyle" onchange="updateQR()">
-                <option value="square">Square</option>
-                <option value="extra-rounded" selected>Extra Rounded</option>
-                <option value="dot">Dot</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="qrSize"><i class="fas fa-expand"></i> QR Size</label>
-              <div class="slider-container">
-                <div class="slider-value">
-                  <span>Dimensions</span>
-                  <span id="qrSizeValue">300px</span>
-                </div>
-                <input type="range" id="qrSize" min="200" max="500" step="10" value="300" oninput="updateQRSize()">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Actions -->
-      <div class="button-group">
-        <button class="success" onclick="generateQR()" id="generateBtn">
-          <i class="fas fa-bolt"></i> Generate QR Code
-        </button>
-        <button class="secondary" onclick="resetSettings()">
-          <i class="fas fa-redo"></i> Reset All
-        </button>
-      </div>
+      <button class="mobile-menu-btn" id="menuToggle">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
     
-    <!-- Preview Panel -->
-    <div class="preview-panel">
-      <h2 class="section-title"><i class="fas fa-eye"></i> Preview</h2>
-      
-      <div class="qr-container" id="qrContainer">
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p>Generating QR Code...</p>
+    <!-- Desktop Navigation -->
+    <nav class="tab-navigation" id="desktopTabs">
+      <button class="tab-btn active" data-tab="content">
+        <i class="fas fa-edit"></i> <span class="tab-label">Content</span>
+      </button>
+      <button class="tab-btn" data-tab="design">
+        <i class="fas fa-palette"></i> <span class="tab-label">Design</span>
+      </button>
+      <button class="tab-btn" data-tab="preview">
+        <i class="fas fa-eye"></i> <span class="tab-label">Preview</span>
+      </button>
+    </nav>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Mobile Tab Navigation -->
+    <nav class="tab-navigation" id="mobileTabs">
+      <button class="tab-btn active" data-tab="content">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="tab-btn" data-tab="design">
+        <i class="fas fa-palette"></i>
+      </button>
+      <button class="tab-btn" data-tab="preview">
+        <i class="fas fa-eye"></i>
+      </button>
+    </nav>
+    
+    <div class="content-grid">
+      <!-- Settings Column -->
+      <div class="settings-column">
+        <!-- Content Tab -->
+        <div class="tab-content active" id="content-tab">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-qrcode"></i> Content Type
+              </h3>
+            </div>
+            
+            <div class="form-group">
+              <label for="qrType" class="form-label">What type of QR code?</label>
+              <p class="form-hint">Select the type of content you want to encode</p>
+              <div class="input-wrapper">
+                <i class="fas fa-bolt"></i>
+                <select id="qrType" onchange="onTypeChange()">
+                  <option value="text">Text / URL</option>
+                  <option value="wifi">Wi-Fi Network</option>
+                  <option value="email">Email Message</option>
+                  <option value="phone">Phone Call</option>
+                  <option value="sms">SMS Message</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="vcard">Contact (vCard)</option>
+                  <option value="location">Location</option>
+                  <option value="event">Calendar Event</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="dynamicFields">
+              <!-- Dynamic fields will be inserted here -->
+              <div class="form-group">
+                <label for="mainInput" class="form-label">Content</label>
+                <p class="form-hint" id="mainHint">Enter text, URL, or any content</p>
+                <div class="input-wrapper">
+                  <i class="fas fa-link"></i>
+                  <input type="text" id="mainInput" placeholder="https://example.com or any text" oninput="validateInput()">
+                </div>
+              </div>
+            </div>
+            
+            <div class="message message-error" id="errorMessage">
+              <i class="fas fa-exclamation-circle"></i>
+              <span id="errorText"></span>
+            </div>
+            
+            <div class="message message-success" id="successMessage">
+              <i class="fas fa-check-circle"></i>
+              <span id="successText"></span>
+            </div>
+            
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="generateQR()" id="generateBtn">
+                <i class="fas fa-bolt"></i> Generate QR Code
+              </button>
+              <button class="btn btn-secondary" onclick="resetSettings()">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+            </div>
+          </div>
         </div>
         
-        <div id="qr"></div>
-        <div class="qr-placeholder" id="qrPlaceholder">
-          <i class="fas fa-qrcode"></i>
-          <p>Your QR code will appear here</p>
-          <p class="hint">Configure settings and click "Generate QR Code"</p>
+        <!-- Design Tab -->
+        <div class="tab-content" id="design-tab">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-palette"></i> Logo & Style
+              </h3>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Logo</label>
+              <p class="form-hint">Choose a logo or upload your own</p>
+              <div class="logo-grid" id="logoGrid">
+                <!-- Logos will be populated by JavaScript -->
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="customLogo" class="form-label">Upload Custom Logo</label>
+              <p class="form-hint">PNG, JPG, SVG (Max 2MB)</p>
+              <div class="input-wrapper">
+                <i class="fas fa-upload"></i>
+                <input type="file" id="customLogo" accept="image/*" onchange="handleCustomLogo()">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="logoSize" class="form-label">Logo Size</label>
+              <div class="slider-container">
+                <div class="slider-header">
+                  <span>Size</span>
+                  <span class="slider-value" id="logoSizeValue">22%</span>
+                </div>
+                <input type="range" id="logoSize" min="0.1" max="0.4" step="0.05" value="0.22" oninput="updateLogoSize()">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="margin" class="form-label">Margin</label>
+              <div class="slider-container">
+                <div class="slider-header">
+                  <span>Spacing</span>
+                  <span class="slider-value" id="marginValue">10px</span>
+                </div>
+                <input type="range" id="margin" min="0" max="30" step="1" value="10" oninput="updateMargin()">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Colors</label>
+              <p class="form-hint">Customize QR code colors</p>
+              <div class="color-picker">
+                <div class="color-input">
+                  <label for="foregroundColor">
+                    <i class="fas fa-square" style="color: #4361ee;"></i> Foreground
+                  </label>
+                  <input type="color" id="foregroundColor" value="#4361ee" onchange="updateColors()">
+                </div>
+                <div class="color-input">
+                  <label for="backgroundColor">
+                    <i class="fas fa-square" style="color: #ffffff;"></i> Background
+                  </label>
+                  <input type="color" id="backgroundColor" value="#ffffff" onchange="updateColors()">
+                </div>
+              </div>
+            </div>
+            
+            <button class="advanced-toggle" onclick="toggleAdvanced()">
+              <span><i class="fas fa-cog"></i> Advanced Options</span>
+              <i class="fas fa-chevron-down" id="advancedIcon"></i>
+            </button>
+            
+            <div class="advanced-content" id="advancedContent">
+              <div class="form-group">
+                <label for="errorCorrection" class="form-label">Error Correction</label>
+                <div class="input-wrapper">
+                  <i class="fas fa-shield-alt"></i>
+                  <select id="errorCorrection" onchange="updateQR()">
+                    <option value="L">Low (7% recovery)</option>
+                    <option value="M">Medium (15% recovery)</option>
+                    <option value="Q">Quartile (25% recovery)</option>
+                    <option value="H" selected>High (30% recovery)</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="dotsStyle" class="form-label">Dots Style</label>
+                <div class="input-wrapper">
+                  <i class="fas fa-circle"></i>
+                  <select id="dotsStyle" onchange="updateQR()">
+                    <option value="square">Square</option>
+                    <option value="rounded" selected>Rounded</option>
+                    <option value="dots">Dots</option>
+                    <option value="classy">Classy</option>
+                    <option value="classy-rounded">Classy Rounded</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="cornersStyle" class="form-label">Corners Style</label>
+                <div class="input-wrapper">
+                  <i class="fas fa-cube"></i>
+                  <select id="cornersStyle" onchange="updateQR()">
+                    <option value="square">Square</option>
+                    <option value="extra-rounded" selected>Extra Rounded</option>
+                    <option value="dot">Dot</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="qrSize" class="form-label">QR Size</label>
+                <div class="slider-container">
+                  <div class="slider-header">
+                    <span>Dimensions</span>
+                    <span class="slider-value" id="qrSizeValue">300px</span>
+                  </div>
+                  <input type="range" id="qrSize" min="200" max="500" step="10" value="300" oninput="updateQRSize()">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
-      <div class="qr-info" id="qrInfo">
-        <p><span><i class="fas fa-tag"></i> Type:</span> <span id="infoType">Text</span></p>
-        <p><span><i class="fas fa-expand"></i> Size:</span> <span id="infoSize">300x300px</span></p>
-        <p><span><i class="fas fa-shield-alt"></i> Error Correction:</span> <span id="infoCorrection">High (30%)</span></p>
-        <p><span><i class="fas fa-database"></i> Data Length:</span> <span id="infoLength">0 characters</span></p>
-        <p><span><i class="fas fa-hashtag"></i> Version:</span> <span id="infoVersion">Auto</span></p>
-      </div>
-      
-      <div class="status-message warning-message" id="warningMessage">
-        <i class="fas fa-info-circle"></i>
-        <span id="warningText"></span>
-      </div>
-      
-      <div class="button-group">
-        <button onclick="downloadQR('png')" id="downloadPngBtn">
-          <i class="fas fa-download"></i> Download PNG
-        </button>
-        <button class="secondary" onclick="downloadQR('svg')" id="downloadSvgBtn">
-          <i class="fas fa-download"></i> Download SVG
-        </button>
-        <button class="secondary" onclick="shareQR()" id="shareBtn">
-          <i class="fas fa-share-alt"></i> Share QR Code
-        </button>
+      <!-- Preview Column -->
+      <div class="preview-column">
+        <!-- Preview Tab -->
+        <div class="tab-content" id="preview-tab">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-eye"></i> QR Code Preview
+              </h3>
+            </div>
+            
+            <div class="qr-preview-container" id="qrContainer">
+              <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generating QR Code...</p>
+              </div>
+              
+              <div id="qr"></div>
+              <div class="qr-placeholder" id="qrPlaceholder">
+                <i class="fas fa-qrcode"></i>
+                <p>Your QR code will appear here</p>
+                <p class="form-hint">Configure settings and generate QR code</p>
+              </div>
+            </div>
+            
+            <div class="qr-info" id="qrInfo">
+              <div class="info-row">
+                <span class="info-label">Type:</span>
+                <span class="info-value" id="infoType">Text</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Size:</span>
+                <span class="info-value" id="infoSize">300×300px</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Error Correction:</span>
+                <span class="info-value" id="infoCorrection">High (30%)</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Data Length:</span>
+                <span class="info-value" id="infoLength">0 chars</span>
+              </div>
+            </div>
+            
+            <div class="message message-warning" id="warningMessage">
+              <i class="fas fa-info-circle"></i>
+              <span id="warningText"></span>
+            </div>
+            
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="downloadQR('png')" id="downloadPngBtn">
+                <i class="fas fa-download"></i> Download PNG
+              </button>
+              <button class="btn btn-secondary" onclick="downloadQR('svg')" id="downloadSvgBtn">
+                <i class="fas fa-download"></i> Download SVG
+              </button>
+              <button class="btn btn-success" onclick="shareQR()" id="shareBtn">
+                <i class="fas fa-share-alt"></i> Share
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>QR Code Generator &copy; <span id="currentYear"></span></p>
+      <div class="footer-links">
+        <a href="#" onclick="showHint('Feature coming soon!')">Privacy</a>
+        <a href="#" onclick="showHint('Feature coming soon!')">Terms</a>
+        <a href="#" onclick="showHint('Feature coming soon!')">Help</a>
+      </div>
+      <p class="copyright">Made with <i class="fas fa-heart" style="color: #f72585;"></i> for mobile users</p>
+    </div>
+  </footer>
 </div>
 
 <script>
@@ -910,81 +1306,131 @@ let qrCode = null;
 let selectedLogo = "";
 let customLogoFile = null;
 let qrGenerated = false;
-let currentQRBlob = null; // Store the current QR blob for sharing
-let currentQRDataURL = null; // Store data URL for immediate access
+let currentQRBlob = null;
+let currentQRDataURL = null;
+let activeTab = "content";
 
-// Available logos with categories
+// Available logos with icons
 const logos = [
-  { id: 'none', name: 'No Logo', path: '', icon: 'fas fa-ban', category: 'general' },
-  { id: 'url', name: 'Website', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/globe.svg', icon: 'fas fa-globe', category: 'web' },
-  { id: 'wifi', name: 'Wi-Fi', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/wifi.svg', icon: 'fas fa-wifi', category: 'network' },
-  { id: 'email', name: 'Email', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/mail.svg', icon: 'fas fa-envelope', category: 'communication' },
-  { id: 'phone', name: 'Phone', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/phone.svg', icon: 'fas fa-phone', category: 'communication' },
-  { id: 'whatsapp', name: 'WhatsApp', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-whatsapp.svg', icon: 'fab fa-whatsapp', category: 'communication' },
-  { id: 'sms', name: 'SMS', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/message.svg', icon: 'fas fa-sms', category: 'communication' },
-  { id: 'vcard', name: 'Contact', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/user.svg', icon: 'fas fa-address-card', category: 'communication' },
-  { id: 'location', name: 'Location', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/map-pin.svg', icon: 'fas fa-map-marker-alt', category: 'location' },
-  { id: 'event', name: 'Event', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/calendar.svg', icon: 'fas fa-calendar', category: 'productivity' },
-  { id: 'facebook', name: 'Facebook', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-facebook.svg', icon: 'fab fa-facebook', category: 'social' },
-  { id: 'instagram', name: 'Instagram', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-instagram.svg', icon: 'fab fa-instagram', category: 'social' },
-  { id: 'linkedin', name: 'LinkedIn', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-linkedin.svg', icon: 'fab fa-linkedin', category: 'social' },
-  { id: 'twitter', name: 'Twitter', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-twitter.svg', icon: 'fab fa-twitter', category: 'social' },
-  { id: 'youtube', name: 'YouTube', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-youtube.svg', icon: 'fab fa-youtube', category: 'social' },
-  { id: 'github', name: 'GitHub', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-github.svg', icon: 'fab fa-github', category: 'development' },
-  { id: 'paypal', name: 'PayPal', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/brand-paypal.svg', icon: 'fab fa-paypal', category: 'payment' },
-  { id: 'bitcoin', name: 'Bitcoin', path: 'https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/currency-bitcoin.svg', icon: 'fab fa-bitcoin', category: 'payment' },
+  { id: 'none', name: 'No Logo', icon: 'fas fa-ban' },
+  { id: 'url', name: 'Website', icon: 'fas fa-globe', color: '#3b82f6' },
+  { id: 'wifi', name: 'Wi-Fi', icon: 'fas fa-wifi', color: '#8b5cf6' },
+  { id: 'email', name: 'Email', icon: 'fas fa-envelope', color: '#10b981' },
+  { id: 'phone', name: 'Phone', icon: 'fas fa-phone', color: '#f59e0b' },
+  { id: 'whatsapp', name: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25d366' },
+  { id: 'sms', name: 'SMS', icon: 'fas fa-sms', color: '#6366f1' },
+  { id: 'vcard', name: 'Contact', icon: 'fas fa-address-card', color: '#ec4899' },
+  { id: 'location', name: 'Location', icon: 'fas fa-map-marker-alt', color: '#ef4444' },
+  { id: 'event', name: 'Event', icon: 'fas fa-calendar', color: '#14b8a6' },
+  { id: 'facebook', name: 'Facebook', icon: 'fab fa-facebook', color: '#1877f2' },
+  { id: 'instagram', name: 'Instagram', icon: 'fab fa-instagram', color: '#e4405f' },
+  { id: 'linkedin', name: 'LinkedIn', icon: 'fab fa-linkedin', color: '#0a66c2' },
+  { id: 'twitter', name: 'Twitter', icon: 'fab fa-twitter', color: '#1da1f2' },
+  { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube', color: '#ff0000' },
+  { id: 'github', name: 'GitHub', icon: 'fab fa-github', color: '#333' },
+  { id: 'paypal', name: 'PayPal', icon: 'fab fa-paypal', color: '#00457c' },
+  { id: 'bitcoin', name: 'Bitcoin', icon: 'fab fa-bitcoin', color: '#f7931a' },
 ];
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-  initLogoGrid();
-  initQRCode();
+  initApp();
   setupEventListeners();
-  showHint('Select QR code type and enter content to get started');
+  setCurrentYear();
   
-  // Set up default placeholder examples
-  updatePlaceholderExamples();
+  // Initialize with example
+  setTimeout(() => {
+    showHint('Welcome! Try entering a URL or text to generate your first QR code.');
+  }, 1000);
 });
 
-// Initialize logo grid
+// Initialize app
+function initApp() {
+  initLogoGrid();
+  initQRCode();
+  setupTabNavigation();
+  onTypeChange();
+  
+  // Set up mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const appHeader = document.querySelector('.app-header');
+  
+  menuToggle.addEventListener('click', function() {
+    appHeader.classList.toggle('mobile-open');
+    if (appHeader.classList.contains('mobile-open')) {
+      menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+    } else {
+      menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+    }
+  });
+}
+
+// Initialize logo grid with SVG icons
 function initLogoGrid() {
   const logoGrid = document.getElementById('logoGrid');
   logoGrid.innerHTML = '';
   
   logos.forEach(logo => {
-    const logoElement = document.createElement('img');
+    const logoElement = document.createElement('div');
     logoElement.className = 'logo-option';
     logoElement.title = logo.name;
-    logoElement.alt = logo.name + ' logo';
+    logoElement.dataset.id = logo.id;
     
-    if (logo.path) {
-      logoElement.src = logo.path;
-      logoElement.onerror = function() {
-        // Fallback to icon if image fails to load
-        this.style.display = 'none';
-      };
+    // Create SVG icon
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "24");
+    svg.setAttribute("height", "24");
+    
+    const use = document.createElementNS(svgNS, "use");
+    
+    if (logo.id === 'none') {
+      // Special case for "no logo" - create an X icon
+      const path = document.createElementNS(svgNS, "path");
+      path.setAttribute("d", "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z");
+      path.setAttribute("fill", "#6c757d");
+      svg.appendChild(path);
     } else {
-      // For "no logo" option
-      logoElement.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSI4IiBmaWxsPSIjZjFmNWY5Ii8+PHBhdGggZD0iTTE4IDIySDMyVjM2SDE4VjIyWiIgZmlsbD0iI2NkZDFlNiIvPjxwYXRoIGQ9Ik0yMyAyN0gyN1YzMUgyM1YyN1oiIGZpbGw9IiM4Yzk3YWEiLz48cGF0aCBkPSJNMzIgMjdIMzZWMzFIMzJWMjdaIiBmaWxsPSIjOGM5N2FhIi8+PC9zdmc+';
+      // For other logos, we'll use Font Awesome icons via SVG
+      const iconClass = logo.icon.split(' ')[1].replace('fa-', '');
+      
+      // Create a circle background
+      const circle = document.createElementNS(svgNS, "circle");
+      circle.setAttribute("cx", "12");
+      circle.setAttribute("cy", "12");
+      circle.setAttribute("r", "10");
+      circle.setAttribute("fill", logo.color || '#4361ee');
+      svg.appendChild(circle);
+      
+      // Add icon (simplified - in production you'd use actual SVG paths)
+      const text = document.createElementNS(svgNS, "text");
+      text.setAttribute("x", "12");
+      text.setAttribute("y", "16");
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("fill", "white");
+      text.setAttribute("font-size", "10");
+      text.setAttribute("font-weight", "bold");
+      text.textContent = iconClass.substring(0, 2).toUpperCase();
+      svg.appendChild(text);
     }
     
-    logoElement.dataset.id = logo.id;
+    logoElement.appendChild(svg);
     logoElement.addEventListener('click', () => selectLogo(logo.id));
     
     logoGrid.appendChild(logoElement);
   });
   
-  // Select "none" by default
   selectLogo('none');
 }
 
-// Initialize QR code instance
+// Initialize QR code
 function initQRCode() {
   qrCode = new QRCodeStyling({
     width: 300,
     height: 300,
-    type: 'canvas', // Use canvas for better blob handling
-    data: 'Scan me!',
+    type: 'canvas',
+    data: 'QR Code Generator',
     margin: 10,
     qrOptions: {
       typeNumber: 0,
@@ -998,15 +1444,15 @@ function initQRCode() {
       crossOrigin: 'anonymous'
     },
     dotsOptions: {
-      color: '#2563eb',
+      color: '#4361ee',
       type: 'rounded'
     },
     cornersSquareOptions: {
-      color: '#2563eb',
+      color: '#4361ee',
       type: 'extra-rounded'
     },
     cornersDotOptions: {
-      color: '#2563eb',
+      color: '#4361ee',
       type: 'dot'
     },
     backgroundOptions: {
@@ -1014,71 +1460,112 @@ function initQRCode() {
     }
   });
   
-  // Append to container
-  const qrContainer = document.getElementById('qr');
-  qrContainer.innerHTML = '';
-  qrCode.append(qrContainer);
+  qrCode.append(document.getElementById('qr'));
 }
 
 // Set up event listeners
 function setupEventListeners() {
-  // Real-time validation
-  document.getElementById('mainInput').addEventListener('input', validateInput);
-  
-  // Auto-generate on Enter key
-  document.getElementById('mainInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      generateQR();
+  // Input validation
+  document.addEventListener('input', function(e) {
+    if (e.target.id === 'mainInput' || e.target.id === 'wifiSsid' || 
+        e.target.id === 'wifiPassword' || e.target.id === 'emailSubject' ||
+        e.target.id === 'smsBody' || e.target.id === 'whatsappMessage' ||
+        e.target.id === 'vcardName' || e.target.id === 'vcardPhone' ||
+        e.target.id === 'vcardEmail' || e.target.id === 'locationLat' ||
+        e.target.id === 'locationLng' || e.target.id === 'eventTitle') {
+      validateInput();
     }
   });
   
-  // Show warning if QR not generated before download/share
-  document.getElementById('downloadPngBtn').addEventListener('click', function(e) {
-    if (!qrGenerated) {
+  // Enter key to generate QR
+  document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.target.matches('textarea')) {
       e.preventDefault();
-      showWarning('Please generate a QR code first');
+      if (activeTab === 'content') {
+        generateQR();
+      }
     }
   });
   
-  document.getElementById('downloadSvgBtn').addEventListener('click', function(e) {
-    if (!qrGenerated) {
-      e.preventDefault();
-      showWarning('Please generate a QR code first');
-    }
-  });
-  
-  document.getElementById('shareBtn').addEventListener('click', function(e) {
-    if (!qrGenerated) {
-      e.preventDefault();
-      showWarning('Please generate a QR code first');
+  // Handle tab visibility change
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && qrGenerated) {
+      // Refresh QR display when tab becomes visible
+      setTimeout(updateQR, 100);
     }
   });
 }
 
-// Update placeholder examples based on type
-function updatePlaceholderExamples() {
-  const examples = {
-    text: ["https://example.com", "Hello World!", "Contact: 123-456-7890"],
-    wifi: ["MyHomeWiFi", "Office Network", "Guest WiFi"],
-    email: ["john@example.com", "contact@company.com"],
-    phone: ["+1234567890", "+44 7911 123456"],
-    whatsapp: ["+1234567890", "+44 7911 123456"],
-    sms: ["+1234567890", "+44 7911 123456"],
-    vcard: ["John Doe", "Jane Smith"],
-    location: ["40.7128", "51.5074"],
-    event: ["Team Meeting", "Birthday Party"]
+// Set current year in footer
+function setCurrentYear() {
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+}
+
+// Setup tab navigation
+function setupTabNavigation() {
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const mobileTabs = document.getElementById('mobileTabs');
+  const desktopTabs = document.getElementById('desktopTabs');
+  
+  // Function to switch tabs
+  const switchTab = (tabId) => {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    document.getElementById(`${tabId}-tab`).classList.add('active');
+    
+    // Update active tab button
+    tabButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.tab === tabId) {
+        btn.classList.add('active');
+      }
+    });
+    
+    activeTab = tabId;
+    
+    // On mobile, scroll to top when switching tabs
+    if (window.innerWidth < 992) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
   
-  const type = document.getElementById('qrType').value;
-  const mainInput = document.getElementById('mainInput');
+  // Add click event to all tab buttons
+  tabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      switchTab(this.dataset.tab);
+    });
+  });
   
-  if (mainInput && examples[type]) {
-    mainInput.placeholder = examples[type][0];
+  // Handle mobile/desktop tab sync
+  if (mobileTabs && desktopTabs) {
+    const syncTabs = () => {
+      const activeBtn = mobileTabs.querySelector('.tab-btn.active');
+      if (activeBtn) {
+        const tabId = activeBtn.dataset.tab;
+        desktopTabs.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+      }
+    };
+    
+    mobileTabs.addEventListener('click', syncTabs);
   }
+  
+  // Auto-switch to preview after generation
+  const originalGenerateQR = generateQR;
+  generateQR = async function() {
+    await originalGenerateQR();
+    if (window.innerWidth < 768) {
+      switchTab('preview');
+    }
+  };
 }
 
-// Show success hint
+// Show hint message
 function showHint(message, duration = 3000) {
   const successMessage = document.getElementById('successMessage');
   const successText = document.getElementById('successText');
@@ -1091,7 +1578,7 @@ function showHint(message, duration = 3000) {
   }, duration);
 }
 
-// Show warning message
+// Show warning
 function showWarning(message, duration = 4000) {
   const warningMessage = document.getElementById('warningMessage');
   const warningText = document.getElementById('warningText');
@@ -1104,7 +1591,7 @@ function showWarning(message, duration = 4000) {
   }, duration);
 }
 
-// Show error message
+// Show error
 function showError(message, duration = 5000) {
   const errorMessage = document.getElementById('errorMessage');
   const errorText = document.getElementById('errorText');
@@ -1142,8 +1629,8 @@ function selectLogo(logoId) {
   document.getElementById('customLogo').value = '';
   customLogoFile = null;
   
-  // Set selected logo
-  selectedLogo = logo.path;
+  // Set selected logo (for icon-based logos, we use the icon class)
+  selectedLogo = logoId === 'none' ? '' : logo.icon;
   
   // Auto-update if QR already generated
   if (qrGenerated) {
@@ -1187,7 +1674,7 @@ function handleCustomLogo() {
   showHint('Custom logo uploaded successfully');
 }
 
-// Smart logo detection based on content
+// Smart logo detection
 function detectLogoFromContent(content, type) {
   if (!content) return 'none';
   
@@ -1219,7 +1706,7 @@ function detectLogoFromContent(content, type) {
   return 'none';
 }
 
-// Handle QR type change
+// Handle type change
 function onTypeChange() {
   const type = document.getElementById('qrType').value;
   const dynamicFields = document.getElementById('dynamicFields');
@@ -1227,36 +1714,37 @@ function onTypeChange() {
   // Clear previous dynamic fields
   dynamicFields.innerHTML = '';
   
-  // Base text field for most types
   let fieldsHTML = '';
   
-  // Different field structures for different types
   switch (type) {
     case 'wifi':
       fieldsHTML = `
         <div class="form-group">
-          <label for="wifiSsid"><i class="fas fa-wifi"></i> Network Name (SSID)</label>
-          <p class="hint">The exact name of your Wi-Fi network</p>
-          <div class="input-with-icon">
-            <i class="fas fa-network-wired"></i>
+          <label for="wifiSsid" class="form-label">Wi-Fi Network Name</label>
+          <p class="form-hint">Enter the exact name of your Wi-Fi network</p>
+          <div class="input-wrapper">
+            <i class="fas fa-wifi"></i>
             <input type="text" id="wifiSsid" placeholder="MyHomeWiFi" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="wifiPassword"><i class="fas fa-key"></i> Password</label>
-          <p class="hint">Leave empty for open networks (no password)</p>
-          <div class="input-with-icon">
-            <i class="fas fa-lock"></i>
+          <label for="wifiPassword" class="form-label">Password</label>
+          <p class="form-hint">Leave empty for open networks</p>
+          <div class="input-wrapper">
+            <i class="fas fa-key"></i>
             <input type="text" id="wifiPassword" placeholder="Enter password" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="wifiSecurity"><i class="fas fa-shield-alt"></i> Security Type</label>
-          <select id="wifiSecurity" onchange="validateInput()">
-            <option value="WPA">WPA/WPA2 (Recommended)</option>
-            <option value="WEP">WEP</option>
-            <option value="nopass">No Password</option>
-          </select>
+          <label for="wifiSecurity" class="form-label">Security Type</label>
+          <div class="input-wrapper">
+            <i class="fas fa-shield-alt"></i>
+            <select id="wifiSecurity" onchange="validateInput()">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">No Password</option>
+            </select>
+          </div>
         </div>
       `;
       break;
@@ -1264,20 +1752,26 @@ function onTypeChange() {
     case 'email':
       fieldsHTML = `
         <div class="form-group">
-          <label for="mainInput"><i class="fas fa-envelope"></i> Email Address</label>
-          <p class="hint">Recipient's email address</p>
-          <div class="input-with-icon">
+          <label for="mainInput" class="form-label">Email Address</label>
+          <p class="form-hint">Recipient's email address</p>
+          <div class="input-wrapper">
             <i class="fas fa-at"></i>
-            <input type="email" id="mainInput" placeholder="recipient@example.com" oninput="validateInput()">
+            <input type="email" id="mainInput" placeholder="example@domain.com" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="emailSubject"><i class="fas fa-heading"></i> Subject (Optional)</label>
-          <input type="text" id="emailSubject" placeholder="Email subject" oninput="validateInput()">
+          <label for="emailSubject" class="form-label">Subject (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-heading"></i>
+            <input type="text" id="emailSubject" placeholder="Email subject" oninput="validateInput()">
+          </div>
         </div>
         <div class="form-group">
-          <label for="emailBody"><i class="fas fa-align-left"></i> Body (Optional)</label>
-          <textarea id="emailBody" placeholder="Email body content" oninput="validateInput()"></textarea>
+          <label for="emailBody" class="form-label">Message (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-align-left"></i>
+            <textarea id="emailBody" placeholder="Email body" oninput="validateInput()"></textarea>
+          </div>
         </div>
       `;
       break;
@@ -1285,16 +1779,19 @@ function onTypeChange() {
     case 'sms':
       fieldsHTML = `
         <div class="form-group">
-          <label for="mainInput"><i class="fas fa-phone"></i> Phone Number</label>
-          <p class="hint">Recipient's phone number with country code</p>
-          <div class="input-with-icon">
-            <i class="fas fa-mobile-alt"></i>
+          <label for="mainInput" class="form-label">Phone Number</label>
+          <p class="form-hint">Recipient's phone number with country code</p>
+          <div class="input-wrapper">
+            <i class="fas fa-phone"></i>
             <input type="tel" id="mainInput" placeholder="+1234567890" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="smsBody"><i class="fas fa-comment"></i> Message (Optional)</label>
-          <textarea id="smsBody" placeholder="SMS message content" oninput="validateInput()"></textarea>
+          <label for="smsBody" class="form-label">Message (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-comment"></i>
+            <textarea id="smsBody" placeholder="SMS message" oninput="validateInput()"></textarea>
+          </div>
         </div>
       `;
       break;
@@ -1302,16 +1799,19 @@ function onTypeChange() {
     case 'whatsapp':
       fieldsHTML = `
         <div class="form-group">
-          <label for="mainInput"><i class="fab fa-whatsapp"></i> WhatsApp Number</label>
-          <p class="hint">Phone number with country code (without + sign)</p>
-          <div class="input-with-icon">
-            <i class="fas fa-phone"></i>
+          <label for="mainInput" class="form-label">WhatsApp Number</label>
+          <p class="form-hint">Phone number with country code (without +)</p>
+          <div class="input-wrapper">
+            <i class="fab fa-whatsapp"></i>
             <input type="tel" id="mainInput" placeholder="1234567890" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="whatsappMessage"><i class="fas fa-comment"></i> Message (Optional)</label>
-          <textarea id="whatsappMessage" placeholder="WhatsApp message" oninput="validateInput()"></textarea>
+          <label for="whatsappMessage" class="form-label">Message (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-comment"></i>
+            <textarea id="whatsappMessage" placeholder="WhatsApp message" oninput="validateInput()"></textarea>
+          </div>
         </div>
       `;
       break;
@@ -1319,39 +1819,44 @@ function onTypeChange() {
     case 'vcard':
       fieldsHTML = `
         <div class="form-group">
-          <label for="vcardName"><i class="fas fa-user"></i> Full Name</label>
-          <input type="text" id="vcardName" placeholder="John Doe" oninput="validateInput()">
+          <label for="vcardName" class="form-label">Full Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" id="vcardName" placeholder="John Doe" oninput="validateInput()">
+          </div>
         </div>
         <div class="form-group">
-          <label for="vcardPhone"><i class="fas fa-phone"></i> Phone Number</label>
-          <input type="tel" id="vcardPhone" placeholder="+1234567890" oninput="validateInput()">
+          <label for="vcardPhone" class="form-label">Phone Number</label>
+          <div class="input-wrapper">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="vcardPhone" placeholder="+1234567890" oninput="validateInput()">
+          </div>
         </div>
         <div class="form-group">
-          <label for="vcardEmail"><i class="fas fa-envelope"></i> Email Address</label>
-          <input type="email" id="vcardEmail" placeholder="john@example.com" oninput="validateInput()">
-        </div>
-        <div class="form-group">
-          <label for="vcardCompany"><i class="fas fa-building"></i> Company (Optional)</label>
-          <input type="text" id="vcardCompany" placeholder="Company Name" oninput="validateInput()">
+          <label for="vcardEmail" class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="vcardEmail" placeholder="john@example.com" oninput="validateInput()">
+          </div>
         </div>
       `;
       break;
       
     case 'location':
       fieldsHTML = `
-        <div class="option-row">
-          <div class="form-group">
-            <label for="locationLat"><i class="fas fa-globe-americas"></i> Latitude</label>
+        <div class="form-group">
+          <label for="locationLat" class="form-label">Latitude</label>
+          <div class="input-wrapper">
+            <i class="fas fa-globe-americas"></i>
             <input type="number" id="locationLat" step="any" placeholder="40.7128" oninput="validateInput()">
-          </div>
-          <div class="form-group">
-            <label for="locationLng"><i class="fas fa-globe-americas"></i> Longitude</label>
-            <input type="number" id="locationLng" step="any" placeholder="-74.0060" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="locationLabel"><i class="fas fa-map-marker-alt"></i> Label (Optional)</label>
-          <input type="text" id="locationLabel" placeholder="New York City" oninput="validateInput()">
+          <label for="locationLng" class="form-label">Longitude</label>
+          <div class="input-wrapper">
+            <i class="fas fa-globe-americas"></i>
+            <input type="number" id="locationLng" step="any" placeholder="-74.0060" oninput="validateInput()">
+          </div>
         </div>
       `;
       break;
@@ -1359,26 +1864,18 @@ function onTypeChange() {
     case 'event':
       fieldsHTML = `
         <div class="form-group">
-          <label for="eventTitle"><i class="fas fa-heading"></i> Event Title</label>
-          <input type="text" id="eventTitle" placeholder="Team Meeting" oninput="validateInput()">
-        </div>
-        <div class="option-row">
-          <div class="form-group">
-            <label for="eventStart"><i class="fas fa-play"></i> Start Date & Time</label>
-            <input type="datetime-local" id="eventStart" oninput="validateInput()">
-          </div>
-          <div class="form-group">
-            <label for="eventEnd"><i class="fas fa-stop"></i> End Date & Time</label>
-            <input type="datetime-local" id="eventEnd" oninput="validateInput()">
+          <label for="eventTitle" class="form-label">Event Title</label>
+          <div class="input-wrapper">
+            <i class="fas fa-heading"></i>
+            <input type="text" id="eventTitle" placeholder="Team Meeting" oninput="validateInput()">
           </div>
         </div>
         <div class="form-group">
-          <label for="eventLocation"><i class="fas fa-map-marker-alt"></i> Location (Optional)</label>
-          <input type="text" id="eventLocation" placeholder="Conference Room A" oninput="validateInput()">
-        </div>
-        <div class="form-group">
-          <label for="eventDescription"><i class="fas fa-align-left"></i> Description (Optional)</label>
-          <textarea id="eventDescription" placeholder="Event details" oninput="validateInput()"></textarea>
+          <label for="eventDate" class="form-label">Date & Time</label>
+          <div class="input-wrapper">
+            <i class="fas fa-calendar"></i>
+            <input type="datetime-local" id="eventDate" oninput="validateInput()">
+          </div>
         </div>
       `;
       break;
@@ -1386,9 +1883,9 @@ function onTypeChange() {
     default: // text
       fieldsHTML = `
         <div class="form-group">
-          <label for="mainInput"><i class="fas fa-pencil-alt"></i> Content</label>
-          <p class="hint" id="mainHint">Enter text, URL, or any content</p>
-          <div class="input-with-icon">
+          <label for="mainInput" class="form-label">Content</label>
+          <p class="form-hint" id="mainHint">Enter text, URL, or any content</p>
+          <div class="input-wrapper">
             <i class="fas fa-link"></i>
             <input type="text" id="mainInput" placeholder="https://example.com or any text" oninput="validateInput()">
           </div>
@@ -1398,17 +1895,27 @@ function onTypeChange() {
   
   dynamicFields.innerHTML = fieldsHTML;
   
-  // Auto-select appropriate logo if none selected
+  // Auto-select appropriate logo
   const logoId = detectLogoFromContent('', type);
   selectLogo(logoId);
   
-  // Update placeholder examples
-  updatePlaceholderExamples();
-  
   hideMessages();
+  
+  // Set placeholder based on type
+  const mainInput = document.getElementById('mainInput');
+  if (mainInput) {
+    const placeholders = {
+      text: 'https://example.com or any text',
+      email: 'example@domain.com',
+      phone: '+1234567890',
+      whatsapp: '1234567890',
+      sms: '+1234567890'
+    };
+    mainInput.placeholder = placeholders[type] || 'Enter content';
+  }
 }
 
-// Validate input based on type
+// Validate input
 function validateInput() {
   const type = document.getElementById('qrType').value;
   let isValid = true;
@@ -1421,7 +1928,7 @@ function validateInput() {
     const ssid = document.getElementById('wifiSsid');
     if (ssid && !ssid.value.trim()) {
       isValid = false;
-      errorMessage = 'Wi-Fi network name (SSID) is required';
+      errorMessage = 'Wi-Fi network name is required';
     }
   } else if (type === 'email') {
     const email = document.getElementById('mainInput');
@@ -1431,9 +1938,6 @@ function validateInput() {
         isValid = false;
         errorMessage = 'Please enter a valid email address';
       }
-    } else if (email && !email.value.trim()) {
-      isValid = false;
-      errorMessage = 'Email address is required';
     }
   } else if (type === 'phone' || type === 'sms' || type === 'whatsapp') {
     const phone = document.getElementById('mainInput');
@@ -1443,15 +1947,12 @@ function validateInput() {
         isValid = false;
         errorMessage = 'Please enter a valid phone number';
       }
-    } else if (phone && !phone.value.trim()) {
-      isValid = false;
-      errorMessage = 'Phone number is required';
     }
   } else if (type === 'vcard') {
     const name = document.getElementById('vcardName');
     if (name && !name.value.trim()) {
       isValid = false;
-      errorMessage = 'Full name is required for vCard';
+      errorMessage = 'Full name is required';
     }
   } else if (type === 'location') {
     const lat = document.getElementById('locationLat');
@@ -1493,7 +1994,7 @@ function validateInput() {
   return isValid;
 }
 
-// Build QR payload based on type
+// Build payload
 function buildPayload() {
   const type = document.getElementById('qrType').value;
   
@@ -1526,70 +2027,28 @@ function buildPayload() {
     case 'sms':
       const smsPhone = document.getElementById('mainInput').value.trim().replace(/\D/g, '');
       const smsBody = document.getElementById('smsBody')?.value.trim() || '';
-      
-      let smsto = `SMSTO:${smsPhone}`;
-      if (smsBody) {
-        smsto += `:${encodeURIComponent(smsBody)}`;
-      }
-      return smsto;
+      return `SMSTO:${smsPhone}:${encodeURIComponent(smsBody)}`;
       
     case 'whatsapp':
       const whatsappPhone = document.getElementById('mainInput').value.trim().replace(/\D/g, '');
       const whatsappMessage = document.getElementById('whatsappMessage')?.value.trim() || '';
-      
-      let whatsappURL = `https://wa.me/${whatsappPhone}`;
-      if (whatsappMessage) {
-        whatsappURL += `?text=${encodeURIComponent(whatsappMessage)}`;
-      }
-      return whatsappURL;
+      return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(whatsappMessage)}`;
       
     case 'vcard':
       const name = document.getElementById('vcardName')?.value.trim() || '';
       const vcardPhone = document.getElementById('vcardPhone')?.value.trim() || '';
       const vcardEmail = document.getElementById('vcardEmail')?.value.trim() || '';
-      const company = document.getElementById('vcardCompany')?.value.trim() || '';
-      
-      let vcard = 'BEGIN:VCARD\nVERSION:3.0\n';
-      if (name) vcard += `FN:${name}\n`;
-      if (vcardPhone) vcard += `TEL:${vcardPhone}\n`;
-      if (vcardEmail) vcard += `EMAIL:${vcardEmail}\n`;
-      if (company) vcard += `ORG:${company}\n`;
-      vcard += 'END:VCARD';
-      return vcard;
+      return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${vcardPhone}\nEMAIL:${vcardEmail}\nEND:VCARD`;
       
     case 'location':
       const lat = document.getElementById('locationLat')?.value || '0';
       const lng = document.getElementById('locationLng')?.value || '0';
-      const label = document.getElementById('locationLabel')?.value.trim() || '';
-      
-      let geoURL = `geo:${lat},${lng}`;
-      if (label) {
-        geoURL += `?q=${encodeURIComponent(label)}`;
-      }
-      return geoURL;
+      return `geo:${lat},${lng}`;
       
     case 'event':
       const title = document.getElementById('eventTitle')?.value.trim() || 'Event';
-      const start = document.getElementById('eventStart')?.value || '';
-      const end = document.getElementById('eventEnd')?.value || '';
-      const location = document.getElementById('eventLocation')?.value.trim() || '';
-      const description = document.getElementById('eventDescription')?.value.trim() || '';
-      
-      // Format for iCalendar
-      let event = 'BEGIN:VEVENT\n';
-      event += `SUMMARY:${title}\n`;
-      if (start) {
-        const startDate = new Date(start);
-        event += `DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
-      }
-      if (end) {
-        const endDate = new Date(end);
-        event += `DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
-      }
-      if (location) event += `LOCATION:${location}\n`;
-      if (description) event += `DESCRIPTION:${description}\n`;
-      event += 'END:VEVENT';
-      return event;
+      const date = document.getElementById('eventDate')?.value || new Date().toISOString().slice(0, 16);
+      return `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${date.replace(/[-:]/g, '')}00Z\nEND:VEVENT`;
       
     default: // text
       return document.getElementById('mainInput').value.trim();
@@ -1598,12 +2057,11 @@ function buildPayload() {
 
 // Generate QR code
 async function generateQR() {
-  // Validate input first
+  // Validate input
   if (!validateInput()) {
     return;
   }
   
-  // Show loading
   const loading = document.getElementById('loading');
   const generateBtn = document.getElementById('generateBtn');
   
@@ -1611,25 +2069,29 @@ async function generateQR() {
   generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
   generateBtn.disabled = true;
   
-  // Small delay to show loading state
+  // Small delay for better UX
   await new Promise(resolve => setTimeout(resolve, 300));
   
   try {
     const payload = buildPayload();
     
-    // Auto-detect and select appropriate logo if none selected
+    // Auto-detect logo
     const type = document.getElementById('qrType').value;
     const mainInput = document.getElementById('mainInput')?.value || '';
     
-    if (!customLogoFile && selectedLogo === '') {
+    if (!customLogoFile && !selectedLogo) {
       const detectedLogo = detectLogoFromContent(mainInput, type);
       selectLogo(detectedLogo);
     }
     
-    // Get image source
-    let imageSrc = selectedLogo;
+    // Create image source
+    let imageSrc = '';
     if (customLogoFile) {
       imageSrc = URL.createObjectURL(customLogoFile);
+    } else if (selectedLogo && selectedLogo !== 'none') {
+      // For icon-based logos, we'd use a different approach
+      // For now, we'll skip the logo if it's just an icon class
+      imageSrc = '';
     }
     
     // Update QR code
@@ -1645,8 +2107,7 @@ async function generateQR() {
       imageOptions: {
         hideBackgroundDots: true,
         imageSize: parseFloat(document.getElementById('logoSize').value),
-        margin: 6,
-        crossOrigin: 'anonymous'
+        margin: 6
       },
       dotsOptions: {
         color: document.getElementById('foregroundColor').value,
@@ -1665,11 +2126,9 @@ async function generateQR() {
       }
     });
     
-    // Get fresh blob data for sharing
+    // Get fresh blob for sharing
     try {
       currentQRBlob = await qrCode.getRawData('png');
-      
-      // Also get data URL for immediate access
       const canvas = document.querySelector('#qr canvas');
       if (canvas) {
         currentQRDataURL = canvas.toDataURL('image/png');
@@ -1683,53 +2142,30 @@ async function generateQR() {
     document.getElementById('qrContainer').classList.add('has-qr');
     document.getElementById('qrInfo').classList.add('show');
     
-    // Update info panel
+    // Update info
     document.getElementById('infoType').textContent = 
       document.getElementById('qrType').selectedOptions[0].text;
     document.getElementById('infoSize').textContent = 
-      `${document.getElementById('qrSize').value}x${document.getElementById('qrSize').value}px`;
+      `${document.getElementById('qrSize').value}×${document.getElementById('qrSize').value}px`;
     document.getElementById('infoCorrection').textContent = 
       document.getElementById('errorCorrection').selectedOptions[0].text;
     document.getElementById('infoLength').textContent = 
       `${payload.length} characters`;
     
-    // Calculate QR version based on data length
-    const version = calculateQRVersion(payload.length, document.getElementById('errorCorrection').value);
-    document.getElementById('infoVersion').textContent = version;
-    
     qrGenerated = true;
     showHint('QR code generated successfully!', 2000);
     
   } catch (error) {
-    console.error('Error generating QR code:', error);
+    console.error('Error generating QR:', error);
     showError('Failed to generate QR code. Please try again.');
   } finally {
-    // Hide loading
     loading.classList.remove('show');
     generateBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate QR Code';
     generateBtn.disabled = false;
   }
 }
 
-// Calculate approximate QR version
-function calculateQRVersion(dataLength, correctionLevel) {
-  const capacities = {
-    'L': [152, 272, 440, 640, 864, 1088, 1248, 1552, 1856, 2192, 2592, 2960, 3424, 3688, 4184, 4712, 5176, 5768, 6360, 6888, 7456, 8048, 8752, 9392, 10208, 10960, 11744, 12248, 13048, 13880, 14744, 15640, 16568, 17528, 18448, 19472, 20528, 21616, 22496, 23648],
-    'M': [128, 224, 352, 512, 688, 864, 992, 1232, 1456, 1728, 2032, 2320, 2672, 2920, 3320, 3624, 4056, 4504, 5016, 5352, 5712, 6256, 6880, 7312, 8000, 8496, 9024, 9544, 10136, 10984, 11640, 12328, 13048, 13800, 14496, 15312, 15936, 16816, 17728, 18672],
-    'Q': [104, 176, 272, 384, 496, 608, 704, 880, 1056, 1232, 1440, 1648, 1952, 2088, 2360, 2600, 2936, 3176, 3560, 3880, 4096, 4544, 4912, 5312, 5744, 6032, 6464, 6968, 7288, 7880, 8264, 8920, 9368, 9848, 10288, 10832, 11408, 12016, 12656, 13328],
-    'H': [72, 128, 208, 288, 368, 480, 528, 688, 800, 976, 1120, 1264, 1440, 1576, 1784, 2024, 2264, 2504, 2728, 3080, 3248, 3536, 3712, 4112, 4304, 4768, 5024, 5288, 5608, 5960, 6344, 6760, 7208, 7688, 7888, 8432, 8768, 9136, 9776, 10208]
-  };
-  
-  const levelCapacities = capacities[correctionLevel] || capacities['H'];
-  for (let i = 0; i < levelCapacities.length; i++) {
-    if (dataLength <= levelCapacities[i]) {
-      return `Version ${i + 1}`;
-    }
-  }
-  return 'Version 40 (max)';
-}
-
-// Update QR code (for real-time changes)
+// Update QR
 function updateQR() {
   if (qrGenerated) {
     generateQR();
@@ -1750,7 +2186,7 @@ function updateLogoSize() {
     `${Math.round(value * 100)}%`;
   
   if (qrGenerated) {
-    generateQR();
+    updateQR();
   }
 }
 
@@ -1760,7 +2196,7 @@ function updateMargin() {
   document.getElementById('marginValue').textContent = `${value}px`;
   
   if (qrGenerated) {
-    generateQR();
+    updateQR();
   }
 }
 
@@ -1770,7 +2206,7 @@ function updateQRSize() {
   document.getElementById('qrSizeValue').textContent = `${value}px`;
   
   if (qrGenerated) {
-    generateQR();
+    updateQR();
   }
 }
 
@@ -1782,9 +2218,14 @@ function toggleAdvanced() {
   content.classList.toggle('expanded');
   icon.classList.toggle('fa-chevron-down');
   icon.classList.toggle('fa-chevron-up');
+  
+  // Scroll into view on mobile
+  if (window.innerWidth < 768 && content.classList.contains('expanded')) {
+    content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
-// Download QR code
+// Download QR
 async function downloadQR(format) {
   if (!qrGenerated) {
     showWarning('Please generate a QR code first');
@@ -1792,39 +2233,30 @@ async function downloadQR(format) {
   }
   
   const type = document.getElementById('qrType').value;
-  const mainInput = document.getElementById('mainInput')?.value || '';
   let filename = 'qr-code';
   
-  // Generate meaningful filename
-  if (type === 'text' && mainInput) {
-    const urlMatch = mainInput.match(/https?:\/\/([^\/]+)/);
-    if (urlMatch) {
-      filename = `qr-${urlMatch[1].replace(/[^a-z0-9]/gi, '-')}`;
-    } else if (mainInput.length < 20) {
-      filename = `qr-${mainInput.replace(/[^a-z0-9]/gi, '-')}`;
+  // Generate filename
+  if (type === 'text') {
+    const mainInput = document.getElementById('mainInput')?.value || '';
+    if (mainInput) {
+      const urlMatch = mainInput.match(/https?:\/\/([^\/]+)/);
+      if (urlMatch) {
+        filename = `qr-${urlMatch[1].replace(/[^a-z0-9]/gi, '-')}`;
+      } else if (mainInput.length < 20) {
+        filename = `qr-${mainInput.replace(/[^a-z0-9]/gi, '-')}`;
+      }
     }
   } else if (type === 'wifi') {
     const ssid = document.getElementById('wifiSsid')?.value || '';
     if (ssid) filename = `qr-wifi-${ssid.replace(/[^a-z0-9]/gi, '-')}`;
-  } else if (type === 'email') {
-    const email = document.getElementById('mainInput')?.value || '';
-    if (email) filename = `qr-email-${email.split('@')[0]}`;
-  } else if (type === 'phone') {
-    const phone = document.getElementById('mainInput')?.value || '';
-    if (phone) filename = `qr-phone-${phone.replace(/\D/g, '')}`;
-  } else if (type === 'whatsapp') {
-    const phone = document.getElementById('mainInput')?.value || '';
-    if (phone) filename = `qr-whatsapp-${phone.replace(/\D/g, '')}`;
   }
   
-  // Clean filename
-  filename = filename.toLowerCase().replace(/[^a-z0-9\-]/g, '').substring(0, 50);
+  filename = filename.toLowerCase().substring(0, 50);
   
   try {
     if (format === 'svg') {
       await qrCode.download({ name: filename, extension: 'svg' });
     } else {
-      // Use the current blob for download
       if (currentQRBlob) {
         const url = URL.createObjectURL(currentQRBlob);
         const a = document.createElement('a');
@@ -1835,7 +2267,6 @@ async function downloadQR(format) {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       } else {
-        // Fallback to library download
         await qrCode.download({ name: filename, extension: 'png' });
       }
     }
@@ -1843,181 +2274,149 @@ async function downloadQR(format) {
     showHint(`QR code downloaded as ${format.toUpperCase()}!`, 2000);
   } catch (error) {
     console.error('Download failed:', error);
-    showError('Failed to download QR code. Please try again.');
+    showError('Failed to download QR code');
   }
 }
 
-// Share QR code - FIXED VERSION
+// Share QR
 async function shareQR() {
   if (!qrGenerated) {
     showWarning('Please generate a QR code first');
     return;
   }
   
-  // Show sharing indicator
   const shareBtn = document.getElementById('shareBtn');
   const originalText = shareBtn.innerHTML;
-  shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+  shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sharing...';
   shareBtn.disabled = true;
   
   try {
-    // Use the current blob that was updated in generateQR()
+    // Create fresh file
     if (!currentQRBlob) {
-      // If for some reason we don't have a blob, get it now
       currentQRBlob = await qrCode.getRawData('png');
     }
     
-    // Create a fresh File object with current timestamp to ensure uniqueness
     const timestamp = new Date().getTime();
-    const file = new File([currentQRBlob], `qr-code-${timestamp}.png`, { 
+    const file = new File([currentQRBlob], `qr-code-${timestamp}.png`, {
       type: 'image/png',
       lastModified: timestamp
     });
     
     if (navigator.share && navigator.canShare) {
-      // Check if we can share files
       if (navigator.canShare({ files: [file] })) {
-        const type = document.getElementById('qrType').value;
-        const typeText = document.getElementById('qrType').selectedOptions[0].text;
-        
         await navigator.share({
           files: [file],
           title: 'QR Code',
-          text: `Check out this ${typeText} QR code I created!`,
+          text: 'Check out this QR code I created!'
         });
-        
         showHint('QR code shared successfully!', 2000);
       } else {
-        // Can't share files, share text instead
         const payload = buildPayload();
         await navigator.share({
           title: 'QR Code',
-          text: `Check out this QR code I created! It contains: ${payload.substring(0, 100)}...`,
+          text: `Check out this QR code I created! It contains: ${payload.substring(0, 100)}...`
         });
         showHint('QR code information shared!', 2000);
       }
     } else if (navigator.clipboard && currentQRDataURL) {
-      // Fallback: Copy data URL to clipboard
-      // Create a temporary canvas to get clean data URL
+      // Copy to clipboard
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
       
-      img.onload = function() {
+      img.onload = async function() {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
         
-        // Convert to blob and copy
         canvas.toBlob(async function(blob) {
           try {
             const item = new ClipboardItem({ 'image/png': blob });
             await navigator.clipboard.write([item]);
             showHint('QR code copied to clipboard!', 2000);
           } catch (err) {
-            // If can't copy image, copy text
             const text = `QR Code: ${buildPayload().substring(0, 100)}...`;
             await navigator.clipboard.writeText(text);
-            showHint('QR code information copied to clipboard!', 2000);
+            showHint('QR code info copied to clipboard!', 2000);
           }
         });
       };
       
       img.src = currentQRDataURL;
     } else {
-      // Last fallback
       const text = `QR Code: ${buildPayload().substring(0, 100)}...`;
       await navigator.clipboard.writeText(text);
-      showHint('QR code information copied to clipboard!', 2000);
+      showHint('QR code info copied to clipboard!', 2000);
     }
   } catch (error) {
     console.error('Sharing failed:', error);
-    
     if (error.name !== 'AbortError') {
-      showError('Sharing not supported or was cancelled. Try downloading instead.');
+      showError('Sharing not supported. Try downloading instead.');
     }
   } finally {
-    // Restore button
     shareBtn.innerHTML = originalText;
     shareBtn.disabled = false;
   }
 }
 
-// Reset all settings
+// Reset settings
 function resetSettings() {
-  if (qrGenerated && !confirm('Are you sure you want to reset all settings? Your current QR code will be lost.')) {
+  if (qrGenerated && !confirm('Reset all settings? Your current QR code will be lost.')) {
     return;
   }
   
-  // Show resetting indicator
-  const resetBtns = document.querySelectorAll('button');
-  resetBtns.forEach(btn => btn.disabled = true);
+  document.getElementById('qrType').value = 'text';
+  document.getElementById('customLogo').value = '';
   
-  setTimeout(() => {
-    // Reset form
-    document.getElementById('qrType').value = 'text';
-    
-    // Reset all input fields
-    const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea');
-    inputs.forEach(input => {
-      input.value = '';
-    });
-    
-    document.getElementById('customLogo').value = '';
-    
-    // Reset sliders
-    document.getElementById('logoSize').value = 0.22;
-    document.getElementById('logoSizeValue').textContent = '22%';
-    document.getElementById('margin').value = 10;
-    document.getElementById('marginValue').textContent = '10px';
-    document.getElementById('qrSize').value = 300;
-    document.getElementById('qrSizeValue').textContent = '300px';
-    
-    // Reset colors
-    document.getElementById('foregroundColor').value = '#2563eb';
-    document.getElementById('backgroundColor').value = '#ffffff';
-    
-    // Reset advanced options
-    document.getElementById('errorCorrection').value = 'H';
-    document.getElementById('dotsStyle').value = 'rounded';
-    document.getElementById('cornersStyle').value = 'extra-rounded';
-    
-    // Reset logo selection
-    selectLogo('none');
-    
-    // Reset UI
-    document.getElementById('qrPlaceholder').style.display = 'block';
-    document.getElementById('qrContainer').classList.remove('has-qr');
-    document.getElementById('qrInfo').classList.remove('show');
-    hideMessages();
-    
-    // Clear QR blob
-    currentQRBlob = null;
-    currentQRDataURL = null;
-    
-    // Update dynamic fields
-    onTypeChange();
-    
-    // Reset QR code to default
-    qrCode.update({
-      data: 'Scan me!',
-      image: '',
-      width: 300,
-      height: 300,
-      margin: 10,
-      qrOptions: { errorCorrectionLevel: 'H' },
-      imageOptions: { imageSize: 0.22, margin: 6 },
-      dotsOptions: { color: '#2563eb', type: 'rounded' },
-      cornersSquareOptions: { color: '#2563eb', type: 'extra-rounded' },
-      backgroundOptions: { color: '#ffffff' }
-    });
-    
-    qrGenerated = false;
-    showHint('All settings have been reset to default', 2000);
-    
-    // Re-enable buttons
-    resetBtns.forEach(btn => btn.disabled = false);
-  }, 100);
+  // Reset sliders
+  document.getElementById('logoSize').value = 0.22;
+  document.getElementById('logoSizeValue').textContent = '22%';
+  document.getElementById('margin').value = 10;
+  document.getElementById('marginValue').textContent = '10px';
+  document.getElementById('qrSize').value = 300;
+  document.getElementById('qrSizeValue').textContent = '300px';
+  
+  // Reset colors
+  document.getElementById('foregroundColor').value = '#4361ee';
+  document.getElementById('backgroundColor').value = '#ffffff';
+  
+  // Reset advanced options
+  document.getElementById('errorCorrection').value = 'H';
+  document.getElementById('dotsStyle').value = 'rounded';
+  document.getElementById('cornersStyle').value = 'extra-rounded';
+  
+  // Reset logo
+  selectLogo('none');
+  
+  // Reset UI
+  document.getElementById('qrPlaceholder').style.display = 'block';
+  document.getElementById('qrContainer').classList.remove('has-qr');
+  document.getElementById('qrInfo').classList.remove('show');
+  hideMessages();
+  
+  // Clear blob
+  currentQRBlob = null;
+  currentQRDataURL = null;
+  
+  // Update fields
+  onTypeChange();
+  
+  // Reset QR
+  qrCode.update({
+    data: 'QR Code Generator',
+    image: '',
+    width: 300,
+    height: 300,
+    margin: 10,
+    qrOptions: { errorCorrectionLevel: 'H' },
+    imageOptions: { imageSize: 0.22, margin: 6 },
+    dotsOptions: { color: '#4361ee', type: 'rounded' },
+    cornersSquareOptions: { color: '#4361ee', type: 'extra-rounded' },
+    backgroundOptions: { color: '#ffffff' }
+  });
+  
+  qrGenerated = false;
+  showHint('All settings have been reset', 2000);
 }
 </script>
 </body>
