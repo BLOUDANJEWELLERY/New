@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Arabic PDF Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: 'Tahoma', sans-serif; text-align: center; margin-top: 50px; }
+    textarea { width: 80%; height: 150px; font-size: 18px; direction: rtl; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>اكتب النص بالعربية</h2>
+  <textarea id="arabicText" placeholder="أدخل النص هنا..."></textarea><br>
+  <button onclick="generatePDF()">إنشاء ملف PDF</button>
+
+  <script>
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Get Arabic text
+      const text = document.getElementById("arabicText").value;
+
+      // Add text (RTL support)
+      doc.setFont("Helvetica", "normal");
+      doc.text(text, 10, 30, { align: "right" });
+
+      // Save PDF
+      doc.save("arabic-text.pdf");
+    }
+  </script>
+</body>
+</html>
