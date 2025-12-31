@@ -2,34 +2,79 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Arabic PDF Generator</title>
+  <title>مولد PDF للنص العربي</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Simple Arabic shaping helper (minimal) -->
+  <script>
+    // Basic Arabic shaping using Intl.Segmenter fallback
+    // For production, consider arabic-reshaper + bidi-js for full coverage.
+    function shapeArabic(text) {
+      // If the environment supports it, use it; otherwise return text as-is.
+      try {
+        // This is a placeholder—jsPDF needs pre-shaped glyphs for Arabic.
+        // For robust shaping, integrate arabic-reshaper + bidi.
+        return text.normalize('NFC');
+      } catch (e) {
+        return text;
+      }
+    }
+  </script>
   <style>
-    body { font-family: 'Tahoma', sans-serif; text-align: center; margin-top: 50px; }
-    textarea { width: 80%; height: 150px; font-size: 18px; direction: rtl; }
-    button { margin-top: 20px; padding: 10px 20px; font-size: 18px; }
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    textarea { width: 100%; height: 180px; font-size: 18px; direction: rtl; padding: 12px; }
+    button { margin-top: 16px; padding: 10px 18px; font-size: 16px; }
+    .note { margin-top: 10px; color: #555; font-size: 14px; }
   </style>
 </head>
 <body>
   <h2>اكتب النص بالعربية</h2>
-  <textarea id="arabicText" placeholder="أدخل النص هنا..."></textarea><br>
-  <button onclick="generatePDF()">إنشاء ملف PDF</button>
+  <textarea id="arabicText" placeholder="أدخل النص هنا..."></textarea>
+  <button id="generateBtn">إنشاء ملف PDF</button>
+  <div class="note">لأفضل نتيجة، استخدم خطوط عربية مدمجة مثل Amiri أو Cairo.</div>
 
   <script>
-    async function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+    // Base64-encoded Amiri-Regular.ttf (shortened here for brevity)
+    // Replace with full base64 of the TTF for production use.
+    const amiriBase64 = `
+AAEAAAALAIAAAwAwT1MvMg8AAAC8AAAAYGNtYXABAAABNAAAABZ...TRUNCATED...
+`; // Use full base64 TTF string
 
-      // Get Arabic text
-      const text = document.getElementById("arabicText").value;
-
-      // Add text (RTL support)
-      doc.setFont("Helvetica", "normal");
-      doc.text(text, 10, 30, { align: "right" });
-
-      // Save PDF
-      doc.save("arabic-text.pdf");
+    async function setupFont(doc) {
+      // Register font with jsPDF
+      doc.addFileToVFS('Amiri-Regular.ttf', amiriBase64);
+      doc.addFont('Amiri-Regular.ttf', 'Amiri', 'normal');
+      doc.setFont('Amiri', 'normal');
     }
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+      await setupFont(doc);
+
+      const text = document.getElementById('arabicText').value.trim();
+      if (!text) {
+        alert('يرجى إدخال نص عربي.');
+        return;
+      }
+
+      // Shape text (placeholder). For full correctness, integrate arabic-reshaper + bidi-js.
+      const shaped = shapeArabic(text);
+
+      // Right-to-left alignment and wrapping
+      const margin = 48;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const maxWidth = pageWidth - margin * 2;
+
+      doc.setFontSize(18);
+      doc.text(shaped, pageWidth - margin, 80, {
+        align: 'right',
+        maxWidth: maxWidth
+      });
+
+      doc.save('arabic-text.pdf');
+    });
   </script>
 </body>
 </html>
