@@ -36,7 +36,7 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 2px solid #000000; /* Thicker black border */
+            border: 2px solid #000000;
         }
         
         /* Main Header Container - Clean single block */
@@ -44,7 +44,7 @@
             margin-bottom: 15px;
             background-color: #1a1a1a;
             border-radius: 4px;
-            border: 2px solid #d4af37; /* Thicker border */
+            border: 2px solid #d4af37;
             overflow: hidden;
             position: relative;
         }
@@ -55,7 +55,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px; /* Thicker accent */
+            height: 3px;
             background: #d4af37;
         }
         
@@ -83,12 +83,12 @@
         .company-info.arabic {
             text-align: right;
             direction: rtl;
-            font-size: 11px; /* Increased from 10px to 11px */
+            font-size: 11px;
         }
         
         /* Increased Arabic company name font size */
         .company-info.arabic .company-name {
-            font-size: 15px; /* Increased from 14px to 15px */
+            font-size: 15px;
         }
         
         .company-logo {
@@ -176,7 +176,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid #b8941f; /* Added border */
+            border: 1px solid #b8941f;
         }
         
         .print-btn:hover {
@@ -193,7 +193,7 @@
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 2px solid #000000; /* Black border matching outer container */
+            border: 2px solid #000000;
             border-radius: 4px;
             padding: 0;
             background-color: #fdfdf9;
@@ -205,7 +205,7 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
-            border: 2px solid #000000; /* Add table border */
+            border: 2px solid #000000;
         }
         
         th {
@@ -214,13 +214,13 @@
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 2px solid #000000; /* Bold black border */
+            border: 2px solid #000000;
             font-size: 12px;
         }
         
         td {
             padding: 6px 4px;
-            border: 2px solid #000000; /* Bold black border */
+            border: 2px solid #000000;
             text-align: center;
             height: 34px;
             position: relative;
@@ -241,7 +241,7 @@
             background-color: #fff;
             text-align: right;
             padding-right: 10px;
-            border-right: 2px solid #000000; /* Bold border */
+            border-right: 2px solid #000000;
         }
         
         .editable-cell input {
@@ -269,20 +269,20 @@
             font-size: 11px;
         }
         
-        /* Column widths */
-        .col-1 { width: 7%; }  /* رقم */
-        .col-2 { width: 31%; } /* مجوهرات */
-        .col-3 { width: 15.5%; } /* ذهب ٩٩٩ لنا */
-        .col-4 { width: 15.5%; } /* نقدي لنا */
-        .col-5 { width: 15.5%; } /* ذهب ٩٩٩ لكم */
-        .col-6 { width: 15.5%; } /* نقدي لكم */
+        /* Updated Column widths */
+        .col-1 { width: 7%; }   /* رقم */
+        .col-2 { width: 25%; }  /* مجوهرات (decreased from 31%) */
+        .col-3 { width: 17%; }  /* ذهب ٩٩٩ لنا (increased from 15.5%) */
+        .col-4 { width: 17%; }  /* نقدي لنا (increased from 15.5%) */
+        .col-5 { width: 17%; }  /* ذهب ٩٩٩ لكم (increased from 15.5%) */
+        .col-6 { width: 17%; }  /* نقدي لكم (increased from 15.5%) */
         
         /* Number column styling */
         .number-cell {
             color: #666;
             font-weight: bold;
             font-size: 11px;
-            border-left: 2px solid #000000; /* Bold border */
+            border-left: 2px solid #000000;
         }
         
         /* Darker dash placeholder styling for gold and cash columns */
@@ -301,20 +301,6 @@
             font-size: 14px;
             color: #777;
             font-weight: bold;
-        }
-        
-        /* Instructions */
-        .instructions {
-            font-size: 10px;
-            color: #666;
-            text-align: center;
-            margin-top: 12px;
-            padding: 8px;
-            border-top: 1px dashed #d4af37;
-            background-color: #f9f7f0;
-            border-radius: 3px;
-            line-height: 1.4;
-            direction: rtl;
         }
         
         /* Clear button */
@@ -362,7 +348,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: 2px solid #000000; /* Bold black border for print */
+                border: 2px solid #000000;
             }
             
             .print-section, .clear-btn {
@@ -407,17 +393,17 @@
             }
             
             .table-container {
-                border: 2px solid #000000 !important; /* Black border for print */
+                border: 2px solid #000000 !important;
             }
             
             table {
                 font-size: 11px;
-                border: 2px solid #000000 !important; /* Bold border for print */
+                border: 2px solid #000000 !important;
             }
             
             th, td {
                 padding: 5px 3px;
-                border: 2px solid #000000 !important; /* Bold black borders for print */
+                border: 2px solid #000000 !important;
             }
             
             th {
@@ -426,7 +412,7 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
-                border: 2px solid #000000 !important; /* Bold border */
+                border: 2px solid #000000 !important;
             }
             
             td {
@@ -458,11 +444,11 @@
             .number-cell {
                 color: #666 !important;
                 font-weight: normal !important;
-                border-left: 2px solid #000000 !important; /* Bold border for print */
+                border-left: 2px solid #000000 !important;
             }
             
             .editable-cell {
-                border-right: 2px solid #000000 !important; /* Bold border for print */
+                border-right: 2px solid #000000 !important;
             }
         }
         
@@ -639,22 +625,19 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    <!-- 10 rows will be generated by JavaScript -->
+                    <!-- 15 rows will be generated by JavaScript -->
                 </tbody>
             </table>
         </div>
         
-        <!-- Instructions -->
-        <div class="instructions">
-            <p>ملاحظة: قم بكتابة نوع المجوهرات في العمود الثاني فقط، باقي الخلايا للقراءة فقط | Note: Write only in the second column (Jewellery type), other cells are read-only</p>
-        </div>
+        <!-- Removed instructions section -->
     </div>
 
     <script>
-        // Generate 10 rows for the table
+        // Generate 15 rows for the table (increased from 10)
         const tableBody = document.getElementById('table-body');
         
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 15; i++) {
             const row = document.createElement('tr');
             row.id = `row-${i}`;
             
