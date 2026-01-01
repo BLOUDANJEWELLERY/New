@@ -3,63 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Embed PDF Example</title>
+  <title>PDF to Image</title>
 </head>
 <body>
-  <h1>Embed PDF Demo</h1>
-  
-  <input type="file" id="mainPdf" accept=".pdf">
-  <input type="file" id="embedPdf" accept=".pdf">
-  <button id="generateBtn">Generate PDF</button>
+  <h1>PDF → Image</h1>
+  <input type="file" id="pdfInput" accept=".pdf">
+  <button id="convertBtn">Convert</button>
+  <div id="images"></div>
 
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.14.305/pdf.min.js"></script>
   <script>
-    const { PDFDocument } = PDFLib;
+    const convertBtn = document.getElementById('convertBtn');
+    const pdfInput = document.getElementById('pdfInput');
+    const imagesDiv = document.getElementById('images');
 
-    document.getElementById('generateBtn').addEventListener('click', async () => {
-      const mainFile = document.getElementById('mainPdf').files[0];
-      const embedFile = document.getElementById('embedPdf').files[0];
+    convertBtn.addEventListener('click', async () => {
+      const file = pdfInput.files[0];
+      if (!file) return alert("Select a PDF file");
 
-      if (!mainFile || !embedFile) return alert('Select both PDFs');
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({data: arrayBuffer});
+      const pdf = await loadingTask.promise;
 
-      const mainBytes = await mainFile.arrayBuffer();
-      const embedBytes = await embedFile.arrayBuffer();
+      imagesDiv.innerHTML = ''; // clear previous
 
-      // Load main PDF
-      const mainPdfDoc = await PDFDocument.load(mainBytes);
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 2 }); // increase for better quality
 
-      // Load PDF to embed
-      const embedPdfDoc = await PDFDocument.load(embedBytes);
-      const [embedPage] = await mainPdfDoc.copyPages(embedPdfDoc, [0]); // first page of embed PDF
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const context = canvas.getContext('2d');
 
-      // Resize and position
-      const mainPage = mainPdfDoc.getPage(0);
-      const { width, height } = mainPage.getSize();
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-      // Scale the embedded page to 50% and center
-      const embedWidth = embedPage.getWidth() * 0.5;
-      const embedHeight = embedPage.getHeight() * 0.5;
-      const x = (width - embedWidth) / 2;
-      const y = (height - embedHeight) / 2;
-
-      mainPage.drawPage(embedPage, {
-        x,
-        y,
-        xScale: 0.5,
-        yScale: 0.5
-      });
-
-      // Save final PDF
-      const pdfBytes = await mainPdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-
-      // Trigger download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'final.pdf';
-      a.click();
-      URL.revokeObjectURL(url);
+        // Convert canvas to image
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL("image/png");
+        img.style.border = "1px solid #ccc";
+        img.style.margin = "10px";
+        imagesDiv.appendChild(img);
+      }
     });
   </script>
 </body>
