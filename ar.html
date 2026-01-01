@@ -36,7 +36,7 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 1px solid #d4af37; /* Darker border */
+            border: 2px solid #000000; /* Thicker black border */
         }
         
         /* Main Header Container - Clean single block */
@@ -78,14 +78,12 @@
             text-align: left;
             direction: ltr;
             font-size: 10px;
-            /* Removed border-right */
         }
         
         .company-info.arabic {
             text-align: right;
             direction: rtl;
             font-size: 11px; /* Increased from 10px to 11px */
-            /* Removed border-left */
         }
         
         /* Increased Arabic company name font size */
@@ -195,9 +193,9 @@
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 2px solid #2c3e50; /* Darker, thicker border */
+            border: 2px solid #000000; /* Black border matching outer container */
             border-radius: 4px;
-            padding: 0; /* Remove padding to avoid double borders */
+            padding: 0;
             background-color: #fdfdf9;
             direction: rtl;
         }
@@ -207,7 +205,7 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
-            border: 0; /* Remove table border since container has it */
+            border: 2px solid #000000; /* Add table border */
         }
         
         th {
@@ -216,17 +214,17 @@
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 1px solid #1a2a3a; /* Consistent dark border */
+            border: 2px solid #000000; /* Bold black border */
             font-size: 12px;
         }
         
         td {
             padding: 6px 4px;
-            border: 1px solid #2c3e50; /* Dark border matching table container */
+            border: 2px solid #000000; /* Bold black border */
             text-align: center;
             height: 34px;
             position: relative;
-            background-color: #fff; /* All rows same background */
+            background-color: #fff;
         }
         
         /* Remove alternating row colors - all rows same */
@@ -243,7 +241,7 @@
             background-color: #fff;
             text-align: right;
             padding-right: 10px;
-            border-right: 1px solid #2c3e50; /* Consistent border */
+            border-right: 2px solid #000000; /* Bold border */
         }
         
         .editable-cell input {
@@ -284,25 +282,25 @@
             color: #666;
             font-weight: bold;
             font-size: 11px;
-            border-left: 1px solid #2c3e50; /* Consistent border */
+            border-left: 2px solid #000000; /* Bold border */
         }
         
         /* Darker dash placeholder styling for gold and cash columns */
         .dash-placeholder {
             position: relative;
-            color: #777; /* Darker color */
+            color: #777;
         }
         
         .dash-placeholder::before {
             content: "-";
             position: absolute;
-            right: 40%; /* Position dash slightly to the right of center */
+            right: 40%;
             top: 50%;
             transform: translateY(-50%);
             font-weight: normal;
-            font-size: 14px; /* Dash size */
-            color: #777; /* Darker gray */
-            font-weight: bold; /* Make dash bolder */
+            font-size: 14px;
+            color: #777;
+            font-weight: bold;
         }
         
         /* Instructions */
@@ -335,7 +333,7 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            border: 1px solid #c0392b; /* Added border */
+            border: 1px solid #c0392b;
         }
         
         .clear-btn:hover {
@@ -364,7 +362,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: 1px solid #d4af37;
+                border: 2px solid #000000; /* Bold black border for print */
             }
             
             .print-section, .clear-btn {
@@ -401,7 +399,7 @@
             }
             
             .company-info.arabic .company-name {
-                font-size: 14px !important; /* Slightly larger for Arabic in print */
+                font-size: 14px !important;
             }
             
             .company-details {
@@ -409,16 +407,17 @@
             }
             
             .table-container {
-                border: 2px solid #000 !important; /* Black border for print */
+                border: 2px solid #000000 !important; /* Black border for print */
             }
             
             table {
                 font-size: 11px;
+                border: 2px solid #000000 !important; /* Bold border for print */
             }
             
             th, td {
                 padding: 5px 3px;
-                border: 1px solid #2c3e50 !important; /* Consistent dark borders for print */
+                border: 2px solid #000000 !important; /* Bold black borders for print */
             }
             
             th {
@@ -427,7 +426,7 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
-                border: 1px solid #1a2a3a !important;
+                border: 2px solid #000000 !important; /* Bold border */
             }
             
             td {
@@ -445,7 +444,7 @@
             
             /* Darker, more visible dash placeholder in print */
             .dash-placeholder::before {
-                color: #555 !important; /* Darker for print */
+                color: #555 !important;
                 font-size: 13px !important;
                 right: 40% !important;
                 font-weight: bold !important;
@@ -459,7 +458,11 @@
             .number-cell {
                 color: #666 !important;
                 font-weight: normal !important;
-                border-left: 1px solid #2c3e50 !important;
+                border-left: 2px solid #000000 !important; /* Bold border for print */
+            }
+            
+            .editable-cell {
+                border-right: 2px solid #000000 !important; /* Bold border for print */
             }
         }
         
@@ -489,7 +492,7 @@
             }
             
             .company-info.arabic {
-                font-size: 10px; /* Adjusted for mobile */
+                font-size: 10px;
             }
             
             .company-info.english {
@@ -520,7 +523,7 @@
             }
             
             .company-info.arabic .company-name {
-                font-size: 13px; /* Adjusted for mobile */
+                font-size: 13px;
             }
             
             .header-bottom {
@@ -548,9 +551,8 @@
                 padding: 5px 3px;
             }
             
-            /* Adjust dash position for mobile */
             .dash-placeholder::before {
-                right: 45%; /* More centered on mobile */
+                right: 45%;
                 font-size: 13px;
             }
         }
