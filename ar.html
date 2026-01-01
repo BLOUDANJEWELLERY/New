@@ -15,11 +15,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', 'Segoe UI', sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f5e6;
             color: #333;
             padding: 15px;
             font-size: 14px;
@@ -31,123 +31,164 @@
             min-height: 287mm; /* A4 height minus margins */
             margin: 0 auto;
             background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
             position: relative;
+            border: 1px solid #e0d6b5;
         }
         
-        /* Compact Company Header with gold background */
+        /* Elegant Header with Gold Accents */
         .company-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #8b6914;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            background-color: #c7a332; /* Updated gold color */
-            color: white;
-            border-radius: 4px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #1a1a1a, #2c2c2c);
+            color: #d4af37;
+            border-radius: 6px;
+            border: 2px solid #d4af37;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .company-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #d4af37, #f7ef8a, #d4af37);
         }
         
         .company-info {
             flex: 1;
+            padding: 5px;
         }
         
         .company-info.english {
             text-align: left;
             direction: ltr;
             font-size: 12px;
+            border-right: 1px solid rgba(212, 175, 55, 0.3);
         }
         
         .company-info.arabic {
             text-align: right;
             direction: rtl;
             font-size: 12px;
+            border-left: 1px solid rgba(212, 175, 55, 0.3);
         }
         
         .company-logo {
-            flex: 0 0 100px;
+            flex: 0 0 130px;
             text-align: center;
-            padding: 0 10px;
+            padding: 0 15px;
         }
         
         .logo-img {
-            max-width: 80px;
+            max-width: 100px;
             height: auto;
-            filter: brightness(0) invert(1); /* Makes logo white to stand out on gold */
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.7));
         }
         
         .company-name {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
-            margin-bottom: 4px;
-            color: white;
+            margin-bottom: 5px;
+            color: #d4af37;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .company-details {
             font-size: 11px;
-            color: white;
-            line-height: 1.3;
+            color: #e6e6e6;
+            line-height: 1.4;
         }
         
         .company-phone {
-            color: white !important;
-            text-decoration: none !important;
+            color: #e6e6e6;
+            text-decoration: none;
             font-weight: normal;
+            margin-top: 3px;
+            display: block;
         }
         
-        .company-phone:hover {
-            text-decoration: none !important;
-            color: white !important;
-        }
-        
-        /* Page Title */
+        /* Page Title with Gold Accent */
         .page-title {
             text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #d4af37;
+            position: relative;
         }
         
         .page-title h1 {
-            font-size: 18px;
+            font-size: 20px;
             color: #2c3e50;
             margin-bottom: 5px;
+            font-weight: bold;
         }
         
         .page-title p {
             font-size: 14px;
             color: #666;
             font-weight: bold;
+            font-style: italic;
+        }
+        
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 30%;
+            right: 30%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
         }
         
         /* Print Button */
         .print-section {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .print-btn {
-            background-color: #c7a332;
-            color: white;
+            background: linear-gradient(to bottom, #d4af37, #b8941f);
+            color: #1a1a1a;
             border: none;
-            padding: 8px 20px;
-            font-size: 14px;
-            border-radius: 4px;
+            padding: 10px 25px;
+            font-size: 15px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s;
             font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .print-btn:hover {
-            background-color: #b3922a;
+            background: linear-gradient(to bottom, #e6c158, #c9a42a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.15);
         }
         
-        /* Table Styles for A4 */
+        .print-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Table Container with subtle gold border */
         .table-container {
             overflow-x: auto;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0d6b5;
+            border-radius: 5px;
+            padding: 2px;
+            background-color: #fdfdf9;
         }
         
         table {
@@ -158,31 +199,36 @@
         }
         
         th {
-            background-color: #2c3e50;
-            color: white;
-            padding: 8px 5px;
+            background: linear-gradient(to bottom, #2c3e50, #1a2a3a);
+            color: #d4af37;
+            padding: 10px 5px;
             text-align: center;
             font-weight: bold;
-            border: 1px solid #ddd;
+            border: 1px solid #555;
             font-size: 13px;
         }
         
         td {
-            padding: 6px 5px;
+            padding: 8px 5px;
             border: 1px solid #ddd;
             text-align: center;
-            height: 35px;
+            height: 38px;
+            transition: background-color 0.2s;
         }
         
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f9f7f0;
+        }
+        
+        tbody tr:hover {
+            background-color: #f5f1e1;
         }
         
         /* Editable cell */
         .editable-cell {
-            background-color: #fff;
+            background-color: #fffef9;
             text-align: right;
-            padding-right: 8px;
+            padding-right: 10px;
         }
         
         .editable-cell input {
@@ -192,15 +238,21 @@
             outline: none;
             background: transparent;
             text-align: right;
-            padding: 0 5px;
+            padding: 0 8px;
             font-size: 13px;
             font-family: inherit;
             direction: rtl;
+            color: #333;
         }
         
         .editable-cell input:focus {
-            background-color: #f0f8ff;
-            border: 1px dotted #c7a332;
+            background-color: #fffde7;
+            border-bottom: 2px solid #d4af37;
+        }
+        
+        .editable-cell input::placeholder {
+            color: #aaa;
+            font-style: italic;
         }
         
         /* Column widths */
@@ -211,41 +263,52 @@
         .col-5 { width: 15%; } /* ذهب ٩٩٩ لكم */
         .col-6 { width: 15%; } /* نقدي لكم */
         
+        /* Number column styling */
+        .number-cell {
+            color: #666;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
         /* Instructions */
         .instructions {
             font-size: 11px;
             color: #666;
             text-align: center;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dashed #ddd;
-        }
-        
-        /* Summary row at the bottom */
-        .summary-row {
-            background-color: #f0f0f0 !important;
-            font-weight: bold;
-        }
-        
-        .summary-row td {
-            border-top: 2px solid #c7a332;
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px dashed #d4af37;
+            background-color: #f9f7f0;
+            border-radius: 4px;
+            line-height: 1.5;
         }
         
         /* Clear button */
         .clear-btn {
-            background-color: #e74c3c;
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
             color: white;
             border: none;
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            font-size: 13px;
+            border-radius: 5px;
             cursor: pointer;
-            margin-left: 10px;
-            transition: background-color 0.2s;
+            margin-left: 15px;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .clear-btn:hover {
-            background-color: #c0392b;
+            background: linear-gradient(to bottom, #ff5c4c, #d9534f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .clear-btn:active {
+            transform: translateY(0);
         }
         
         /* Print-specific styles */
@@ -261,30 +324,38 @@
                 max-width: 100%;
                 min-height: 100%;
                 box-shadow: none;
-                padding: 0;
+                padding: 5mm;
                 margin: 0;
                 border-radius: 0;
+                border: none;
             }
             
-            .print-section {
+            .print-section, .clear-btn {
                 display: none;
             }
             
             .company-header {
-                background-color: #c7a332 !important;
-                color: white !important;
+                background: #1a1a1a !important;
+                color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                margin-top: 5mm;
-                padding-bottom: 5px;
+                border: 1px solid #d4af37;
             }
             
             .company-name, .company-details, .company-phone {
-                color: white !important;
+                color: #d4af37 !important;
+            }
+            
+            .company-phone {
+                color: #e6e6e6 !important;
             }
             
             .page-title {
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .table-container {
+                border: 1px solid #ccc;
             }
             
             table {
@@ -292,11 +363,18 @@
             }
             
             th, td {
-                padding: 6px 4px;
+                padding: 7px 4px;
+            }
+            
+            th {
+                background: #2c3e50 !important;
+                color: #d4af37 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             
             .editable-cell input {
-                border-bottom: 1px dotted #ccc;
+                border-bottom: 1px dotted #999;
             }
         }
         
@@ -315,7 +393,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Compact Company Header with gold background -->
+        <!-- Elegant Header with Gold Theme -->
         <header class="company-header">
             <div class="company-info english">
                 <div class="company-name">The Bloudan Jewellery</div>
@@ -327,7 +405,7 @@
             </div>
             
             <div class="company-logo">
-                <img src="./logo.png" alt="Logo" class="logo-img">
+                <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
             </div>
             
             <div class="company-info arabic">
@@ -348,7 +426,14 @@
         
         <!-- Print Button -->
         <div class="print-section">
-            <button class="print-btn" onclick="window.print()">🖨️ طباعة الصفحة / Print Page</button>
+            <button class="print-btn" onclick="window.print()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                طباعة الصفحة / Print Page
+            </button>
         </div>
         
         <!-- Table -->
@@ -367,15 +452,6 @@
                 <tbody id="table-body">
                     <!-- 10 rows will be generated by JavaScript -->
                 </tbody>
-                <tfoot>
-                    <tr class="summary-row">
-                        <td colspan="2">المجموع</td>
-                        <td id="gold-to-us-total">0</td>
-                        <td id="cash-to-us-total">0</td>
-                        <td id="gold-to-you-total">0</td>
-                        <td id="cash-to-you-total">0</td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
         
@@ -393,9 +469,10 @@
             const row = document.createElement('tr');
             row.id = `row-${i}`;
             
-            // Column 1: رقم (Number)
+            // Column 1: رقم (Number) - Empty as requested
             const cell1 = document.createElement('td');
-            cell1.textContent = i;
+            cell1.className = 'number-cell';
+            cell1.textContent = ''; // Empty as requested
             row.appendChild(cell1);
             
             // Column 2: مجوهرات (Jewellery) - Editable
@@ -436,7 +513,8 @@
         }
         
         // Print functionality with improvements
-        document.querySelector('.print-btn').addEventListener('click', function() {
+        const printBtn = document.querySelector('.print-btn');
+        printBtn.addEventListener('click', function() {
             // Save any unsaved input values
             const inputs = document.querySelectorAll('input');
             inputs.forEach(input => {
@@ -453,15 +531,50 @@
                     printStyle.textContent = `
                         @media print {
                             .editable-cell input { display: none; }
-                            .editable-cell span { display: inline !important; }
+                            .editable-cell span { 
+                                display: inline !important; 
+                                font-weight: bold;
+                                color: #333;
+                            }
                         }
                     `;
                     document.head.appendChild(printStyle);
                 }
             });
             
+            // Add row numbers for printing (temporary)
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                const firstCell = row.querySelector('td:first-child');
+                if (firstCell && firstCell.textContent === '') {
+                    // Create a temporary number for printing only
+                    const tempNumber = document.createElement('span');
+                    tempNumber.textContent = (index + 1).toString();
+                    tempNumber.style.display = 'none';
+                    firstCell.appendChild(tempNumber);
+                    
+                    const numberStyle = document.createElement('style');
+                    numberStyle.textContent = `
+                        @media print {
+                            .number-cell span { 
+                                display: inline !important; 
+                                font-weight: bold;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(numberStyle);
+                }
+            });
+            
             // Show printing message
-            this.textContent = 'جاري التحضير للطباعة...';
+            const originalText = this.innerHTML;
+            this.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                جاري التحضير للطباعة...
+            `;
             this.disabled = true;
             
             // Small delay to ensure DOM updates
@@ -470,11 +583,16 @@
                 
                 // Reset button after printing
                 setTimeout(() => {
-                    this.textContent = '🖨️ طباعة الصفحة / Print Page';
+                    this.innerHTML = originalText;
                     this.disabled = false;
                     
                     // Remove temporary spans
                     document.querySelectorAll('.editable-cell span').forEach(span => {
+                        span.remove();
+                    });
+                    
+                    // Remove temporary numbers
+                    document.querySelectorAll('.number-cell span').forEach(span => {
                         span.remove();
                     });
                 }, 500);
@@ -498,15 +616,24 @@
         
         // Clear all button
         const clearBtn = document.createElement('button');
-        clearBtn.textContent = 'مسح كل الحقول';
         clearBtn.className = 'clear-btn';
+        clearBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            مسح كل الحقول
+        `;
+        
         clearBtn.addEventListener('click', function() {
             if (confirm('هل أنت متأكد من مسح جميع الحقول؟')) {
                 document.querySelectorAll('input').forEach(input => {
                     input.value = '';
                 });
                 
-                // Clear number columns
+                // Clear other columns if they have content
                 for (let i = 1; i <= 10; i++) {
                     document.getElementById(`gold-to-us-${i}`).textContent = '';
                     document.getElementById(`cash-to-us-${i}`).textContent = '';
@@ -514,46 +641,38 @@
                     document.getElementById(`cash-to-you-${i}`).textContent = '';
                 }
                 
-                // Reset totals
-                document.getElementById('gold-to-us-total').textContent = '0';
-                document.getElementById('cash-to-us-total').textContent = '0';
-                document.getElementById('gold-to-you-total').textContent = '0';
-                document.getElementById('cash-to-you-total').textContent = '0';
-                
                 localStorage.clear();
-                alert('تم مسح جميع الحقول بنجاح');
+                
+                // Show confirmation message
+                const confirmation = document.createElement('div');
+                confirmation.textContent = '✓ تم مسح جميع الحقول بنجاح';
+                confirmation.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.1);';
+                document.body.appendChild(confirmation);
+                
+                setTimeout(() => {
+                    confirmation.remove();
+                }, 2000);
             }
         });
         
         document.querySelector('.print-section').appendChild(clearBtn);
         
-        // Function to update totals (if you add data entry functionality later)
-        function updateTotals() {
-            let goldToUsTotal = 0;
-            let cashToUsTotal = 0;
-            let goldToYouTotal = 0;
-            let cashToYouTotal = 0;
-            
-            for (let i = 1; i <= 10; i++) {
-                const goldToUs = parseFloat(document.getElementById(`gold-to-us-${i}`).textContent) || 0;
-                const cashToUs = parseFloat(document.getElementById(`cash-to-us-${i}`).textContent) || 0;
-                const goldToYou = parseFloat(document.getElementById(`gold-to-you-${i}`).textContent) || 0;
-                const cashToYou = parseFloat(document.getElementById(`cash-to-you-${i}`).textContent) || 0;
-                
-                goldToUsTotal += goldToUs;
-                cashToUsTotal += cashToUs;
-                goldToYouTotal += goldToYou;
-                cashToYouTotal += cashToYou;
-            }
-            
-            document.getElementById('gold-to-us-total').textContent = goldToUsTotal;
-            document.getElementById('cash-to-us-total').textContent = cashToUsTotal;
-            document.getElementById('gold-to-you-total').textContent = goldToYouTotal;
-            document.getElementById('cash-to-you-total').textContent = cashToYouTotal;
+        // Add row numbers when printing (empty by default, filled only when printing)
+        function addPrintRowNumbers() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                const firstCell = row.querySelector('td:first-child');
+                if (firstCell) {
+                    // Store original empty state
+                    if (!firstCell.hasAttribute('data-original')) {
+                        firstCell.setAttribute('data-original', firstCell.textContent);
+                    }
+                }
+            });
         }
         
-        // Initialize totals
-        updateTotals();
+        // Initialize
+        addPrintRowNumbers();
     </script>
 </body>
 </html>
