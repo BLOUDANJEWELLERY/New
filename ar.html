@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر بلودان للمجوهرات - سجل المعاملات</title>
+    <title>متجر بلودان للمجوهرات - كشف الحساب</title>
     <style>
         /* A4 paper dimensions: 210mm x 297mm */
         @page {
@@ -37,14 +37,17 @@
             position: relative;
         }
         
-        /* Compact Company Header */
+        /* Compact Company Header with gold background */
         .company-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #d4af37;
-            padding-bottom: 10px;
+            border-bottom: 2px solid #8b6914;
+            padding: 12px 15px;
             margin-bottom: 15px;
+            background-color: #c7a332; /* Updated gold color */
+            color: white;
+            border-radius: 4px;
         }
         
         .company-info {
@@ -72,19 +75,31 @@
         .logo-img {
             max-width: 80px;
             height: auto;
+            filter: brightness(0) invert(1); /* Makes logo white to stand out on gold */
         }
         
         .company-name {
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 4px;
-            color: #2c3e50;
+            color: white;
         }
         
         .company-details {
             font-size: 11px;
-            color: #555;
+            color: white;
             line-height: 1.3;
+        }
+        
+        .company-phone {
+            color: white !important;
+            text-decoration: none !important;
+            font-weight: normal;
+        }
+        
+        .company-phone:hover {
+            text-decoration: none !important;
+            color: white !important;
         }
         
         /* Page Title */
@@ -92,7 +107,7 @@
             text-align: center;
             margin-bottom: 15px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ddd;
         }
         
         .page-title h1 {
@@ -102,8 +117,9 @@
         }
         
         .page-title p {
-            font-size: 12px;
+            font-size: 14px;
             color: #666;
+            font-weight: bold;
         }
         
         /* Print Button */
@@ -113,7 +129,7 @@
         }
         
         .print-btn {
-            background-color: #3498db;
+            background-color: #c7a332;
             color: white;
             border: none;
             padding: 8px 20px;
@@ -121,10 +137,11 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-weight: bold;
         }
         
         .print-btn:hover {
-            background-color: #2980b9;
+            background-color: #b3922a;
         }
         
         /* Table Styles for A4 */
@@ -183,6 +200,7 @@
         
         .editable-cell input:focus {
             background-color: #f0f8ff;
+            border: 1px dotted #c7a332;
         }
         
         /* Column widths */
@@ -201,6 +219,33 @@
             margin-top: 10px;
             padding-top: 8px;
             border-top: 1px dashed #ddd;
+        }
+        
+        /* Summary row at the bottom */
+        .summary-row {
+            background-color: #f0f0f0 !important;
+            font-weight: bold;
+        }
+        
+        .summary-row td {
+            border-top: 2px solid #c7a332;
+        }
+        
+        /* Clear button */
+        .clear-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .clear-btn:hover {
+            background-color: #c0392b;
         }
         
         /* Print-specific styles */
@@ -226,8 +271,16 @@
             }
             
             .company-header {
+                background-color: #c7a332 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
                 margin-top: 5mm;
                 padding-bottom: 5px;
+            }
+            
+            .company-name, .company-details, .company-phone {
+                color: white !important;
             }
             
             .page-title {
@@ -262,14 +315,14 @@
 </head>
 <body>
     <div class="container">
-        <!-- Compact Company Header -->
+        <!-- Compact Company Header with gold background -->
         <header class="company-header">
             <div class="company-info english">
                 <div class="company-name">The Bloudan Jewellery</div>
                 <div class="company-details">
                     <div>Kuwait - Al-Sharq - Mubarak Al-Kabir Street</div>
                     <div>Abdullah Al-Rabea'a Building - Shop 11</div>
-                    <div>Tel: +965-66634698, +965-99783299</div>
+                    <div class="company-phone">Tel: +965-66634698, +965-99783299</div>
                 </div>
             </div>
             
@@ -282,15 +335,15 @@
                 <div class="company-details">
                     <div>الكويت - الشرق - شارع مبارك الكبير</div>
                     <div>عمارة عبدالله الربيعي - محل 11</div>
-                    <div>هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩</div>
+                    <div class="company-phone">هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩</div>
                 </div>
             </div>
         </header>
         
         <!-- Page Title -->
         <div class="page-title">
-            <h1>سجل المعاملات اليومية</h1>
-            <p>Daily Transactions Record</p>
+            <h1>كشف الحساب</h1>
+            <p>Account Statement</p>
         </div>
         
         <!-- Print Button -->
@@ -314,6 +367,15 @@
                 <tbody id="table-body">
                     <!-- 10 rows will be generated by JavaScript -->
                 </tbody>
+                <tfoot>
+                    <tr class="summary-row">
+                        <td colspan="2">المجموع</td>
+                        <td id="gold-to-us-total">0</td>
+                        <td id="cash-to-us-total">0</td>
+                        <td id="gold-to-you-total">0</td>
+                        <td id="cash-to-you-total">0</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         
@@ -329,6 +391,7 @@
         
         for (let i = 1; i <= 10; i++) {
             const row = document.createElement('tr');
+            row.id = `row-${i}`;
             
             // Column 1: رقم (Number)
             const cell1 = document.createElement('td');
@@ -341,26 +404,31 @@
             const input = document.createElement('input');
             input.type = 'text';
             input.placeholder = 'اكتب نوع المجوهرات هنا...';
+            input.id = `jewellery-${i}`;
             cell2.appendChild(input);
             row.appendChild(cell2);
             
             // Column 3: ذهب ٩٩٩ لنا
             const cell3 = document.createElement('td');
+            cell3.id = `gold-to-us-${i}`;
             cell3.textContent = '';
             row.appendChild(cell3);
             
             // Column 4: نقدي لنا
             const cell4 = document.createElement('td');
+            cell4.id = `cash-to-us-${i}`;
             cell4.textContent = '';
             row.appendChild(cell4);
             
             // Column 5: ذهب ٩٩٩ لكم
             const cell5 = document.createElement('td');
+            cell5.id = `gold-to-you-${i}`;
             cell5.textContent = '';
             row.appendChild(cell5);
             
             // Column 6: نقدي لكم
             const cell6 = document.createElement('td');
+            cell6.id = `cash-to-you-${i}`;
             cell6.textContent = '';
             row.appendChild(cell6);
             
@@ -413,7 +481,7 @@
             }, 300);
         });
         
-        // Auto-save functionality (optional - saves to localStorage)
+        // Auto-save functionality (saves to localStorage)
         const inputs = document.querySelectorAll('input');
         inputs.forEach((input, index) => {
             // Load saved values
@@ -428,20 +496,64 @@
             });
         });
         
-        // Clear all button (optional)
+        // Clear all button
         const clearBtn = document.createElement('button');
         clearBtn.textContent = 'مسح كل الحقول';
-        clearBtn.style.cssText = 'background-color: #e74c3c; color: white; border: none; padding: 6px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; margin-left: 10px;';
+        clearBtn.className = 'clear-btn';
         clearBtn.addEventListener('click', function() {
             if (confirm('هل أنت متأكد من مسح جميع الحقول؟')) {
                 document.querySelectorAll('input').forEach(input => {
                     input.value = '';
                 });
+                
+                // Clear number columns
+                for (let i = 1; i <= 10; i++) {
+                    document.getElementById(`gold-to-us-${i}`).textContent = '';
+                    document.getElementById(`cash-to-us-${i}`).textContent = '';
+                    document.getElementById(`gold-to-you-${i}`).textContent = '';
+                    document.getElementById(`cash-to-you-${i}`).textContent = '';
+                }
+                
+                // Reset totals
+                document.getElementById('gold-to-us-total').textContent = '0';
+                document.getElementById('cash-to-us-total').textContent = '0';
+                document.getElementById('gold-to-you-total').textContent = '0';
+                document.getElementById('cash-to-you-total').textContent = '0';
+                
                 localStorage.clear();
+                alert('تم مسح جميع الحقول بنجاح');
             }
         });
         
         document.querySelector('.print-section').appendChild(clearBtn);
+        
+        // Function to update totals (if you add data entry functionality later)
+        function updateTotals() {
+            let goldToUsTotal = 0;
+            let cashToUsTotal = 0;
+            let goldToYouTotal = 0;
+            let cashToYouTotal = 0;
+            
+            for (let i = 1; i <= 10; i++) {
+                const goldToUs = parseFloat(document.getElementById(`gold-to-us-${i}`).textContent) || 0;
+                const cashToUs = parseFloat(document.getElementById(`cash-to-us-${i}`).textContent) || 0;
+                const goldToYou = parseFloat(document.getElementById(`gold-to-you-${i}`).textContent) || 0;
+                const cashToYou = parseFloat(document.getElementById(`cash-to-you-${i}`).textContent) || 0;
+                
+                goldToUsTotal += goldToUs;
+                cashToUsTotal += cashToUs;
+                goldToYouTotal += goldToYou;
+                cashToYouTotal += cashToYou;
+            }
+            
+            document.getElementById('gold-to-us-total').textContent = goldToUsTotal;
+            document.getElementById('cash-to-us-total').textContent = cashToUsTotal;
+            document.getElementById('gold-to-you-total').textContent = goldToYouTotal;
+            document.getElementById('cash-to-you-total').textContent = cashToYouTotal;
+        }
+        
+        // Initialize totals
+        updateTotals();
     </script>
 </body>
 </html>
