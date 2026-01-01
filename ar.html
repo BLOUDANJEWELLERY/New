@@ -224,10 +224,12 @@
             text-align: center;
             height: 34px;
             position: relative;
+            background-color: #fff; /* All rows same background */
         }
         
+        /* Remove alternating row colors - all rows same */
         tbody tr:nth-child(even) {
-            background-color: #f9f7f0;
+            background-color: #fff;
         }
         
         tbody tr:hover {
@@ -236,7 +238,7 @@
         
         /* Editable cell */
         .editable-cell {
-            background-color: #fffef9;
+            background-color: #fff;
             text-align: right;
             padding-right: 10px;
         }
@@ -281,21 +283,21 @@
             font-size: 11px;
         }
         
-        /* Dash placeholder styling for gold and cash columns */
+        /* Smaller dash placeholder styling for gold and cash columns */
         .dash-placeholder {
             position: relative;
             color: #bbb;
-            font-size: 16px;
-            letter-spacing: 2px;
         }
         
         .dash-placeholder::before {
-            content: "—";
+            content: "-";
             position: absolute;
-            right: 35%; /* Position dash slightly to the right of center */
+            right: 40%; /* Position dash slightly to the right of center */
             top: 50%;
             transform: translateY(-50%);
             font-weight: normal;
+            font-size: 14px; /* Smaller dash size */
+            color: #ccc; /* Lighter color */
         }
         
         /* Instructions */
@@ -420,6 +422,10 @@
                 font-size: 11px !important;
             }
             
+            td {
+                background-color: white !important;
+            }
+            
             /* Make jewellery text big and bold in print */
             .jewellery-text {
                 font-size: 14px !important;
@@ -429,11 +435,11 @@
                 direction: rtl;
             }
             
-            /* Dash placeholder in print - more subtle */
+            /* Smaller, more subtle dash placeholder in print */
             .dash-placeholder::before {
-                color: #ddd !important;
-                font-size: 15px !important;
-                right: 35% !important;
+                color: #eee !important;
+                font-size: 12px !important;
+                right: 40% !important;
             }
             
             .editable-cell input {
@@ -537,7 +543,8 @@
             
             /* Adjust dash position for mobile */
             .dash-placeholder::before {
-                right: 40%; /* More centered on mobile */
+                right: 45%; /* More centered on mobile */
+                font-size: 13px;
             }
         }
         
@@ -658,25 +665,25 @@
             cell2.appendChild(input);
             row.appendChild(cell2);
             
-            // Column 3: ذهب ٩٩٩ لنا - Dash placeholder
+            // Column 3: ذهب ٩٩٩ لنا - Smaller dash placeholder
             const cell3 = document.createElement('td');
             cell3.className = 'dash-placeholder';
             cell3.id = `gold-to-us-${i}`;
             row.appendChild(cell3);
             
-            // Column 4: نقدي لنا - Dash placeholder
+            // Column 4: نقدي لنا - Smaller dash placeholder
             const cell4 = document.createElement('td');
             cell4.className = 'dash-placeholder';
             cell4.id = `cash-to-us-${i}`;
             row.appendChild(cell4);
             
-            // Column 5: ذهب ٩٩٩ لكم - Dash placeholder
+            // Column 5: ذهب ٩٩٩ لكم - Smaller dash placeholder
             const cell5 = document.createElement('td');
             cell5.className = 'dash-placeholder';
             cell5.id = `gold-to-you-${i}`;
             row.appendChild(cell5);
             
-            // Column 6: نقدي لكم - Dash placeholder
+            // Column 6: نقدي لكم - Smaller dash placeholder
             const cell6 = document.createElement('td');
             cell6.className = 'dash-placeholder';
             cell6.id = `cash-to-you-${i}`;
