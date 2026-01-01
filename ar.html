@@ -381,8 +381,23 @@
                 font-size: 11px !important;
             }
             
+            /* Make jewellery text big and bold in print */
+            .jewellery-text {
+                font-size: 14px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                text-align: right;
+                direction: rtl;
+            }
+            
             .editable-cell input {
                 border-bottom: 1px dotted #999;
+            }
+            
+            /* Keep number column empty in print */
+            .number-cell {
+                color: #666 !important;
+                font-weight: normal !important;
             }
         }
         
@@ -613,6 +628,7 @@
                     // Create a span to show the value when printing
                     const valueSpan = document.createElement('span');
                     valueSpan.textContent = input.value;
+                    valueSpan.className = 'jewellery-text'; // Add special class for printing
                     valueSpan.style.display = 'none';
                     cell.appendChild(valueSpan);
                     
@@ -621,38 +637,17 @@
                     printStyle.textContent = `
                         @media print {
                             .editable-cell input { display: none; }
-                            .editable-cell span { 
+                            .editable-cell span.jewellery-text { 
                                 display: inline !important; 
-                                font-weight: bold;
-                                color: #333;
+                                font-weight: bold !important;
+                                font-size: 14px !important;
+                                color: #000 !important;
+                                text-align: right !important;
+                                direction: rtl !important;
                             }
                         }
                     `;
                     document.head.appendChild(printStyle);
-                }
-            });
-            
-            // Add row numbers for printing (temporary)
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach((row, index) => {
-                const firstCell = row.querySelector('td:first-child');
-                if (firstCell && firstCell.textContent === '') {
-                    // Create a temporary number for printing only
-                    const tempNumber = document.createElement('span');
-                    tempNumber.textContent = (index + 1).toString();
-                    tempNumber.style.display = 'none';
-                    firstCell.appendChild(tempNumber);
-                    
-                    const numberStyle = document.createElement('style');
-                    numberStyle.textContent = `
-                        @media print {
-                            .number-cell span { 
-                                display: inline !important; 
-                                font-weight: bold;
-                            }
-                        }
-                    `;
-                    document.head.appendChild(numberStyle);
                 }
             });
             
@@ -678,11 +673,6 @@
                     
                     // Remove temporary spans
                     document.querySelectorAll('.editable-cell span').forEach(span => {
-                        span.remove();
-                    });
-                    
-                    // Remove temporary numbers
-                    document.querySelectorAll('.number-cell span').forEach(span => {
                         span.remove();
                     });
                 }, 500);
