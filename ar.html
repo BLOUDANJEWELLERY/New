@@ -36,7 +36,7 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 1px solid #e0d6b5;
+            border: 1px solid #d4af37; /* Darker border */
         }
         
         /* Main Header Container - Clean single block */
@@ -44,7 +44,7 @@
             margin-bottom: 15px;
             background-color: #1a1a1a;
             border-radius: 4px;
-            border: 1px solid #d4af37;
+            border: 2px solid #d4af37; /* Thicker border */
             overflow: hidden;
             position: relative;
         }
@@ -55,7 +55,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
+            height: 3px; /* Thicker accent */
             background: #d4af37;
         }
         
@@ -78,14 +78,14 @@
             text-align: left;
             direction: ltr;
             font-size: 10px;
-            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            border-right: 2px solid rgba(212, 175, 55, 0.3); /* Thicker border */
         }
         
         .company-info.arabic {
             text-align: right;
             direction: rtl;
             font-size: 11px; /* Increased from 10px to 11px */
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            border-left: 2px solid rgba(212, 175, 55, 0.3); /* Thicker border */
         }
         
         /* Increased Arabic company name font size */
@@ -178,6 +178,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            border: 1px solid #b8941f; /* Added border */
         }
         
         .print-btn:hover {
@@ -190,11 +191,11 @@
             transform: translateY(0);
         }
         
-        /* Table Container */
+        /* Table Container with darker borders */
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 1px solid #e0d6b5;
+            border: 2px solid #2c3e50; /* Darker, thicker border */
             border-radius: 4px;
             padding: 1px;
             background-color: #fdfdf9;
@@ -206,6 +207,7 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
+            border: 1px solid #2c3e50; /* Dark border for table */
         }
         
         th {
@@ -214,13 +216,13 @@
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 1px solid #555;
+            border: 2px solid #1a2a3a; /* Darker border for header */
             font-size: 12px;
         }
         
         td {
             padding: 6px 4px;
-            border: 1px solid #ddd;
+            border: 1px solid #999; /* Darker cell borders */
             text-align: center;
             height: 34px;
             position: relative;
@@ -241,6 +243,7 @@
             background-color: #fff;
             text-align: right;
             padding-right: 10px;
+            border-right: 2px solid #ddd; /* Slightly thicker right border */
         }
         
         .editable-cell input {
@@ -283,10 +286,10 @@
             font-size: 11px;
         }
         
-        /* Smaller dash placeholder styling for gold and cash columns */
+        /* Darker dash placeholder styling for gold and cash columns */
         .dash-placeholder {
             position: relative;
-            color: #bbb;
+            color: #777; /* Darker color */
         }
         
         .dash-placeholder::before {
@@ -296,8 +299,9 @@
             top: 50%;
             transform: translateY(-50%);
             font-weight: normal;
-            font-size: 14px; /* Smaller dash size */
-            color: #ccc; /* Lighter color */
+            font-size: 14px; /* Dash size */
+            color: #777; /* Darker gray */
+            font-weight: bold; /* Make dash bolder */
         }
         
         /* Instructions */
@@ -330,6 +334,7 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            border: 1px solid #c0392b; /* Added border */
         }
         
         .clear-btn:hover {
@@ -358,7 +363,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: none;
+                border: 1px solid #d4af37;
             }
             
             .print-section, .clear-btn {
@@ -370,7 +375,7 @@
                 color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                border: 1px solid #d4af37;
+                border: 2px solid #d4af37;
                 direction: ltr;
             }
             
@@ -403,15 +408,17 @@
             }
             
             .table-container {
-                border: 1px solid #ccc;
+                border: 2px solid #000 !important; /* Black border for print */
             }
             
             table {
                 font-size: 11px;
+                border: 1px solid #000 !important;
             }
             
             th, td {
                 padding: 5px 3px;
+                border: 1px solid #777 !important; /* Darker borders for print */
             }
             
             th {
@@ -420,10 +427,12 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
+                border: 2px solid #1a2a3a !important;
             }
             
             td {
                 background-color: white !important;
+                border: 1px solid #777 !important;
             }
             
             /* Make jewellery text big and bold in print */
@@ -435,11 +444,12 @@
                 direction: rtl;
             }
             
-            /* Smaller, more subtle dash placeholder in print */
+            /* Darker, more visible dash placeholder in print */
             .dash-placeholder::before {
-                color: #eee !important;
-                font-size: 12px !important;
+                color: #555 !important; /* Darker for print */
+                font-size: 13px !important;
                 right: 40% !important;
+                font-weight: bold !important;
             }
             
             .editable-cell input {
@@ -486,7 +496,7 @@
             .company-info.english {
                 direction: ltr;
                 order: 1;
-                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+                border-bottom: 2px solid rgba(212, 175, 55, 0.3);
                 padding-bottom: 8px;
             }
             
@@ -505,7 +515,7 @@
                 direction: rtl;
                 order: 3;
                 padding-top: 8px;
-                border-top: 1px solid rgba(212, 175, 55, 0.2);
+                border-top: 2px solid rgba(212, 175, 55, 0.3);
             }
             
             .company-name {
@@ -665,25 +675,25 @@
             cell2.appendChild(input);
             row.appendChild(cell2);
             
-            // Column 3: ذهب ٩٩٩ لنا - Smaller dash placeholder
+            // Column 3: ذهب ٩٩٩ لنا - Darker dash placeholder
             const cell3 = document.createElement('td');
             cell3.className = 'dash-placeholder';
             cell3.id = `gold-to-us-${i}`;
             row.appendChild(cell3);
             
-            // Column 4: نقدي لنا - Smaller dash placeholder
+            // Column 4: نقدي لنا - Darker dash placeholder
             const cell4 = document.createElement('td');
             cell4.className = 'dash-placeholder';
             cell4.id = `cash-to-us-${i}`;
             row.appendChild(cell4);
             
-            // Column 5: ذهب ٩٩٩ لكم - Smaller dash placeholder
+            // Column 5: ذهب ٩٩٩ لكم - Darker dash placeholder
             const cell5 = document.createElement('td');
             cell5.className = 'dash-placeholder';
             cell5.id = `gold-to-you-${i}`;
             row.appendChild(cell5);
             
-            // Column 6: نقدي لكم - Smaller dash placeholder
+            // Column 6: نقدي لكم - Darker dash placeholder
             const cell6 = document.createElement('td');
             cell6.className = 'dash-placeholder';
             cell6.id = `cash-to-you-${i}`;
