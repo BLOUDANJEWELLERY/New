@@ -9,7 +9,7 @@
     header { background:#4f8cff; color:white; padding:20px; text-align:center; font-size:1.5rem; font-weight:bold; }
     .container { max-width:900px; margin:30px auto; padding:20px; background:white; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
     h2 { color:#4f8cff; margin-top:20px; }
-    input[type="file"] { margin:10px 0; }
+    input[type="file"], select { margin:10px 0; }
     button { background:#4f8cff; border:none; color:white; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer; margin-right:10px; }
     button.secondary { background:#777; }
     #status { margin-top:10px; font-size:0.95rem; color:#555; }
@@ -29,19 +29,26 @@
   <div class="container">
     <h2>Step 1: Upload your PDF</h2>
     <input id="pdfFile" type="file" accept="application/pdf" />
-    <h2>Step 2: Convert</h2>
+    <h2>Step 2: Choose Resolution</h2>
+    <select id="resolutionSelect">
+      <option value="2">Low (Scale 2)</option>
+      <option value="4">Medium (Scale 4)</option>
+      <option value="6" selected>High (Scale 6)</option>
+      <option value="10">Ultra (Scale 10)</option>
+    </select>
+    <h2>Step 3: Convert</h2>
     <button id="convertBtn">Convert</button>
     <button id="clearBtn" class="secondary">Clear</button>
     <button id="downloadZipBtn" class="secondary" disabled>Download All as ZIP</button>
     <div id="status">Select a PDF and click Convert.</div>
     <div class="progress"><div id="progressFill"></div></div>
-    <h2>Step 3: Download Images</h2>
+    <h2>Step 4: Download Images</h2>
     <div id="output" class="grid"></div>
   </div>
 
   <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- JSZip -->
+  <!-- JSZip + FileSaver -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
@@ -53,13 +60,12 @@
     const convertBtn = document.getElementById('convertBtn');
     const clearBtn = document.getElementById('clearBtn');
     const downloadZipBtn = document.getElementById('downloadZipBtn');
+    const resolutionSelect = document.getElementById('resolutionSelect');
     const output = document.getElementById('output');
     const statusEl = document.getElementById('status');
     const progressFill = document.getElementById('progressFill');
 
-    const RENDER_SCALE = 6.0; // High clarity
-
-    let imagesData = []; // store base64 images
+    let imagesData = [];
 
     clearBtn.addEventListener('click', () => {
       output.innerHTML = '';
@@ -82,13 +88,15 @@
       progressFill.style.width = '0%';
       imagesData = [];
 
+      const scale = parseFloat(resolutionSelect.value);
+
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: RENDER_SCALE });
+          const viewport = page.getViewport({ scale });
 
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d');
