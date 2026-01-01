@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول عربي مع زر طباعة</title>
+    <title>The Bloudan Jewellery - متجر بلودان للمجوهرات</title>
     <style>
         * {
             margin: 0;
@@ -13,9 +13,8 @@
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f8f8;
             color: #333;
-            padding: 20px;
             line-height: 1.6;
         }
         
@@ -24,26 +23,102 @@
             margin: 0 auto;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-        
-        header {
-            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 20px;
             margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
         }
         
-        h1 {
+        /* Company Header Styles */
+        .company-header {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 5px solid #d4af37;
+        }
+        
+        .company-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .company-info.english {
+            text-align: left;
+            direction: ltr;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding-right: 30px;
+        }
+        
+        .company-info.arabic {
+            text-align: right;
+            direction: rtl;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            padding-left: 30px;
+        }
+        
+        .company-logo {
+            flex: 0 0 200px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .logo-img {
+            max-width: 160px;
+            height: auto;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+        }
+        
+        .company-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #d4af37;
+            letter-spacing: 0.5px;
+        }
+        
+        .company-address, .company-phone {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            opacity: 0.9;
+        }
+        
+        .company-phone {
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .phone-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 25px 30px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .page-title {
             color: #2c3e50;
             font-size: 2.2rem;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
-        .subtitle {
+        .page-subtitle {
             color: #7f8c8d;
             font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Content Area */
+        .content {
+            padding: 30px;
         }
         
         .controls {
@@ -59,37 +134,46 @@
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 14px 28px;
             font-size: 1.1rem;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
         }
         
         .print-btn:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(52, 152, 219, 0.3);
         }
         
         .print-btn:active {
-            transform: translateY(2px);
+            transform: translateY(0);
         }
         
         .info-box {
             background-color: #e8f4fc;
-            padding: 15px;
-            border-radius: 5px;
+            padding: 18px;
+            border-radius: 8px;
             border-right: 4px solid #3498db;
-            margin-bottom: 25px;
+            flex: 1;
+            min-width: 300px;
         }
         
+        /* Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin: 20px 0 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         thead {
@@ -98,14 +182,15 @@
         }
         
         th {
-            padding: 15px;
+            padding: 18px 15px;
             text-align: center;
             font-weight: 600;
             font-size: 1.1rem;
+            border-bottom: 2px solid #d4af37;
         }
         
         td {
-            padding: 12px 15px;
+            padding: 15px;
             text-align: center;
             border-bottom: 1px solid #eee;
         }
@@ -119,10 +204,11 @@
         }
         
         .status {
-            padding: 5px 10px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: bold;
+            display: inline-block;
         }
         
         .status-active {
@@ -140,13 +226,36 @@
             color: #721c24;
         }
         
+        /* Footer */
         footer {
-            margin-top: 40px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 25px 30px;
             text-align: center;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 5px solid #d4af37;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .copyright {
+            color: #ecf0f1;
+            font-size: 0.95rem;
+        }
+        
+        .footer-logo {
+            max-width: 100px;
+            opacity: 0.8;
+        }
+        
+        .contact-info {
+            text-align: right;
+            font-size: 0.95rem;
         }
         
         /* Print-specific styles */
@@ -165,7 +274,20 @@
                 top: 0;
                 width: 100%;
                 box-shadow: none;
-                padding: 10px;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .company-header {
+                background: #f0f0f0 !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-bottom: 2px solid #000;
+            }
+            
+            .company-name {
+                color: #000 !important;
             }
             
             .print-btn, .info-box {
@@ -183,16 +305,65 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            
+            footer {
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-top: 2px solid #000;
+            }
         }
         
         /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+        @media (max-width: 992px) {
+            .company-header {
+                flex-direction: column;
+                text-align: center;
             }
             
-            h1 {
+            .company-info.english, .company-info.arabic {
+                border: none;
+                padding: 15px 0;
+                text-align: center;
+                direction: ltr;
+            }
+            
+            .company-info.arabic {
+                direction: rtl;
+            }
+            
+            .company-logo {
+                order: -1;
+                margin-bottom: 15px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .contact-info {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 5px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .page-title {
                 font-size: 1.8rem;
+            }
+            
+            .company-name {
+                font-size: 1.6rem;
             }
             
             table {
@@ -201,7 +372,7 @@
             }
             
             th, td {
-                padding: 10px 8px;
+                padding: 12px 10px;
                 font-size: 0.9rem;
             }
         }
@@ -209,130 +380,227 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>جدول البيانات باللغة العربية</h1>
-            <p class="subtitle">جدول يحتوي على بيانات عربية مع إمكانية الطباعة</p>
-        </header>
-        
-        <div class="controls">
-            <div class="info-box">
-                <strong>ملاحظة:</strong> اضغط على زر "طباعة الصفحة" لطباعة الجدول بالكامل. ستظهر نافذة معاينة الطباعة قبل الإرسال إلى الطابعة.
+        <!-- Company Header with Bilingual Details -->
+        <header class="company-header">
+            <div class="company-info english">
+                <h2 class="company-name">The Bloudan Jewellery</h2>
+                <p class="company-address">Kuwait - Al-Sharq - Mubarak Al-Kabir Street</p>
+                <p class="company-address">Abdullah Al-Rabea'a Building - Shop 11</p>
+                <p class="company-phone">
+                    <span class="phone-icon">📞</span> +965-66634698, +965-99783299
+                </p>
             </div>
             
-            <button class="print-btn" onclick="window.print()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                    <rect x="6" y="14" width="12" height="8"></rect>
-                </svg>
-                طباعة الصفحة
-            </button>
+            <div class="company-logo">
+                <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
+            </div>
+            
+            <div class="company-info arabic">
+                <h2 class="company-name">متجر بلودان للمجوهرات</h2>
+                <p class="company-address">الكويت - الشرق - شارع مبارك الكبير</p>
+                <p class="company-address">عمارة عبدالله الربيعي - محل 11</p>
+                <p class="company-phone">
+                    <span class="phone-icon">📞</span> ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩
+                </p>
+            </div>
+        </header>
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">بيانات العملاء والمبيعات</h1>
+            <p class="page-subtitle">جدول يحتوي على بيانات العملاء والمبيعات مع إمكانية الطباعة</p>
         </div>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>رقم</th>
-                    <th>الاسم</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>الدور</th>
-                    <th>الحالة</th>
-                    <th>تاريخ الانضمام</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>أحمد محمد</td>
-                    <td>ahmed@example.com</td>
-                    <td>مدير النظام</td>
-                    <td><span class="status status-active">نشط</span></td>
-                    <td>2023-01-15</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>فاطمة علي</td>
-                    <td>fatima@example.com</td>
-                    <td>مطورة ويب</td>
-                    <td><span class="status status-active">نشط</span></td>
-                    <td>2023-03-22</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>خالد عبدالله</td>
-                    <td>khaled@example.com</td>
-                    <td>مصمم جرافيك</td>
-                    <td><span class="status status-pending">في الانتظار</span></td>
-                    <td>2023-05-10</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>سارة حسن</td>
-                    <td>sara@example.com</td>
-                    <td>مديرة مشاريع</td>
-                    <td><span class="status status-active">نشط</span></td>
-                    <td>2023-06-18</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>عمر إبراهيم</td>
-                    <td>omar@example.com</td>
-                    <td>محلل بيانات</td>
-                    <td><span class="status status-inactive">غير نشط</span></td>
-                    <td>2023-08-05</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>نورا سعيد</td>
-                    <td>nora@example.com</td>
-                    <td>مسوقة إلكترونية</td>
-                    <td><span class="status status-active">نشط</span></td>
-                    <td>2023-09-30</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>يوسف راشد</td>
-                    <td>yousef@example.com</td>
-                    <td>مطور تطبيقات</td>
-                    <td><span class="status status-pending">في الانتظار</span></td>
-                    <td>2023-11-12</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>ليلى مصطفى</td>
-                    <td>layla@example.com</td>
-                    <td>مديرة مبيعات</td>
-                    <td><span class="status status-active">نشط</span></td>
-                    <td>2023-12-01</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Main Content -->
+        <div class="content">
+            <div class="controls">
+                <div class="info-box">
+                    <strong>ملاحظة:</strong> اضغط على زر "طباعة الصفحة" لطباعة التقرير بالكامل. ستظهر نافذة معاينة الطباعة قبل الإرسال إلى الطابعة.
+                </div>
+                
+                <button class="print-btn" onclick="window.print()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    طباعة الصفحة
+                </button>
+            </div>
+            
+            <!-- Arabic Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>رقم</th>
+                        <th>اسم العميل</th>
+                        <th>نوع المجوهرات</th>
+                        <th>السعر (دينار)</th>
+                        <th>حالة الطلب</th>
+                        <th>تاريخ الشراء</th>
+                        <th>طريقة الدفع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>أحمد محمد</td>
+                        <td>خاتم ذهب عيار 21</td>
+                        <td>450</td>
+                        <td><span class="status status-active">مكتمل</span></td>
+                        <td>2023-10-15</td>
+                        <td>بطاقة ائتمان</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>فاطمة علي</td>
+                        <td>سوار فضة مطعم بالأحجار</td>
+                        <td>220</td>
+                        <td><span class="status status-active">مكتمل</span></td>
+                        <td>2023-11-22</td>
+                        <td>نقدي</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>خالد عبدالله</td>
+                        <td>قلادة ذهب عيار 18</td>
+                        <td>780</td>
+                        <td><span class="status status-pending">قيد التنفيذ</span></td>
+                        <td>2023-12-10</td>
+                        <td>تحويل بنكي</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>سارة حسن</td>
+                        <td>أقراط ماس</td>
+                        <td>1200</td>
+                        <td><span class="status status-active">مكتمل</span></td>
+                        <td>2024-01-18</td>
+                        <td>بطاقة ائتمان</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>عمر إبراهيم</td>
+                        <td>ساعة يد ذهبية</td>
+                        <td>950</td>
+                        <td><span class="status status-inactive">ملغي</span></td>
+                        <td>2024-02-05</td>
+                        <td>نقدي</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>نورا سعيد</td>
+                        <td>عقد لؤلؤ</td>
+                        <td>680</td>
+                        <td><span class="status status-active">مكتمل</span></td>
+                        <td>2024-02-28</td>
+                        <td>بطاقة ائتمان</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>يوسف راشد</td>
+                        <td>خاتم خطوبة ماس</td>
+                        <td>1850</td>
+                        <td><span class="status status-pending">قيد التنفيذ</span></td>
+                        <td>2024-03-12</td>
+                        <td>تحويل بنكي</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>ليلى مصطفى</td>
+                        <td>أسورة ذهب عيار 22</td>
+                        <td>620</td>
+                        <td><span class="status status-active">مكتمل</span></td>
+                        <td>2024-03-20</td>
+                        <td>نقدي</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         
+        <!-- Footer -->
         <footer>
-            <p>تم إنشاء هذا الجدول باستخدام HTML و CSS وجافاسكريبت</p>
-            <p>© 2023 - جميع الحقوق محفوظة</p>
+            <div class="footer-content">
+                <div class="copyright">
+                    <p>© 2024 The Bloudan Jewellery - متجر بلودان للمجوهرات. جميع الحقوق محفوظة.</p>
+                    <p>تم إنشاء هذا التقرير باستخدام HTML و CSS وجافاسكريبت</p>
+                </div>
+                
+                <img src="./logo.png" alt="Logo" class="footer-logo">
+                
+                <div class="contact-info">
+                    <p>هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ | ٩٦٥+ ٩٩٧٨٣٢٩٩</p>
+                    <p>الكويت - الشرق - شارع مبارك الكبير</p>
+                </div>
+            </div>
         </footer>
     </div>
 
     <script>
-        // تحسين تجربة الطباعة مع رسالة تأكيد
+        // Enhanced print functionality
         document.querySelector('.print-btn').addEventListener('click', function() {
-            // يمكن إضافة أي تحضيرات إضافية قبل الطباعة هنا
-            console.log('جاري تحضير الصفحة للطباعة...');
+            // Add a printing class for visual feedback
+            this.classList.add('printing');
+            this.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                جاري التحضير للطباعة...
+            `;
             
-            // تأخير بسيط لضمان تحميل جميع العناصر قبل فتح نافذة الطباعة
+            // Log print action
+            console.log('Preparing page for printing...');
+            
+            // Add a timestamp to the page for printing
+            const printTimestamp = document.createElement('div');
+            printTimestamp.style.cssText = 'position: absolute; top: 10px; left: 10px; font-size: 12px; color: #666; display: none;';
+            printTimestamp.textContent = `Printed: ${new Date().toLocaleString('ar-SA')}`;
+            document.querySelector('.container').appendChild(printTimestamp);
+            
+            // Show timestamp only when printing
+            const style = document.createElement('style');
+            style.textContent = '@media print { div { display: block !important; } }';
+            document.head.appendChild(style);
+            
+            // Delay to ensure DOM updates before print dialog
             setTimeout(function() {
                 window.print();
-            }, 100);
+                
+                // Reset button after printing
+                setTimeout(function() {
+                    document.querySelector('.print-btn').classList.remove('printing');
+                    document.querySelector('.print-btn').innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        طباعة الصفحة
+                    `;
+                    
+                    // Clean up
+                    printTimestamp.remove();
+                    style.remove();
+                }, 500);
+            }, 300);
         });
         
-        // إضافة تأثير عند النقر على الزر
+        // Add button press effect
         document.querySelector('.print-btn').addEventListener('mousedown', function() {
-            this.style.transform = 'translateY(2px)';
+            this.style.transform = 'translateY(1px)';
         });
         
         document.querySelector('.print-btn').addEventListener('mouseup', function() {
             this.style.transform = 'translateY(0)';
+        });
+        
+        // Add keyboard shortcut for printing (Ctrl+P)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                document.querySelector('.print-btn').click();
+            }
         });
     </script>
 </body>
