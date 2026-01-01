@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
     <title>متجر بلودان للمجوهرات - كشف الحساب</title>
     <style>
         /* A4 paper dimensions: 210mm x 297mm */
@@ -38,7 +39,7 @@
             border: 1px solid #e0d6b5;
         }
         
-        /* Elegant Header with Gold Accents */
+        /* Elegant Header with Gold Accents - English left, Arabic right */
         .company-header {
             display: flex;
             justify-content: space-between;
@@ -51,6 +52,7 @@
             border: 2px solid #d4af37;
             position: relative;
             overflow: hidden;
+            direction: ltr; /* Force LTR for header layout */
         }
         
         .company-header::before {
@@ -108,7 +110,7 @@
             line-height: 1.4;
         }
         
-        .company-phone {
+        .company-address, .company-phone {
             color: #e6e6e6;
             text-decoration: none;
             font-weight: normal;
@@ -123,6 +125,7 @@
             padding-bottom: 12px;
             border-bottom: 2px solid #d4af37;
             position: relative;
+            direction: rtl;
         }
         
         .page-title h1 {
@@ -153,6 +156,7 @@
         .print-section {
             text-align: center;
             margin-bottom: 20px;
+            direction: rtl;
         }
         
         .print-btn {
@@ -189,6 +193,7 @@
             border-radius: 5px;
             padding: 2px;
             background-color: #fdfdf9;
+            direction: rtl;
         }
         
         table {
@@ -281,6 +286,7 @@
             background-color: #f9f7f0;
             border-radius: 4px;
             line-height: 1.5;
+            direction: rtl;
         }
         
         /* Clear button */
@@ -340,14 +346,16 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 border: 1px solid #d4af37;
+                direction: ltr;
             }
             
-            .company-name, .company-details, .company-phone {
-                color: #d4af37 !important;
-            }
-            
-            .company-phone {
+            .company-name, .company-details, .company-phone, .company-address {
                 color: #e6e6e6 !important;
+                text-decoration: none !important;
+            }
+            
+            .company-name {
+                color: #d4af37 !important;
             }
             
             .page-title {
@@ -389,30 +397,63 @@
                 page-break-inside: avoid;
             }
         }
+        
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .company-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .company-info.english, .company-info.arabic {
+                border: none;
+                padding: 10px 0;
+                text-align: center;
+                width: 100%;
+            }
+            
+            .company-info.english {
+                direction: ltr;
+                order: 1;
+            }
+            
+            .company-logo {
+                order: 2;
+                margin: 10px 0;
+            }
+            
+            .company-info.arabic {
+                direction: rtl;
+                order: 3;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Elegant Header with Gold Theme -->
+        <!-- Corrected Header Layout: English left, Arabic right -->
         <header class="company-header">
+            <!-- English details on LEFT -->
             <div class="company-info english">
                 <div class="company-name">The Bloudan Jewellery</div>
                 <div class="company-details">
-                    <div>Kuwait - Al-Sharq - Mubarak Al-Kabir Street</div>
-                    <div>Abdullah Al-Rabea'a Building - Shop 11</div>
+                    <div class="company-address">Kuwait - Al-Sharq - Mubarak Al-Kabir Street</div>
+                    <div class="company-address">Abdullah Al-Rabea'a Building - Shop 11</div>
                     <div class="company-phone">Tel: +965-66634698, +965-99783299</div>
                 </div>
             </div>
             
+            <!-- Logo in CENTER -->
             <div class="company-logo">
                 <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
             </div>
             
+            <!-- Arabic details on RIGHT -->
             <div class="company-info arabic">
                 <div class="company-name">متجر بلودان للمجوهرات</div>
                 <div class="company-details">
-                    <div>الكويت - الشرق - شارع مبارك الكبير</div>
-                    <div>عمارة عبدالله الربيعي - محل 11</div>
+                    <div class="company-address">الكويت - الشرق - شارع مبارك الكبير</div>
+                    <div class="company-address">عمارة عبدالله الربيعي - محل 11</div>
                     <div class="company-phone">هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩</div>
                 </div>
             </div>
@@ -657,22 +698,11 @@
         
         document.querySelector('.print-section').appendChild(clearBtn);
         
-        // Add row numbers when printing (empty by default, filled only when printing)
-        function addPrintRowNumbers() {
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach((row, index) => {
-                const firstCell = row.querySelector('td:first-child');
-                if (firstCell) {
-                    // Store original empty state
-                    if (!firstCell.hasAttribute('data-original')) {
-                        firstCell.setAttribute('data-original', firstCell.textContent);
-                    }
-                }
-            });
-        }
-        
-        // Initialize
-        addPrintRowNumbers();
+        // Add meta tag to prevent phone number styling
+        const meta = document.createElement('meta');
+        meta.name = 'format-detection';
+        meta.content = 'telephone=no';
+        document.head.appendChild(meta);
     </script>
 </body>
 </html>
