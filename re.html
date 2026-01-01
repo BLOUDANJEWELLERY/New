@@ -1,51 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to Image</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF to Image (Safari iPhone)</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; }
+  img { margin: 10px 0; max-width: 100%; border: 1px solid #ccc; }
+  button { padding: 10px 20px; font-size: 16px; margin-top: 10px; }
+</style>
 </head>
 <body>
-  <h1>PDF → Image</h1>
-  <input type="file" id="pdfInput" accept=".pdf">
-  <button id="convertBtn">Convert</button>
-  <div id="images"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.14.305/pdf.min.js"></script>
-  <script>
-    const convertBtn = document.getElementById('convertBtn');
-    const pdfInput = document.getElementById('pdfInput');
-    const imagesDiv = document.getElementById('images');
+<h2>PDF → Image Converter</h2>
+<input type="file" id="pdfInput" accept=".pdf" />
+<button id="convertBtn">Convert PDF</button>
+<div id="images"></div>
 
-    convertBtn.addEventListener('click', async () => {
-      const file = pdfInput.files[0];
-      if (!file) return alert("Select a PDF file");
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.14.305/build/pdf.min.js"></script>
+<script>
+const pdfInput = document.getElementById('pdfInput');
+const convertBtn = document.getElementById('convertBtn');
+const imagesDiv = document.getElementById('images');
 
-      const arrayBuffer = await file.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({data: arrayBuffer});
-      const pdf = await loadingTask.promise;
+// Make pdfjs work in browser
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.14.305/build/pdf.worker.min.js';
 
-      imagesDiv.innerHTML = ''; // clear previous
+convertBtn.addEventListener('click', async () => {
+  const file = pdfInput.files[0];
+  if (!file) return alert('Please select a PDF.');
 
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2 }); // increase for better quality
+  imagesDiv.innerHTML = ''; // clear old images
 
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const context = canvas.getContext('2d');
+  const arrayBuffer = await file.arrayBuffer();
 
-        await page.render({ canvasContext: context, viewport: viewport }).promise;
+  // Load PDF
+  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
 
-        // Convert canvas to image
-        const img = document.createElement('img');
-        img.src = canvas.toDataURL("image/png");
-        img.style.border = "1px solid #ccc";
-        img.style.margin = "10px";
-        imagesDiv.appendChild(img);
-      }
-    });
-  </script>
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2 }); // increase scale for clarity
+
+    // Create canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const context = canvas.getContext('2d');
+
+    // Render PDF page into canvas
+    await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+    // Convert canvas to PNG
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+
+    imagesDiv.appendChild(img);
+
+    // Optional: Auto-download each page
+    // const a = document.createElement('a');
+    // a.href = img.src;
+    // a.download = `page-${pageNum}.png`;
+    // a.click();
+  }
+});
+</script>
 </body>
 </html>
