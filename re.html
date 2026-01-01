@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embed PDF Example</title>
+</head>
+<body>
+  <h1>Embed PDF Demo</h1>
+  
+  <input type="file" id="mainPdf" accept=".pdf">
+  <input type="file" id="embedPdf" accept=".pdf">
+  <button id="generateBtn">Generate PDF</button>
+
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    const { PDFDocument } = PDFLib;
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const mainFile = document.getElementById('mainPdf').files[0];
+      const embedFile = document.getElementById('embedPdf').files[0];
+
+      if (!mainFile || !embedFile) return alert('Select both PDFs');
+
+      const mainBytes = await mainFile.arrayBuffer();
+      const embedBytes = await embedFile.arrayBuffer();
+
+      // Load main PDF
+      const mainPdfDoc = await PDFDocument.load(mainBytes);
+
+      // Load PDF to embed
+      const embedPdfDoc = await PDFDocument.load(embedBytes);
+      const [embedPage] = await mainPdfDoc.copyPages(embedPdfDoc, [0]); // first page of embed PDF
+
+      // Resize and position
+      const mainPage = mainPdfDoc.getPage(0);
+      const { width, height } = mainPage.getSize();
+
+      // Scale the embedded page to 50% and center
+      const embedWidth = embedPage.getWidth() * 0.5;
+      const embedHeight = embedPage.getHeight() * 0.5;
+      const x = (width - embedWidth) / 2;
+      const y = (height - embedHeight) / 2;
+
+      mainPage.drawPage(embedPage, {
+        x,
+        y,
+        xScale: 0.5,
+        yScale: 0.5
+      });
+
+      // Save final PDF
+      const pdfBytes = await mainPdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+
+      // Trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'final.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
