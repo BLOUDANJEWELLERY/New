@@ -39,9 +39,24 @@
             border: 1px solid #e0d6b5;
         }
         
-        /* Main Header Container */
+        /* Main Header Container - Clean single block */
         .header-container {
             margin-bottom: 15px;
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            border: 1px solid #d4af37;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #d4af37;
         }
         
         /* Top Row Header - English left, logo center, Arabic right */
@@ -50,24 +65,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 15px;
-            background-color: #1a1a1a;
             color: #d4af37;
-            border-radius: 4px 4px 0 0;
-            border: 1px solid #d4af37;
-            border-bottom: none;
-            position: relative;
-            overflow: hidden;
             direction: ltr;
-        }
-        
-        .company-header-top::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #d4af37;
         }
         
         .company-info {
@@ -122,41 +121,17 @@
             display: block;
         }
         
-        /* Bottom Row Header - Title only, outside side borders */
+        /* Bottom Row Header - Title only */
         .header-bottom {
-            background-color: #1a1a1a;
-            padding: 8px 15px;
-            border-radius: 0 0 4px 4px;
-            border: 1px solid #d4af37;
-            border-top: none;
+            padding: 5px 15px 10px 15px;
             text-align: center;
-            position: relative;
-        }
-        
-        /* Create the effect of title being outside the side borders */
-        .header-bottom::before,
-        .header-bottom::after {
-            content: "";
-            position: absolute;
-            top: -1px; /* Align with the border gap */
-            width: 20px; /* Width of the gap */
-            height: 1px;
-            background-color: #1a1a1a; /* Same as header background */
-        }
-        
-        .header-bottom::before {
-            left: -1px;
-        }
-        
-        .header-bottom::after {
-            right: -1px;
+            background-color: #1a1a1a;
         }
         
         .header-title {
             text-align: center;
             color: #d4af37;
             direction: rtl;
-            padding: 0 5px;
         }
         
         .header-title h1 {
@@ -365,23 +340,13 @@
                 display: none;
             }
             
-            .company-header-top {
+            .header-container {
                 background-color: #1a1a1a !important;
                 color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 border: 1px solid #d4af37;
-                border-bottom: none;
                 direction: ltr;
-                padding: 8px 12px;
-            }
-            
-            .header-bottom {
-                background-color: #1a1a1a !important;
-                border: 1px solid #d4af37;
-                border-top: none;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
             }
             
             .header-title h1 {
@@ -503,6 +468,10 @@
                 font-size: 12px;
             }
             
+            .header-bottom {
+                padding: 3px 10px 8px 10px;
+            }
+            
             .header-title h1 {
                 font-size: 16px;
             }
@@ -540,7 +509,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Two-Row Header Container -->
+        <!-- Clean Two-Row Header Container -->
         <div class="header-container">
             <!-- Top Row: English left, logo center, Arabic right -->
             <div class="company-header-top">
@@ -572,7 +541,7 @@
                 </div>
             </div>
             
-            <!-- Bottom Row: Title only, outside side borders -->
+            <!-- Bottom Row: Title only -->
             <div class="header-bottom">
                 <div class="header-title">
                     <h1>كشف الحساب</h1>
