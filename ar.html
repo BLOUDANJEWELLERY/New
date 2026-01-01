@@ -20,7 +20,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #e6f0ff 0%, #ffeaea 50%, #e8f5e9 100%); /* Sapphire, Ruby, Emerald gradient */
+            background-color: #f8f0e6;
             color: #333;
             padding: 10px;
             font-size: 13px;
@@ -36,16 +36,15 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 3px solid;
-            border-image: linear-gradient(to right, #0f52ba, #9b111e, #004d40, #d4af37) 1; /* Sapphire, Ruby, Emerald, Gold border */
+            border: 2px solid #d4af37;
         }
         
         /* Main Header Container */
         .header-container {
             margin-bottom: 15px;
-            background: linear-gradient(90deg, #0f52ba 0%, #9b111e 33%, #004d40 66%, #1a1a1a 100%); /* Sapphire, Ruby, Emerald, Black */
+            background: linear-gradient(to bottom, #5c0000, #7a0d17);
             border-radius: 4px;
-            border: 2px solid #d4af37; /* Gold border */
+            border: 2px solid #d4af37;
             overflow: hidden;
             position: relative;
         }
@@ -57,7 +56,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #d4af37 0%, #ffffff 50%, #d4af37 100%); /* Gold, Diamond, Gold accent line */
+            background: #d4af37;
         }
         
         /* Top Row Header - English left, logo center, Arabic right */
@@ -66,7 +65,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 15px;
-            color: #ffffff; /* White text */
+            color: #ffffff;
             direction: ltr;
         }
         
@@ -90,21 +89,17 @@
         /* Increased Arabic company name font size */
         .company-info.arabic .company-name {
             font-size: 15px;
-            color: #d4af37; /* Gold text for company name */
+            color: #d4af37;
         }
         
         .company-logo {
             flex: 0 0 90px;
             text-align: center;
             padding: 0 10px;
-            background: white; /* Diamond white background for logo */
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); /* Gold glow */
         }
         
         .logo-img {
-            max-width: 60px;
+            max-width: 70px;
             height: auto;
         }
         
@@ -112,18 +107,18 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 3px;
-            color: #d4af37; /* Gold text for company name */
+            color: #d4af37;
             line-height: 1.2;
         }
         
         .company-details {
             font-size: 9px;
-            color: #ffffff; /* White text */
+            color: #ffcccc;
             line-height: 1.2;
         }
         
         .company-address, .company-phone, .company-cr {
-            color: #ffffff; /* White text */
+            color: #ffcccc;
             text-decoration: none;
             font-weight: normal;
             margin-top: 2px;
@@ -134,33 +129,31 @@
         .header-bottom {
             padding: 5px 15px 10px 15px;
             text-align: center;
-            background: linear-gradient(90deg, #004d40 0%, #9b111e 50%, #0f52ba 100%); /* Emerald, Ruby, Sapphire */
+            background: linear-gradient(to bottom, #7a0d17, #5c0000);
         }
         
         .header-title {
             text-align: center;
-            color: #ffffff; /* White text */
+            color: #ffffff;
             direction: rtl;
         }
         
         .header-title h1 {
             font-size: 18px;
-            color: #ffffff; /* White text with gold shadow */
+            color: #d4af37;
             margin: 0;
             padding: 0;
             font-weight: bold;
             line-height: 1.2;
-            text-shadow: 0 0 3px #d4af37; /* Gold glow */
         }
         
         .header-title p {
             font-size: 14px;
-            color: #ffffff; /* White text */
+            color: #ffcccc;
             margin: 3px 0 0 0;
             padding: 0;
             font-weight: bold;
             font-style: italic;
-            text-shadow: 0 0 2px #000000; /* Black shadow for contrast */
         }
         
         /* Print Button */
@@ -171,8 +164,8 @@
         }
         
         .print-btn {
-            background: linear-gradient(to bottom, #0f52ba, #082567); /* Sapphire gradient */
-            color: #ffffff; /* White text */
+            background: linear-gradient(to bottom, #d4af37, #b8941f);
+            color: #5c0000;
             border: none;
             padding: 8px 18px;
             font-size: 13px;
@@ -184,11 +177,11 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid #d4af37; /* Gold border */
+            border: 1px solid #b8941f;
         }
         
         .print-btn:hover {
-            background: linear-gradient(to bottom, #1a6bff, #0f52ba); /* Lighter sapphire gradient on hover */
+            background: linear-gradient(to bottom, #e6c158, #d4af37);
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -201,11 +194,10 @@
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 3px solid;
-            border-image: linear-gradient(to right, #d4af37, #004d40, #9b111e, #0f52ba) 1; /* Gold, Emerald, Ruby, Sapphire */
+            border: 2px solid #d4af37;
             border-radius: 4px;
             padding: 0;
-            background-color: #ffffff; /* Diamond white background */
+            background-color: #fffaf0;
             direction: rtl;
         }
         
@@ -214,56 +206,43 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
-            border: 2px solid #1a1a1a; /* Black border */
+            border: 2px solid #d4af37;
         }
         
         th {
-            background: linear-gradient(to bottom, #1a1a1a, #333333); /* Black gradient */
-            color: #ffffff; /* White text */
+            background: linear-gradient(to bottom, #7a0d17, #5c0000);
+            color: #d4af37;
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 2px solid #d4af37; /* Gold border */
+            border: 2px solid #d4af37;
             font-size: 12px;
-            position: relative;
         }
-        
-        /* Add gemstone color accents to each header */
-        th:nth-child(1) { border-top: 3px solid #0f52ba; } /* Sapphire top border for رقم */
-        th:nth-child(2) { border-top: 3px solid #004d40; } /* Emerald top border for مجوهرات */
-        th:nth-child(3) { border-top: 3px solid #d4af37; } /* Gold top border for ذهب لنا */
-        th:nth-child(4) { border-top: 3px solid #9b111e; } /* Ruby top border for نقدي لنا */
-        th:nth-child(5) { border-top: 3px solid #d4af37; } /* Gold top border for ذهب لكم */
-        th:nth-child(6) { border-top: 3px solid #9b111e; } /* Ruby top border for نقدي لكم */
         
         td {
             padding: 6px 4px;
-            border: 2px solid #1a1a1a; /* Black border */
+            border: 2px solid #d4af37;
             text-align: center;
             height: 34px;
             position: relative;
-            background-color: #ffffff; /* Diamond white background */
+            background-color: #ffffff;
         }
         
-        /* Alternating row colors with gemstone themes */
-        tbody tr:nth-child(odd) {
-            background-color: #ffffff; /* Diamond white */
-        }
-        
+        /* Remove alternating row colors - all rows same */
         tbody tr:nth-child(even) {
-            background-color: #f5f5f5; /* Light diamond gray */
+            background-color: #ffffff;
         }
         
         tbody tr:hover {
-            background: linear-gradient(to right, #e6f0ff, #ffeaea, #e8f5e9); /* Sapphire, Ruby, Emerald gradient on hover */
+            background-color: #fffaf0;
         }
         
-        /* Editable cell */
+        /* Editable cell - Adjusted padding and font size */
         .editable-cell {
             background-color: #ffffff;
             text-align: right;
-            padding-right: 10px;
-            border-right: 2px solid #1a1a1a; /* Black border */
+            padding-right: 6px; /* Reduced from 10px */
+            border-right: 2px solid #d4af37;
         }
         
         .editable-cell input {
@@ -273,22 +252,24 @@
             outline: none;
             background: transparent;
             text-align: right;
-            padding: 0 8px;
-            font-size: 12px;
+            padding: 0 6px; /* Reduced from 0 8px */
+            font-size: 14px; /* Increased from 12px */
             font-family: inherit;
             direction: rtl;
             color: #333;
+            font-weight: bold; /* Added bold for better readability */
         }
         
         .editable-cell input:focus {
-            background-color: #fffde7; /* Light gold on focus */
-            border-bottom: 2px solid #d4af37; /* Gold focus border */
+            background-color: #fff8e1;
+            border-bottom: 2px solid #9b111e;
         }
         
         .editable-cell input::placeholder {
-            color: #aaa;
+            color: #888;
             font-style: italic;
-            font-size: 11px;
+            font-size: 12px; /* Increased from 11px */
+            font-weight: normal;
         }
         
         /* Updated Column widths */
@@ -299,29 +280,18 @@
         .col-5 { width: 17%; }  /* ذهب ٩٩٩ لكم */
         .col-6 { width: 17%; }  /* نقدي لكم */
         
-        /* Number column styling - Sapphire theme */
+        /* Number column styling */
         .number-cell {
-            color: #0f52ba; /* Sapphire text */
+            color: #666;
             font-weight: bold;
             font-size: 11px;
-            border-left: 2px solid #0f52ba; /* Sapphire border */
+            border-left: 2px solid #d4af37;
         }
         
-        /* Dash placeholder styling with gemstone colors based on column */
+        /* Dash placeholder styling */
         .dash-placeholder {
             position: relative;
             color: #777;
-        }
-        
-        /* Different dash colors for different columns */
-        td:nth-child(3).dash-placeholder::before,
-        td:nth-child(5).dash-placeholder::before {
-            color: #d4af37; /* Gold dash for gold columns */
-        }
-        
-        td:nth-child(4).dash-placeholder::before,
-        td:nth-child(6).dash-placeholder::before {
-            color: #9b111e; /* Ruby dash for cash columns */
         }
         
         .dash-placeholder::before {
@@ -332,13 +302,14 @@
             transform: translateY(-50%);
             font-weight: normal;
             font-size: 14px;
+            color: #777;
             font-weight: bold;
         }
         
         /* Clear button */
         .clear-btn {
-            background: linear-gradient(to bottom, #9b111e, #7a0d17); /* Ruby gradient */
-            color: #ffffff; /* White text */
+            background: linear-gradient(to bottom, #9b111e, #7a0d17);
+            color: #d4af37;
             border: none;
             padding: 7px 12px;
             font-size: 12px;
@@ -351,11 +322,11 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            border: 1px solid #d4af37; /* Gold border */
+            border: 1px solid #d4af37;
         }
         
         .clear-btn:hover {
-            background: linear-gradient(to bottom, #c11b2b, #9b111e); /* Brighter ruby gradient on hover */
+            background: linear-gradient(to bottom, #c11b2b, #9b111e);
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -363,10 +334,6 @@
         .clear-btn:active {
             transform: translateY(0);
         }
-        
-        /* Gemstone color indicators for table cells */
-        td:nth-child(1) { border-left: 2px solid #0f52ba; } /* Sapphire left border for رقم column */
-        td:nth-child(2) { border-right: 2px solid #004d40; } /* Emerald right border for مجوهرات column */
         
         /* Print-specific styles */
         @media print {
@@ -384,7 +351,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: 3px solid #1a1a1a; /* Black border for print */
+                border: 2px solid #d4af37;
             }
             
             .print-section, .clear-btn {
@@ -392,7 +359,7 @@
             }
             
             .header-container {
-                background: linear-gradient(90deg, #0f52ba 0%, #9b111e 33%, #004d40 66%, #1a1a1a 100%) !important;
+                background: linear-gradient(to bottom, #5c0000, #7a0d17) !important;
                 color: #ffffff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -401,19 +368,17 @@
             }
             
             .header-title h1 {
-                color: #ffffff !important;
+                color: #d4af37 !important;
                 font-size: 16px !important;
-                text-shadow: none !important;
             }
             
             .header-title p {
-                color: #ffffff !important;
+                color: #ffcccc !important;
                 font-size: 13px !important;
-                text-shadow: none !important;
             }
             
             .company-name, .company-details, .company-phone, .company-address, .company-cr {
-                color: #ffffff !important;
+                color: #ffcccc !important;
                 text-decoration: none !important;
             }
             
@@ -431,52 +396,42 @@
             }
             
             .table-container {
-                border: 3px solid #1a1a1a !important; /* Black border for print */
+                border: 2px solid #d4af37 !important;
             }
             
             table {
                 font-size: 11px;
-                border: 2px solid #1a1a1a !important; /* Black border */
+                border: 2px solid #d4af37 !important;
             }
             
             th, td {
                 padding: 5px 3px;
-                border: 2px solid #1a1a1a !important; /* Black borders */
+                border: 2px solid #d4af37 !important;
             }
             
             th {
-                background: linear-gradient(to bottom, #1a1a1a, #333333) !important;
-                color: #ffffff !important;
+                background: linear-gradient(to bottom, #7a0d17, #5c0000) !important;
+                color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
-                border: 2px solid #d4af37 !important; /* Gold border */
+                border: 2px solid #d4af37 !important;
             }
             
             td {
                 background-color: white !important;
             }
             
-            /* Make jewellery text big and bold in print */
+            /* Make jewellery text bigger in print */
             .jewellery-text {
-                font-size: 14px !important;
+                font-size: 15px !important; /* Increased from 14px */
                 font-weight: bold !important;
                 color: #000 !important;
                 text-align: right;
                 direction: rtl;
             }
             
-            /* Dash placeholder colors in print */
-            td:nth-child(3).dash-placeholder::before,
-            td:nth-child(5).dash-placeholder::before {
-                color: #d4af37 !important; /* Gold dash */
-            }
-            
-            td:nth-child(4).dash-placeholder::before,
-            td:nth-child(6).dash-placeholder::before {
-                color: #9b111e !important; /* Ruby dash */
-            }
-            
+            /* Darker, more visible dash placeholder in print */
             .dash-placeholder::before {
                 color: #555 !important;
                 font-size: 13px !important;
@@ -490,13 +445,14 @@
             
             /* Keep number column empty in print */
             .number-cell {
-                color: #0f52ba !important; /* Sapphire text */
+                color: #666 !important;
                 font-weight: normal !important;
-                border-left: 2px solid #0f52ba !important; /* Sapphire border */
+                border-left: 2px solid #d4af37 !important;
             }
             
             .editable-cell {
-                border-right: 2px solid #1a1a1a !important; /* Black border */
+                border-right: 2px solid #d4af37 !important;
+                padding-right: 6px !important; /* Match the reduced padding */
             }
         }
         
@@ -588,6 +544,20 @@
             .dash-placeholder::before {
                 right: 45%;
                 font-size: 13px;
+            }
+            
+            /* Adjust jewellery column for mobile */
+            .editable-cell {
+                padding-right: 4px; /* Even smaller on mobile */
+            }
+            
+            .editable-cell input {
+                font-size: 13px; /* Slightly smaller on mobile */
+                padding: 0 4px; /* Less padding on mobile */
+            }
+            
+            .editable-cell input::placeholder {
+                font-size: 11px;
             }
         }
         
@@ -755,7 +725,7 @@
                             .editable-cell span.jewellery-text { 
                                 display: inline !important; 
                                 font-weight: bold !important;
-                                font-size: 14px !important;
+                                font-size: 15px !important; /* Increased from 14px */
                                 color: #000 !important;
                                 text-align: right !important;
                                 direction: rtl !important;
@@ -833,7 +803,7 @@
                 // Show confirmation message
                 const confirmation = document.createElement('div');
                 confirmation.textContent = '✓ تم المسح بنجاح';
-                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: linear-gradient(90deg, #0f52ba, #9b111e, #004d40, #d4af37); color: white; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px; border: 1px solid #d4af37;';
+                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: linear-gradient(to bottom, #9b111e, #7a0d17); color: #d4af37; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px; border: 1px solid #d4af37;';
                 document.body.appendChild(confirmation);
                 
                 setTimeout(() => {
