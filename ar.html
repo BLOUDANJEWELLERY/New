@@ -20,7 +20,7 @@
         }
         
         body {
-            background-color: #e8f5e9; /* Light emerald green background */
+            background: linear-gradient(135deg, #e6f0ff 0%, #ffeaea 50%, #e8f5e9 100%); /* Sapphire, Ruby, Emerald gradient */
             color: #333;
             padding: 10px;
             font-size: 13px;
@@ -36,15 +36,16 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 2px solid #004d40; /* Dark emerald border */
+            border: 3px solid;
+            border-image: linear-gradient(to right, #0f52ba, #9b111e, #004d40, #d4af37) 1; /* Sapphire, Ruby, Emerald, Gold border */
         }
         
         /* Main Header Container */
         .header-container {
             margin-bottom: 15px;
-            background: linear-gradient(to bottom, #00251a, #004d40); /* Deep emerald gradient */
+            background: linear-gradient(90deg, #0f52ba 0%, #9b111e 33%, #004d40 66%, #1a1a1a 100%); /* Sapphire, Ruby, Emerald, Black */
             border-radius: 4px;
-            border: 2px solid #00796b; /* Medium emerald border */
+            border: 2px solid #d4af37; /* Gold border */
             overflow: hidden;
             position: relative;
         }
@@ -56,7 +57,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: #00bfa5; /* Bright emerald accent line */
+            background: linear-gradient(90deg, #d4af37 0%, #ffffff 50%, #d4af37 100%); /* Gold, Diamond, Gold accent line */
         }
         
         /* Top Row Header - English left, logo center, Arabic right */
@@ -89,17 +90,21 @@
         /* Increased Arabic company name font size */
         .company-info.arabic .company-name {
             font-size: 15px;
-            color: #ffffff; /* White text */
+            color: #d4af37; /* Gold text for company name */
         }
         
         .company-logo {
             flex: 0 0 90px;
             text-align: center;
             padding: 0 10px;
+            background: white; /* Diamond white background for logo */
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); /* Gold glow */
         }
         
         .logo-img {
-            max-width: 70px;
+            max-width: 60px;
             height: auto;
         }
         
@@ -107,18 +112,18 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 3px;
-            color: #ffffff; /* White text */
+            color: #d4af37; /* Gold text for company name */
             line-height: 1.2;
         }
         
         .company-details {
             font-size: 9px;
-            color: #a7ffeb; /* Light emerald text */
+            color: #ffffff; /* White text */
             line-height: 1.2;
         }
         
         .company-address, .company-phone, .company-cr {
-            color: #a7ffeb; /* Light emerald text */
+            color: #ffffff; /* White text */
             text-decoration: none;
             font-weight: normal;
             margin-top: 2px;
@@ -129,7 +134,7 @@
         .header-bottom {
             padding: 5px 15px 10px 15px;
             text-align: center;
-            background: linear-gradient(to bottom, #004d40, #00251a); /* Emerald gradient */
+            background: linear-gradient(90deg, #004d40 0%, #9b111e 50%, #0f52ba 100%); /* Emerald, Ruby, Sapphire */
         }
         
         .header-title {
@@ -140,20 +145,22 @@
         
         .header-title h1 {
             font-size: 18px;
-            color: #ffffff; /* White text */
+            color: #ffffff; /* White text with gold shadow */
             margin: 0;
             padding: 0;
             font-weight: bold;
             line-height: 1.2;
+            text-shadow: 0 0 3px #d4af37; /* Gold glow */
         }
         
         .header-title p {
             font-size: 14px;
-            color: #a7ffeb; /* Light emerald text */
+            color: #ffffff; /* White text */
             margin: 3px 0 0 0;
             padding: 0;
             font-weight: bold;
             font-style: italic;
+            text-shadow: 0 0 2px #000000; /* Black shadow for contrast */
         }
         
         /* Print Button */
@@ -164,7 +171,7 @@
         }
         
         .print-btn {
-            background: linear-gradient(to bottom, #00796b, #004d40); /* Emerald gradient */
+            background: linear-gradient(to bottom, #0f52ba, #082567); /* Sapphire gradient */
             color: #ffffff; /* White text */
             border: none;
             padding: 8px 18px;
@@ -177,11 +184,11 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid #00695c; /* Darker emerald border */
+            border: 1px solid #d4af37; /* Gold border */
         }
         
         .print-btn:hover {
-            background: linear-gradient(to bottom, #009688, #00796b); /* Brighter emerald gradient on hover */
+            background: linear-gradient(to bottom, #1a6bff, #0f52ba); /* Lighter sapphire gradient on hover */
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -194,10 +201,11 @@
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 2px solid #004d40; /* Dark emerald border */
+            border: 3px solid;
+            border-image: linear-gradient(to right, #d4af37, #004d40, #9b111e, #0f52ba) 1; /* Gold, Emerald, Ruby, Sapphire */
             border-radius: 4px;
             padding: 0;
-            background-color: #f1f8e9; /* Very light emerald background */
+            background-color: #ffffff; /* Diamond white background */
             direction: rtl;
         }
         
@@ -206,35 +214,48 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
-            border: 2px solid #004d40; /* Dark emerald border */
+            border: 2px solid #1a1a1a; /* Black border */
         }
         
         th {
-            background: linear-gradient(to bottom, #004d40, #00251a); /* Emerald gradient */
+            background: linear-gradient(to bottom, #1a1a1a, #333333); /* Black gradient */
             color: #ffffff; /* White text */
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 2px solid #00796b; /* Medium emerald border */
+            border: 2px solid #d4af37; /* Gold border */
             font-size: 12px;
+            position: relative;
         }
+        
+        /* Add gemstone color accents to each header */
+        th:nth-child(1) { border-top: 3px solid #0f52ba; } /* Sapphire top border for رقم */
+        th:nth-child(2) { border-top: 3px solid #004d40; } /* Emerald top border for مجوهرات */
+        th:nth-child(3) { border-top: 3px solid #d4af37; } /* Gold top border for ذهب لنا */
+        th:nth-child(4) { border-top: 3px solid #9b111e; } /* Ruby top border for نقدي لنا */
+        th:nth-child(5) { border-top: 3px solid #d4af37; } /* Gold top border for ذهب لكم */
+        th:nth-child(6) { border-top: 3px solid #9b111e; } /* Ruby top border for نقدي لكم */
         
         td {
             padding: 6px 4px;
-            border: 2px solid #004d40; /* Dark emerald border */
+            border: 2px solid #1a1a1a; /* Black border */
             text-align: center;
             height: 34px;
             position: relative;
-            background-color: #ffffff; /* White background */
+            background-color: #ffffff; /* Diamond white background */
         }
         
-        /* Remove alternating row colors - all rows same */
+        /* Alternating row colors with gemstone themes */
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* Diamond white */
+        }
+        
         tbody tr:nth-child(even) {
-            background-color: #ffffff;
+            background-color: #f5f5f5; /* Light diamond gray */
         }
         
         tbody tr:hover {
-            background-color: #e8f5e9; /* Light emerald on hover */
+            background: linear-gradient(to right, #e6f0ff, #ffeaea, #e8f5e9); /* Sapphire, Ruby, Emerald gradient on hover */
         }
         
         /* Editable cell */
@@ -242,7 +263,7 @@
             background-color: #ffffff;
             text-align: right;
             padding-right: 10px;
-            border-right: 2px solid #004d40; /* Dark emerald border */
+            border-right: 2px solid #1a1a1a; /* Black border */
         }
         
         .editable-cell input {
@@ -260,8 +281,8 @@
         }
         
         .editable-cell input:focus {
-            background-color: #e8f5e9; /* Light emerald on focus */
-            border-bottom: 2px solid #00796b; /* Medium emerald focus border */
+            background-color: #fffde7; /* Light gold on focus */
+            border-bottom: 2px solid #d4af37; /* Gold focus border */
         }
         
         .editable-cell input::placeholder {
@@ -278,18 +299,29 @@
         .col-5 { width: 17%; }  /* ذهب ٩٩٩ لكم */
         .col-6 { width: 17%; }  /* نقدي لكم */
         
-        /* Number column styling */
+        /* Number column styling - Sapphire theme */
         .number-cell {
-            color: #666;
+            color: #0f52ba; /* Sapphire text */
             font-weight: bold;
             font-size: 11px;
-            border-left: 2px solid #004d40; /* Dark emerald border */
+            border-left: 2px solid #0f52ba; /* Sapphire border */
         }
         
-        /* Dash placeholder styling */
+        /* Dash placeholder styling with gemstone colors based on column */
         .dash-placeholder {
             position: relative;
             color: #777;
+        }
+        
+        /* Different dash colors for different columns */
+        td:nth-child(3).dash-placeholder::before,
+        td:nth-child(5).dash-placeholder::before {
+            color: #d4af37; /* Gold dash for gold columns */
+        }
+        
+        td:nth-child(4).dash-placeholder::before,
+        td:nth-child(6).dash-placeholder::before {
+            color: #9b111e; /* Ruby dash for cash columns */
         }
         
         .dash-placeholder::before {
@@ -300,14 +332,13 @@
             transform: translateY(-50%);
             font-weight: normal;
             font-size: 14px;
-            color: #777;
             font-weight: bold;
         }
         
         /* Clear button */
         .clear-btn {
-            background: linear-gradient(to bottom, #00796b, #004d40); /* Emerald gradient */
-            color: white;
+            background: linear-gradient(to bottom, #9b111e, #7a0d17); /* Ruby gradient */
+            color: #ffffff; /* White text */
             border: none;
             padding: 7px 12px;
             font-size: 12px;
@@ -320,11 +351,11 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            border: 1px solid #00695c; /* Dark emerald border */
+            border: 1px solid #d4af37; /* Gold border */
         }
         
         .clear-btn:hover {
-            background: linear-gradient(to bottom, #009688, #00796b); /* Brighter emerald gradient on hover */
+            background: linear-gradient(to bottom, #c11b2b, #9b111e); /* Brighter ruby gradient on hover */
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -332,6 +363,10 @@
         .clear-btn:active {
             transform: translateY(0);
         }
+        
+        /* Gemstone color indicators for table cells */
+        td:nth-child(1) { border-left: 2px solid #0f52ba; } /* Sapphire left border for رقم column */
+        td:nth-child(2) { border-right: 2px solid #004d40; } /* Emerald right border for مجوهرات column */
         
         /* Print-specific styles */
         @media print {
@@ -349,7 +384,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: 2px solid #004d40; /* Dark emerald border */
+                border: 3px solid #1a1a1a; /* Black border for print */
             }
             
             .print-section, .clear-btn {
@@ -357,31 +392,33 @@
             }
             
             .header-container {
-                background: linear-gradient(to bottom, #00251a, #004d40) !important; /* Emerald gradient */
+                background: linear-gradient(90deg, #0f52ba 0%, #9b111e 33%, #004d40 66%, #1a1a1a 100%) !important;
                 color: #ffffff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                border: 2px solid #00796b !important; /* Medium emerald border */
+                border: 2px solid #d4af37 !important;
                 direction: ltr;
             }
             
             .header-title h1 {
                 color: #ffffff !important;
                 font-size: 16px !important;
+                text-shadow: none !important;
             }
             
             .header-title p {
-                color: #a7ffeb !important; /* Light emerald text */
+                color: #ffffff !important;
                 font-size: 13px !important;
+                text-shadow: none !important;
             }
             
             .company-name, .company-details, .company-phone, .company-address, .company-cr {
-                color: #a7ffeb !important; /* Light emerald text */
+                color: #ffffff !important;
                 text-decoration: none !important;
             }
             
             .company-name {
-                color: #ffffff !important;
+                color: #d4af37 !important;
                 font-size: 13px !important;
             }
             
@@ -394,26 +431,26 @@
             }
             
             .table-container {
-                border: 2px solid #004d40 !important; /* Dark emerald border */
+                border: 3px solid #1a1a1a !important; /* Black border for print */
             }
             
             table {
                 font-size: 11px;
-                border: 2px solid #004d40 !important; /* Dark emerald border */
+                border: 2px solid #1a1a1a !important; /* Black border */
             }
             
             th, td {
                 padding: 5px 3px;
-                border: 2px solid #004d40 !important; /* Dark emerald borders */
+                border: 2px solid #1a1a1a !important; /* Black borders */
             }
             
             th {
-                background: linear-gradient(to bottom, #004d40, #00251a) !important; /* Emerald gradient */
+                background: linear-gradient(to bottom, #1a1a1a, #333333) !important;
                 color: #ffffff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
-                border: 2px solid #00796b !important; /* Medium emerald border */
+                border: 2px solid #d4af37 !important; /* Gold border */
             }
             
             td {
@@ -429,7 +466,17 @@
                 direction: rtl;
             }
             
-            /* Darker, more visible dash placeholder in print */
+            /* Dash placeholder colors in print */
+            td:nth-child(3).dash-placeholder::before,
+            td:nth-child(5).dash-placeholder::before {
+                color: #d4af37 !important; /* Gold dash */
+            }
+            
+            td:nth-child(4).dash-placeholder::before,
+            td:nth-child(6).dash-placeholder::before {
+                color: #9b111e !important; /* Ruby dash */
+            }
+            
             .dash-placeholder::before {
                 color: #555 !important;
                 font-size: 13px !important;
@@ -443,13 +490,13 @@
             
             /* Keep number column empty in print */
             .number-cell {
-                color: #666 !important;
+                color: #0f52ba !important; /* Sapphire text */
                 font-weight: normal !important;
-                border-left: 2px solid #004d40 !important; /* Dark emerald border */
+                border-left: 2px solid #0f52ba !important; /* Sapphire border */
             }
             
             .editable-cell {
-                border-right: 2px solid #004d40 !important; /* Dark emerald border */
+                border-right: 2px solid #1a1a1a !important; /* Black border */
             }
         }
         
@@ -786,7 +833,7 @@
                 // Show confirmation message
                 const confirmation = document.createElement('div');
                 confirmation.textContent = '✓ تم المسح بنجاح';
-                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: linear-gradient(to bottom, #00796b, #004d40); color: white; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px; border: 1px solid #00695c;';
+                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: linear-gradient(90deg, #0f52ba, #9b111e, #004d40, #d4af37); color: white; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px; border: 1px solid #d4af37;';
                 document.body.appendChild(confirmation);
                 
                 setTimeout(() => {
