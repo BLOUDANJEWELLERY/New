@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF to Image (Safari iPhone)</title>
+<title>PDF → Image (Safari iPhone Ready)</title>
 <style>
   body { font-family: sans-serif; padding: 20px; }
   img { margin: 10px 0; max-width: 100%; border: 1px solid #ccc; }
   button { padding: 10px 20px; font-size: 16px; margin-top: 10px; }
+  #console { margin-top: 20px; background: #111; color: #0f0; padding: 10px; height: 200px; overflow-y: auto; font-family: monospace; }
 </style>
 </head>
 <body>
@@ -15,55 +16,74 @@
 <h2>PDF → Image Converter</h2>
 <input type="file" id="pdfInput" accept=".pdf" />
 <button id="convertBtn">Convert PDF</button>
+
 <div id="images"></div>
+
+<h3>Console</h3>
+<div id="console"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.14.305/build/pdf.min.js"></script>
 <script>
-const pdfInput = document.getElementById('pdfInput');
-const convertBtn = document.getElementById('convertBtn');
-const imagesDiv = document.getElementById('images');
+  const pdfInput = document.getElementById('pdfInput');
+  const convertBtn = document.getElementById('convertBtn');
+  const imagesDiv = document.getElementById('images');
+  const consoleDiv = document.getElementById('console');
 
-// Make pdfjs work in browser
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.14.305/build/pdf.worker.min.js';
-
-convertBtn.addEventListener('click', async () => {
-  const file = pdfInput.files[0];
-  if (!file) return alert('Please select a PDF.');
-
-  imagesDiv.innerHTML = ''; // clear old images
-
-  const arrayBuffer = await file.arrayBuffer();
-
-  // Load PDF
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-  const pdf = await loadingTask.promise;
-
-  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-    const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 2 }); // increase scale for clarity
-
-    // Create canvas
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const context = canvas.getContext('2d');
-
-    // Render PDF page into canvas
-    await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-    // Convert canvas to PNG
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-
-    imagesDiv.appendChild(img);
-
-    // Optional: Auto-download each page
-    // const a = document.createElement('a');
-    // a.href = img.src;
-    // a.download = `page-${pageNum}.png`;
-    // a.click();
+  // Redirect console.log to screen
+  function log(msg) {
+    consoleDiv.innerHTML += msg + '<br>';
+    console.log(msg);
   }
-});
+
+  // PDF.js worker path (must be set for browser)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.14.305/build/pdf.worker.min.js';
+
+  convertBtn.addEventListener('click', async () => {
+    imagesDiv.innerHTML = '';
+    consoleDiv.innerHTML = '';
+
+    const file = pdfInput.files[0];
+    if (!file) {
+      log('⚠️ No PDF selected!');
+      return;
+    }
+
+    log(`📄 Selected PDF: ${file.name}`);
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      log('⏳ PDF loaded into memory');
+
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+
+      log(`✅ PDF loaded. Total pages: ${pdf.numPages}`);
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const scale = 2; // higher = better quality
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const context = canvas.getContext('2d');
+
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png');
+        imagesDiv.appendChild(img);
+
+        log(`✅ Page ${pageNum} rendered as image`);
+      }
+
+      log('🎉 All pages converted!');
+    } catch (err) {
+      log('❌ Error: ' + err.message);
+      console.error(err);
+    }
+  });
 </script>
 </body>
 </html>
