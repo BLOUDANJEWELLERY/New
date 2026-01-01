@@ -1,80 +1,339 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>مولد PDF للنص العربي</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- Simple Arabic shaping helper (minimal) -->
-  <script>
-    // Basic Arabic shaping using Intl.Segmenter fallback
-    // For production, consider arabic-reshaper + bidi-js for full coverage.
-    function shapeArabic(text) {
-      // If the environment supports it, use it; otherwise return text as-is.
-      try {
-        // This is a placeholder—jsPDF needs pre-shaped glyphs for Arabic.
-        // For robust shaping, integrate arabic-reshaper + bidi.
-        return text.normalize('NFC');
-      } catch (e) {
-        return text;
-      }
-    }
-  </script>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; }
-    h2 { text-align: center; }
-    textarea { width: 100%; height: 180px; font-size: 18px; direction: rtl; padding: 12px; }
-    button { margin-top: 16px; padding: 10px 18px; font-size: 16px; }
-    .note { margin-top: 10px; color: #555; font-size: 14px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول عربي مع زر طباعة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .print-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .print-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .print-btn:active {
+            transform: translateY(2px);
+        }
+        
+        .info-box {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            border-right: 4px solid #3498db;
+            margin-bottom: 25px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        thead {
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .container, .container * {
+                visibility: visible;
+            }
+            
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                padding: 10px;
+            }
+            
+            .print-btn, .info-box {
+                display: none !important;
+            }
+            
+            table {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            th {
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>اكتب النص بالعربية</h2>
-  <textarea id="arabicText" placeholder="أدخل النص هنا..."></textarea>
-  <button id="generateBtn">إنشاء ملف PDF</button>
-  <div class="note">لأفضل نتيجة، استخدم خطوط عربية مدمجة مثل Amiri أو Cairo.</div>
+    <div class="container">
+        <header>
+            <h1>جدول البيانات باللغة العربية</h1>
+            <p class="subtitle">جدول يحتوي على بيانات عربية مع إمكانية الطباعة</p>
+        </header>
+        
+        <div class="controls">
+            <div class="info-box">
+                <strong>ملاحظة:</strong> اضغط على زر "طباعة الصفحة" لطباعة الجدول بالكامل. ستظهر نافذة معاينة الطباعة قبل الإرسال إلى الطابعة.
+            </div>
+            
+            <button class="print-btn" onclick="window.print()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                طباعة الصفحة
+            </button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>رقم</th>
+                    <th>الاسم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>الدور</th>
+                    <th>الحالة</th>
+                    <th>تاريخ الانضمام</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>أحمد محمد</td>
+                    <td>ahmed@example.com</td>
+                    <td>مدير النظام</td>
+                    <td><span class="status status-active">نشط</span></td>
+                    <td>2023-01-15</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>فاطمة علي</td>
+                    <td>fatima@example.com</td>
+                    <td>مطورة ويب</td>
+                    <td><span class="status status-active">نشط</span></td>
+                    <td>2023-03-22</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>خالد عبدالله</td>
+                    <td>khaled@example.com</td>
+                    <td>مصمم جرافيك</td>
+                    <td><span class="status status-pending">في الانتظار</span></td>
+                    <td>2023-05-10</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>سارة حسن</td>
+                    <td>sara@example.com</td>
+                    <td>مديرة مشاريع</td>
+                    <td><span class="status status-active">نشط</span></td>
+                    <td>2023-06-18</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>عمر إبراهيم</td>
+                    <td>omar@example.com</td>
+                    <td>محلل بيانات</td>
+                    <td><span class="status status-inactive">غير نشط</span></td>
+                    <td>2023-08-05</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>نورا سعيد</td>
+                    <td>nora@example.com</td>
+                    <td>مسوقة إلكترونية</td>
+                    <td><span class="status status-active">نشط</span></td>
+                    <td>2023-09-30</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>يوسف راشد</td>
+                    <td>yousef@example.com</td>
+                    <td>مطور تطبيقات</td>
+                    <td><span class="status status-pending">في الانتظار</span></td>
+                    <td>2023-11-12</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>ليلى مصطفى</td>
+                    <td>layla@example.com</td>
+                    <td>مديرة مبيعات</td>
+                    <td><span class="status status-active">نشط</span></td>
+                    <td>2023-12-01</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <footer>
+            <p>تم إنشاء هذا الجدول باستخدام HTML و CSS وجافاسكريبت</p>
+            <p>© 2023 - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
 
-  <script>
-    // Base64-encoded Amiri-Regular.ttf (shortened here for brevity)
-    // Replace with full base64 of the TTF for production use.
-    const amiriBase64 = `
-AAEAAAALAIAAAwAwT1MvMg8AAAC8AAAAYGNtYXABAAABNAAAABZ...TRUNCATED...
-`; // Use full base64 TTF string
-
-    async function setupFont(doc) {
-      // Register font with jsPDF
-      doc.addFileToVFS('Amiri-Regular.ttf', amiriBase64);
-      doc.addFont('Amiri-Regular.ttf', 'Amiri', 'normal');
-      doc.setFont('Amiri', 'normal');
-    }
-
-    document.getElementById('generateBtn').addEventListener('click', async () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-
-      await setupFont(doc);
-
-      const text = document.getElementById('arabicText').value.trim();
-      if (!text) {
-        alert('يرجى إدخال نص عربي.');
-        return;
-      }
-
-      // Shape text (placeholder). For full correctness, integrate arabic-reshaper + bidi-js.
-      const shaped = shapeArabic(text);
-
-      // Right-to-left alignment and wrapping
-      const margin = 48;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const maxWidth = pageWidth - margin * 2;
-
-      doc.setFontSize(18);
-      doc.text(shaped, pageWidth - margin, 80, {
-        align: 'right',
-        maxWidth: maxWidth
-      });
-
-      doc.save('arabic-text.pdf');
-    });
-  </script>
+    <script>
+        // تحسين تجربة الطباعة مع رسالة تأكيد
+        document.querySelector('.print-btn').addEventListener('click', function() {
+            // يمكن إضافة أي تحضيرات إضافية قبل الطباعة هنا
+            console.log('جاري تحضير الصفحة للطباعة...');
+            
+            // تأخير بسيط لضمان تحميل جميع العناصر قبل فتح نافذة الطباعة
+            setTimeout(function() {
+                window.print();
+            }, 100);
+        });
+        
+        // إضافة تأثير عند النقر على الزر
+        document.querySelector('.print-btn').addEventListener('mousedown', function() {
+            this.style.transform = 'translateY(2px)';
+        });
+        
+        document.querySelector('.print-btn').addEventListener('mouseup', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    </script>
 </body>
 </html>
