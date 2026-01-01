@@ -20,7 +20,7 @@
         }
         
         body {
-            background-color: #f8f5e6;
+            background-color: #e6f0ff; /* Light sapphire blue background */
             color: #333;
             padding: 10px;
             font-size: 13px;
@@ -28,23 +28,23 @@
         }
         
         .container {
-            max-width: 210mm; /* A4 width */
-            min-height: 287mm; /* A4 height minus margins */
+            max-width: 210mm;
+            min-height: 287mm;
             margin: 0 auto;
             background-color: white;
             border-radius: 6px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
             padding: 15px;
             position: relative;
-            border: 2px solid #000000;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
         }
         
-        /* Main Header Container - Clean single block */
+        /* Main Header Container */
         .header-container {
             margin-bottom: 15px;
-            background-color: #1a1a1a;
+            background-color: #082567; /* Deep sapphire blue */
             border-radius: 4px;
-            border: 2px solid #d4af37;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
             overflow: hidden;
             position: relative;
         }
@@ -56,7 +56,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: #d4af37;
+            background: #4cc9f0; /* Light blue accent */
         }
         
         /* Top Row Header - English left, logo center, Arabic right */
@@ -65,7 +65,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 15px;
-            color: #d4af37;
+            color: #ffffff; /* White text */
             direction: ltr;
         }
         
@@ -89,6 +89,7 @@
         /* Increased Arabic company name font size */
         .company-info.arabic .company-name {
             font-size: 15px;
+            color: #ffffff; /* White text */
         }
         
         .company-logo {
@@ -106,18 +107,18 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 3px;
-            color: #d4af37;
+            color: #ffffff; /* White text */
             line-height: 1.2;
         }
         
         .company-details {
             font-size: 9px;
-            color: #e6e6e6;
+            color: #c9e4ff; /* Light blue text */
             line-height: 1.2;
         }
         
         .company-address, .company-phone, .company-cr {
-            color: #e6e6e6;
+            color: #c9e4ff; /* Light blue text */
             text-decoration: none;
             font-weight: normal;
             margin-top: 2px;
@@ -128,18 +129,18 @@
         .header-bottom {
             padding: 5px 15px 10px 15px;
             text-align: center;
-            background-color: #1a1a1a;
+            background-color: #082567; /* Deep sapphire blue */
         }
         
         .header-title {
             text-align: center;
-            color: #d4af37;
+            color: #ffffff; /* White text */
             direction: rtl;
         }
         
         .header-title h1 {
             font-size: 18px;
-            color: #d4af37;
+            color: #ffffff; /* White text */
             margin: 0;
             padding: 0;
             font-weight: bold;
@@ -148,7 +149,7 @@
         
         .header-title p {
             font-size: 14px;
-            color: #e6e6e6;
+            color: #c9e4ff; /* Light blue text */
             margin: 3px 0 0 0;
             padding: 0;
             font-weight: bold;
@@ -163,8 +164,8 @@
         }
         
         .print-btn {
-            background-color: #d4af37;
-            color: #1a1a1a;
+            background-color: #0f52ba; /* Sapphire blue */
+            color: #ffffff; /* White text */
             border: none;
             padding: 8px 18px;
             font-size: 13px;
@@ -176,11 +177,11 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid #b8941f;
+            border: 1px solid #0a3d91; /* Darker sapphire border */
         }
         
         .print-btn:hover {
-            background-color: #e6c158;
+            background-color: #1a6bff; /* Lighter sapphire on hover */
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -189,14 +190,14 @@
             transform: translateY(0);
         }
         
-        /* Table Container with consistent dark borders */
+        /* Table Container */
         .table-container {
             overflow-x: auto;
             margin-bottom: 15px;
-            border: 2px solid #000000;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
             border-radius: 4px;
             padding: 0;
-            background-color: #fdfdf9;
+            background-color: #f8fbff; /* Very light blue background */
             direction: rtl;
         }
         
@@ -205,43 +206,43 @@
             border-collapse: collapse;
             font-size: 12px;
             table-layout: fixed;
-            border: 2px solid #000000;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
         }
         
         th {
-            background-color: #2c3e50;
-            color: #d4af37;
+            background-color: #1a3c7a; /* Medium sapphire blue */
+            color: #ffffff; /* White text */
             padding: 8px 4px;
             text-align: center;
             font-weight: bold;
-            border: 2px solid #000000;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
             font-size: 12px;
         }
         
         td {
             padding: 6px 4px;
-            border: 2px solid #000000;
+            border: 2px solid #0f52ba; /* Sapphire blue border */
             text-align: center;
             height: 34px;
             position: relative;
-            background-color: #fff;
+            background-color: #ffffff; /* White background */
         }
         
         /* Remove alternating row colors - all rows same */
         tbody tr:nth-child(even) {
-            background-color: #fff;
+            background-color: #ffffff;
         }
         
         tbody tr:hover {
-            background-color: #f5f1e1;
+            background-color: #e6f0ff; /* Light sapphire on hover */
         }
         
         /* Editable cell */
         .editable-cell {
-            background-color: #fff;
+            background-color: #ffffff;
             text-align: right;
             padding-right: 10px;
-            border-right: 2px solid #000000;
+            border-right: 2px solid #0f52ba; /* Sapphire blue border */
         }
         
         .editable-cell input {
@@ -259,8 +260,8 @@
         }
         
         .editable-cell input:focus {
-            background-color: #fffde7;
-            border-bottom: 2px solid #d4af37;
+            background-color: #f0f8ff; /* Very light blue on focus */
+            border-bottom: 2px solid #0f52ba; /* Sapphire blue focus border */
         }
         
         .editable-cell input::placeholder {
@@ -271,21 +272,21 @@
         
         /* Updated Column widths */
         .col-1 { width: 7%; }   /* رقم */
-        .col-2 { width: 25%; }  /* مجوهرات (decreased from 31%) */
-        .col-3 { width: 17%; }  /* ذهب ٩٩٩ لنا (increased from 15.5%) */
-        .col-4 { width: 17%; }  /* نقدي لنا (increased from 15.5%) */
-        .col-5 { width: 17%; }  /* ذهب ٩٩٩ لكم (increased from 15.5%) */
-        .col-6 { width: 17%; }  /* نقدي لكم (increased from 15.5%) */
+        .col-2 { width: 25%; }  /* مجوهرات */
+        .col-3 { width: 17%; }  /* ذهب ٩٩٩ لنا */
+        .col-4 { width: 17%; }  /* نقدي لنا */
+        .col-5 { width: 17%; }  /* ذهب ٩٩٩ لكم */
+        .col-6 { width: 17%; }  /* نقدي لكم */
         
         /* Number column styling */
         .number-cell {
             color: #666;
             font-weight: bold;
             font-size: 11px;
-            border-left: 2px solid #000000;
+            border-left: 2px solid #0f52ba; /* Sapphire blue border */
         }
         
-        /* Darker dash placeholder styling for gold and cash columns */
+        /* Dash placeholder styling */
         .dash-placeholder {
             position: relative;
             color: #777;
@@ -305,7 +306,7 @@
         
         /* Clear button */
         .clear-btn {
-            background-color: #e74c3c;
+            background-color: #1a3c7a; /* Medium sapphire blue */
             color: white;
             border: none;
             padding: 7px 12px;
@@ -319,11 +320,11 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            border: 1px solid #c0392b;
+            border: 1px solid #0f52ba; /* Sapphire blue border */
         }
         
         .clear-btn:hover {
-            background-color: #ff5c4c;
+            background-color: #0f52ba; /* Lighter sapphire on hover */
             transform: translateY(-1px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
@@ -348,7 +349,7 @@
                 padding: 3mm;
                 margin: 0;
                 border-radius: 0;
-                border: 2px solid #000000;
+                border: 2px solid #0f52ba; /* Sapphire blue border */
             }
             
             .print-section, .clear-btn {
@@ -356,31 +357,31 @@
             }
             
             .header-container {
-                background-color: #1a1a1a !important;
-                color: #d4af37 !important;
+                background-color: #082567 !important; /* Deep sapphire blue */
+                color: #ffffff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                border: 2px solid #d4af37;
+                border: 2px solid #0f52ba; /* Sapphire blue border */
                 direction: ltr;
             }
             
             .header-title h1 {
-                color: #d4af37 !important;
+                color: #ffffff !important;
                 font-size: 16px !important;
             }
             
             .header-title p {
-                color: #e6e6e6 !important;
+                color: #c9e4ff !important; /* Light blue text */
                 font-size: 13px !important;
             }
             
             .company-name, .company-details, .company-phone, .company-address, .company-cr {
-                color: #e6e6e6 !important;
+                color: #c9e4ff !important; /* Light blue text */
                 text-decoration: none !important;
             }
             
             .company-name {
-                color: #d4af37 !important;
+                color: #ffffff !important;
                 font-size: 13px !important;
             }
             
@@ -393,26 +394,26 @@
             }
             
             .table-container {
-                border: 2px solid #000000 !important;
+                border: 2px solid #0f52ba !important; /* Sapphire blue border */
             }
             
             table {
                 font-size: 11px;
-                border: 2px solid #000000 !important;
+                border: 2px solid #0f52ba !important; /* Sapphire blue border */
             }
             
             th, td {
                 padding: 5px 3px;
-                border: 2px solid #000000 !important;
+                border: 2px solid #0f52ba !important; /* Sapphire blue borders */
             }
             
             th {
-                background-color: #2c3e50 !important;
-                color: #d4af37 !important;
+                background-color: #1a3c7a !important; /* Medium sapphire blue */
+                color: #ffffff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 font-size: 11px !important;
-                border: 2px solid #000000 !important;
+                border: 2px solid #0f52ba !important; /* Sapphire blue border */
             }
             
             td {
@@ -444,11 +445,11 @@
             .number-cell {
                 color: #666 !important;
                 font-weight: normal !important;
-                border-left: 2px solid #000000 !important;
+                border-left: 2px solid #0f52ba !important; /* Sapphire blue border */
             }
             
             .editable-cell {
-                border-right: 2px solid #000000 !important;
+                border-right: 2px solid #0f52ba !important; /* Sapphire blue border */
             }
         }
         
@@ -634,7 +635,7 @@
     </div>
 
     <script>
-        // Generate 15 rows for the table (increased from 10)
+        // Generate 15 rows for the table
         const tableBody = document.getElementById('table-body');
         
         for (let i = 1; i <= 15; i++) {
@@ -785,7 +786,7 @@
                 // Show confirmation message
                 const confirmation = document.createElement('div');
                 confirmation.textContent = '✓ تم المسح بنجاح';
-                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: #27ae60; color: white; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px;';
+                confirmation.style.cssText = 'position: fixed; top: 15px; right: 15px; background: #0f52ba; color: white; padding: 8px 12px; border-radius: 4px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 12px;';
                 document.body.appendChild(confirmation);
                 
                 setTimeout(() => {
