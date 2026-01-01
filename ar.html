@@ -81,10 +81,11 @@
             border-right: 1px solid rgba(212, 175, 55, 0.2);
         }
         
+        /* Increased Arabic font size by 1px */
         .company-info.arabic {
             text-align: right;
             direction: rtl;
-            font-size: 10px;
+            font-size: 11px; /* Increased from 10px to 11px */
             border-left: 1px solid rgba(212, 175, 55, 0.2);
         }
         
@@ -228,7 +229,7 @@
             background-color: #f5f1e1;
         }
         
-        /* Editable cell */
+        /* Editable cell for jewellery column */
         .editable-cell {
             background-color: #fffef9;
             text-align: right;
@@ -251,13 +252,49 @@
         
         .editable-cell input:focus {
             background-color: #fffde7;
-            border-bottom: 1px solid #d4af37;
+            border-bottom: 2px solid #d4af37;
         }
         
         .editable-cell input::placeholder {
             color: #aaa;
             font-style: italic;
             font-size: 11px;
+        }
+        
+        /* Number columns (columns 3-6) with dash placeholder */
+        .number-cell {
+            background-color: #fffef9;
+        }
+        
+        .number-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            text-align: center;
+            padding: 0 5px;
+            font-size: 12px;
+            font-family: inherit;
+            direction: ltr; /* LTR for numbers */
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Special placeholder styling for number columns */
+        .number-input::placeholder {
+            color: #bbb;
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 1px;
+            text-align: center;
+            padding-left: 5px; /* Shift placeholder slightly to the right */
+            opacity: 0.7;
+        }
+        
+        .number-input:focus {
+            background-color: #fffde7;
+            border-bottom: 1px solid #d4af37;
         }
         
         /* Column widths */
@@ -269,7 +306,7 @@
         .col-6 { width: 15.5%; } /* نقدي لكم */
         
         /* Number column styling */
-        .number-cell {
+        .empty-cell {
             color: #666;
             font-weight: bold;
             font-size: 11px;
@@ -398,16 +435,25 @@
                 font-size: 14px !important;
                 font-weight: bold !important;
                 color: #000 !important;
-                text-align: right;
-                direction: rtl;
+                text-align: right !important;
+                direction: rtl !important;
             }
             
-            .editable-cell input {
+            /* Make number text bold in print */
+            .number-text {
+                font-size: 12px !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                text-align: center !important;
+                direction: ltr !important;
+            }
+            
+            .editable-cell input, .number-input {
                 border-bottom: 1px dotted #999;
             }
             
-            /* Keep number column empty in print */
-            .number-cell {
+            /* Keep first column empty in print */
+            .empty-cell {
                 color: #666 !important;
                 font-weight: normal !important;
             }
@@ -437,6 +483,10 @@
                 text-align: center;
                 width: 100%;
                 font-size: 9px;
+            }
+            
+            .company-info.arabic {
+                font-size: 10px; /* Adjusted for mobile */
             }
             
             .company-info.english {
@@ -492,6 +542,11 @@
             th, td {
                 padding: 5px 3px;
             }
+            
+            .number-input::placeholder {
+                font-size: 12px;
+                padding-left: 3px;
+            }
         }
         
         /* Ensure table fits on one page */
@@ -529,7 +584,7 @@
                     <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
                 </div>
                 
-                <!-- Arabic details on RIGHT -->
+                <!-- Arabic details on RIGHT with increased font size -->
                 <div class="company-info arabic">
                     <div class="company-name">شركة جوهرة بلوذان</div>
                     <div class="company-details">
@@ -597,42 +652,62 @@
             
             // Column 1: رقم (Number) - Empty as requested
             const cell1 = document.createElement('td');
-            cell1.className = 'number-cell';
+            cell1.className = 'empty-cell';
             cell1.textContent = ''; // Empty as requested
             row.appendChild(cell1);
             
             // Column 2: مجوهرات (Jewellery) - Editable
             const cell2 = document.createElement('td');
             cell2.className = 'editable-cell';
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = 'اكتب نوع المجوهرات هنا...';
-            input.id = `jewellery-${i}`;
-            cell2.appendChild(input);
+            const input2 = document.createElement('input');
+            input2.type = 'text';
+            input2.placeholder = 'اكتب نوع المجوهرات هنا...';
+            input2.id = `jewellery-${i}`;
+            cell2.appendChild(input2);
             row.appendChild(cell2);
             
-            // Column 3: ذهب ٩٩٩ لنا
+            // Column 3: ذهب ٩٩٩ لنا - Editable with dash placeholder
             const cell3 = document.createElement('td');
-            cell3.id = `gold-to-us-${i}`;
-            cell3.textContent = '';
+            cell3.className = 'number-cell';
+            const input3 = document.createElement('input');
+            input3.type = 'text';
+            input3.className = 'number-input';
+            input3.placeholder = '-'; // Dash placeholder
+            input3.id = `gold-to-us-${i}`;
+            cell3.appendChild(input3);
             row.appendChild(cell3);
             
-            // Column 4: نقدي لنا
+            // Column 4: نقدي لنا - Editable with dash placeholder
             const cell4 = document.createElement('td');
-            cell4.id = `cash-to-us-${i}`;
-            cell4.textContent = '';
+            cell4.className = 'number-cell';
+            const input4 = document.createElement('input');
+            input4.type = 'text';
+            input4.className = 'number-input';
+            input4.placeholder = '-'; // Dash placeholder
+            input4.id = `cash-to-us-${i}`;
+            cell4.appendChild(input4);
             row.appendChild(cell4);
             
-            // Column 5: ذهب ٩٩٩ لكم
+            // Column 5: ذهب ٩٩٩ لكم - Editable with dash placeholder
             const cell5 = document.createElement('td');
-            cell5.id = `gold-to-you-${i}`;
-            cell5.textContent = '';
+            cell5.className = 'number-cell';
+            const input5 = document.createElement('input');
+            input5.type = 'text';
+            input5.className = 'number-input';
+            input5.placeholder = '-'; // Dash placeholder
+            input5.id = `gold-to-you-${i}`;
+            cell5.appendChild(input5);
             row.appendChild(cell5);
             
-            // Column 6: نقدي لكم
+            // Column 6: نقدي لكم - Editable with dash placeholder
             const cell6 = document.createElement('td');
-            cell6.id = `cash-to-you-${i}`;
-            cell6.textContent = '';
+            cell6.className = 'number-cell';
+            const input6 = document.createElement('input');
+            input6.type = 'text';
+            input6.className = 'number-input';
+            input6.placeholder = '-'; // Dash placeholder
+            input6.id = `cash-to-you-${i}`;
+            cell6.appendChild(input6);
             row.appendChild(cell6);
             
             tableBody.appendChild(row);
@@ -649,7 +724,14 @@
                     // Create a span to show the value when printing
                     const valueSpan = document.createElement('span');
                     valueSpan.textContent = input.value;
-                    valueSpan.className = 'jewellery-text'; // Add special class for printing
+                    
+                    // Add appropriate class based on input type
+                    if (input.parentElement.classList.contains('editable-cell')) {
+                        valueSpan.className = 'jewellery-text';
+                    } else if (input.parentElement.classList.contains('number-cell')) {
+                        valueSpan.className = 'number-text';
+                    }
+                    
                     valueSpan.style.display = 'none';
                     cell.appendChild(valueSpan);
                     
@@ -657,14 +739,21 @@
                     const printStyle = document.createElement('style');
                     printStyle.textContent = `
                         @media print {
-                            .editable-cell input { display: none; }
-                            .editable-cell span.jewellery-text { 
+                            .editable-cell input, .number-cell input { display: none; }
+                            .editable-cell span.jewellery-text, .number-cell span.number-text { 
                                 display: inline !important; 
                                 font-weight: bold !important;
-                                font-size: 14px !important;
                                 color: #000 !important;
+                            }
+                            .editable-cell span.jewellery-text {
+                                font-size: 14px !important;
                                 text-align: right !important;
                                 direction: rtl !important;
+                            }
+                            .number-cell span.number-text {
+                                font-size: 12px !important;
+                                text-align: center !important;
+                                direction: ltr !important;
                             }
                         }
                     `;
@@ -693,7 +782,7 @@
                     this.disabled = false;
                     
                     // Remove temporary spans
-                    document.querySelectorAll('.editable-cell span').forEach(span => {
+                    document.querySelectorAll('.editable-cell span, .number-cell span').forEach(span => {
                         span.remove();
                     });
                 }, 500);
@@ -704,14 +793,14 @@
         const inputs = document.querySelectorAll('input');
         inputs.forEach((input, index) => {
             // Load saved values
-            const savedValue = localStorage.getItem(`jewellery_row_${index}`);
+            const savedValue = localStorage.getItem(`table_row_${index}`);
             if (savedValue) {
                 input.value = savedValue;
             }
             
             // Save on input
             input.addEventListener('input', function() {
-                localStorage.setItem(`jewellery_row_${index}`, this.value);
+                localStorage.setItem(`table_row_${index}`, this.value);
             });
         });
         
@@ -733,14 +822,6 @@
                 document.querySelectorAll('input').forEach(input => {
                     input.value = '';
                 });
-                
-                // Clear other columns if they have content
-                for (let i = 1; i <= 10; i++) {
-                    document.getElementById(`gold-to-us-${i}`).textContent = '';
-                    document.getElementById(`cash-to-us-${i}`).textContent = '';
-                    document.getElementById(`gold-to-you-${i}`).textContent = '';
-                    document.getElementById(`cash-to-you-${i}`).textContent = '';
-                }
                 
                 localStorage.clear();
                 
