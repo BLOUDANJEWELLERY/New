@@ -216,7 +216,7 @@
             text-align: center;
             font-weight: bold;
             border: 2px solid #d4af37;
-            font-size: 12px;
+            font-size: 13px; /* Increased from 12px */
         }
         
         td {
@@ -241,7 +241,7 @@
         .editable-cell {
             background-color: #ffffff;
             text-align: right;
-            padding-right: 6px; /* Reduced from 10px */
+            padding-right: 6px;
             border-right: 2px solid #d4af37;
         }
         
@@ -252,12 +252,12 @@
             outline: none;
             background: transparent;
             text-align: right;
-            padding: 0 6px; /* Reduced from 0 8px */
-            font-size: 14px; /* Increased from 12px */
+            padding: 0 6px;
+            font-size: 16px; /* Increased from 14px to 16px */
             font-family: inherit;
             direction: rtl;
             color: #333;
-            font-weight: bold; /* Added bold for better readability */
+            font-weight: bold;
         }
         
         .editable-cell input:focus {
@@ -268,7 +268,7 @@
         .editable-cell input::placeholder {
             color: #888;
             font-style: italic;
-            font-size: 12px; /* Increased from 11px */
+            font-size: 13px; /* Increased from 12px */
             font-weight: normal;
         }
         
@@ -284,7 +284,7 @@
         .number-cell {
             color: #666;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px; /* Increased from 11px */
             border-left: 2px solid #d4af37;
         }
         
@@ -301,7 +301,7 @@
             top: 50%;
             transform: translateY(-50%);
             font-weight: normal;
-            font-size: 14px;
+            font-size: 16px; /* Increased from 14px */
             color: #777;
             font-weight: bold;
         }
@@ -341,7 +341,7 @@
                 background: white;
                 padding: 0;
                 margin: 0;
-                font-size: 11px;
+                font-size: 12px; /* Increased from 11px */
             }
             
             .container {
@@ -369,12 +369,12 @@
             
             .header-title h1 {
                 color: #d4af37 !important;
-                font-size: 16px !important;
+                font-size: 17px !important; /* Increased from 16px */
             }
             
             .header-title p {
                 color: #ffcccc !important;
-                font-size: 13px !important;
+                font-size: 14px !important; /* Increased from 13px */
             }
             
             .company-name, .company-details, .company-phone, .company-address, .company-cr {
@@ -384,15 +384,15 @@
             
             .company-name {
                 color: #d4af37 !important;
-                font-size: 13px !important;
+                font-size: 14px !important; /* Increased from 13px */
             }
             
             .company-info.arabic .company-name {
-                font-size: 14px !important;
+                font-size: 15px !important; /* Increased from 14px */
             }
             
             .company-details {
-                font-size: 9px !important;
+                font-size: 10px !important; /* Increased from 9px */
             }
             
             .table-container {
@@ -400,7 +400,7 @@
             }
             
             table {
-                font-size: 11px;
+                font-size: 12px; /* Increased from 11px */
                 border: 2px solid #d4af37 !important;
             }
             
@@ -414,7 +414,7 @@
                 color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-size: 11px !important;
+                font-size: 13px !important; /* Increased from 11px */
                 border: 2px solid #d4af37 !important;
             }
             
@@ -424,7 +424,7 @@
             
             /* Make jewellery text bigger in print */
             .jewellery-text {
-                font-size: 15px !important; /* Increased from 14px */
+                font-size: 17px !important; /* Increased from 15px */
                 font-weight: bold !important;
                 color: #000 !important;
                 text-align: right;
@@ -434,7 +434,7 @@
             /* Darker, more visible dash placeholder in print */
             .dash-placeholder::before {
                 color: #555 !important;
-                font-size: 13px !important;
+                font-size: 15px !important; /* Increased from 13px */
                 right: 40% !important;
                 font-weight: bold !important;
             }
@@ -448,11 +448,12 @@
                 color: #666 !important;
                 font-weight: normal !important;
                 border-left: 2px solid #d4af37 !important;
+                font-size: 13px !important; /* Increased for print */
             }
             
             .editable-cell {
                 border-right: 2px solid #d4af37 !important;
-                padding-right: 6px !important; /* Match the reduced padding */
+                padding-right: 6px !important;
             }
         }
         
@@ -543,21 +544,29 @@
             
             .dash-placeholder::before {
                 right: 45%;
-                font-size: 13px;
+                font-size: 15px; /* Adjusted for mobile */
             }
             
             /* Adjust jewellery column for mobile */
             .editable-cell {
-                padding-right: 4px; /* Even smaller on mobile */
+                padding-right: 4px;
             }
             
             .editable-cell input {
-                font-size: 13px; /* Slightly smaller on mobile */
-                padding: 0 4px; /* Less padding on mobile */
+                font-size: 14px; /* Slightly smaller on mobile */
+                padding: 0 4px;
             }
             
             .editable-cell input::placeholder {
-                font-size: 11px;
+                font-size: 12px; /* Adjusted for mobile */
+            }
+            
+            .number-cell {
+                font-size: 11px; /* Adjusted for mobile */
+            }
+            
+            th {
+                font-size: 12px; /* Adjusted for mobile */
             }
         }
         
@@ -725,7 +734,7 @@
                             .editable-cell span.jewellery-text { 
                                 display: inline !important; 
                                 font-weight: bold !important;
-                                font-size: 15px !important; /* Increased from 14px */
+                                font-size: 17px !important; /* Increased from 15px */
                                 color: #000 !important;
                                 text-align: right !important;
                                 direction: rtl !important;
