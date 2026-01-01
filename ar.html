@@ -39,24 +39,28 @@
             border: 1px solid #e0d6b5;
         }
         
-        /* Enhanced Header with Title inside - English left, Arabic right */
-        .company-header {
+        /* Main Header Container */
+        .header-container {
+            margin-bottom: 15px;
+        }
+        
+        /* Top Row Header - English left, logo center, Arabic right */
+        .company-header-top {
             display: flex;
             justify-content: space-between;
-            align-items: stretch; /* Make all children stretch to same height */
-            padding: 12px 15px;
-            margin-bottom: 15px;
+            align-items: center;
+            padding: 10px 15px;
             background-color: #1a1a1a;
             color: #d4af37;
-            border-radius: 4px;
+            border-radius: 4px 4px 0 0;
             border: 1px solid #d4af37;
+            border-bottom: none;
             position: relative;
             overflow: hidden;
             direction: ltr;
-            min-height: 130px; /* Increased height to accommodate title */
         }
         
-        .company-header::before {
+        .company-header-top::before {
             content: "";
             position: absolute;
             top: 0;
@@ -69,9 +73,6 @@
         .company-info {
             flex: 1;
             padding: 3px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
         }
         
         .company-info.english {
@@ -88,44 +89,15 @@
             border-left: 1px solid rgba(212, 175, 55, 0.2);
         }
         
-        .header-center {
-            flex: 0 0 140px; /* Slightly wider center section */
+        .company-logo {
+            flex: 0 0 90px;
             text-align: center;
             padding: 0 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center;
         }
         
         .logo-img {
             max-width: 70px;
             height: auto;
-            margin-bottom: 8px; /* Space between logo and title */
-        }
-        
-        .header-title {
-            text-align: center;
-            color: #d4af37;
-            direction: rtl;
-        }
-        
-        .header-title h1 {
-            font-size: 18px;
-            color: #d4af37;
-            margin: 0;
-            padding: 0;
-            font-weight: bold;
-            line-height: 1.2;
-        }
-        
-        .header-title p {
-            font-size: 14px;
-            color: #e6e6e6;
-            margin: 3px 0 0 0;
-            padding: 0;
-            font-weight: bold;
-            font-style: italic;
         }
         
         .company-name {
@@ -148,6 +120,61 @@
             font-weight: normal;
             margin-top: 2px;
             display: block;
+        }
+        
+        /* Bottom Row Header - Title only, outside side borders */
+        .header-bottom {
+            background-color: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 0 0 4px 4px;
+            border: 1px solid #d4af37;
+            border-top: none;
+            text-align: center;
+            position: relative;
+        }
+        
+        /* Create the effect of title being outside the side borders */
+        .header-bottom::before,
+        .header-bottom::after {
+            content: "";
+            position: absolute;
+            top: -1px; /* Align with the border gap */
+            width: 20px; /* Width of the gap */
+            height: 1px;
+            background-color: #1a1a1a; /* Same as header background */
+        }
+        
+        .header-bottom::before {
+            left: -1px;
+        }
+        
+        .header-bottom::after {
+            right: -1px;
+        }
+        
+        .header-title {
+            text-align: center;
+            color: #d4af37;
+            direction: rtl;
+            padding: 0 5px;
+        }
+        
+        .header-title h1 {
+            font-size: 18px;
+            color: #d4af37;
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            color: #e6e6e6;
+            margin: 3px 0 0 0;
+            padding: 0;
+            font-weight: bold;
+            font-style: italic;
         }
         
         /* Print Button */
@@ -338,16 +365,23 @@
                 display: none;
             }
             
-            .company-header {
+            .company-header-top {
                 background-color: #1a1a1a !important;
                 color: #d4af37 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 border: 1px solid #d4af37;
+                border-bottom: none;
                 direction: ltr;
-                padding: 10px 12px;
-                margin-bottom: 12px;
-                min-height: 120px;
+                padding: 8px 12px;
+            }
+            
+            .header-bottom {
+                background-color: #1a1a1a !important;
+                border: 1px solid #d4af37;
+                border-top: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             
             .header-title h1 {
@@ -426,16 +460,15 @@
                 border-radius: 4px;
             }
             
-            .company-header {
+            .company-header-top {
                 flex-direction: column;
                 text-align: center;
-                padding: 10px;
-                min-height: auto;
+                padding: 8px 10px;
             }
             
             .company-info.english, .company-info.arabic {
                 border: none;
-                padding: 8px 0;
+                padding: 5px 0;
                 text-align: center;
                 width: 100%;
                 font-size: 9px;
@@ -445,20 +478,29 @@
                 direction: ltr;
                 order: 1;
                 border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-                padding-bottom: 10px;
+                padding-bottom: 8px;
             }
             
-            .header-center {
+            .company-logo {
                 order: 2;
-                margin: 8px 0;
+                margin: 5px 0;
                 flex: 0 0 auto;
                 padding: 0;
-                width: 100%;
             }
             
             .logo-img {
                 max-width: 60px;
-                margin-bottom: 5px;
+            }
+            
+            .company-info.arabic {
+                direction: rtl;
+                order: 3;
+                padding-top: 8px;
+                border-top: 1px solid rgba(212, 175, 55, 0.2);
+            }
+            
+            .company-name {
+                font-size: 12px;
             }
             
             .header-title h1 {
@@ -467,17 +509,6 @@
             
             .header-title p {
                 font-size: 13px;
-            }
-            
-            .company-info.arabic {
-                direction: rtl;
-                order: 3;
-                padding-top: 10px;
-                border-top: 1px solid rgba(212, 175, 55, 0.2);
-            }
-            
-            .company-name {
-                font-size: 12px;
             }
             
             .print-btn, .clear-btn {
@@ -509,39 +540,46 @@
 </head>
 <body>
     <div class="container">
-        <!-- Enhanced Header with Title inside -->
-        <header class="company-header">
-            <!-- English details on LEFT -->
-            <div class="company-info english">
-                <div class="company-name">Bloudan Jewellery Co.</div>
-                <div class="company-details">
-                    <div class="company-address">Kuwait - Al-Sharq - Mubarak Al-Kabir Street</div>
-                    <div class="company-address">Abdullah Al-Rabea'a Building - Shop 11</div>
-                    <div class="company-phone">Tel: +965-66634698, +965-99783299</div>
-                    <div class="company-cr">C.R No: 65864</div>
+        <!-- Two-Row Header Container -->
+        <div class="header-container">
+            <!-- Top Row: English left, logo center, Arabic right -->
+            <div class="company-header-top">
+                <!-- English details on LEFT -->
+                <div class="company-info english">
+                    <div class="company-name">Bloudan Jewellery Co.</div>
+                    <div class="company-details">
+                        <div class="company-address">Kuwait - Al-Sharq - Mubarak Al-Kabir Street</div>
+                        <div class="company-address">Abdullah Al-Rabea'a Building - Shop 11</div>
+                        <div class="company-phone">Tel: +965-66634698, +965-99783299</div>
+                        <div class="company-cr">C.R No: 65864</div>
+                    </div>
+                </div>
+                
+                <!-- Logo in CENTER -->
+                <div class="company-logo">
+                    <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
+                </div>
+                
+                <!-- Arabic details on RIGHT -->
+                <div class="company-info arabic">
+                    <div class="company-name">شركة جوهرة بلوذان</div>
+                    <div class="company-details">
+                        <div class="company-address">الكويت - الشرق - شارع مبارك الكبير</div>
+                        <div class="company-address">عمارة عبدالله الربيعي - محل 11</div>
+                        <div class="company-phone">هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩</div>
+                        <div class="company-cr">س.ت: ٦٥٨٦٤</div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Center section with Logo and Title -->
-            <div class="header-center">
-                <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
+            <!-- Bottom Row: Title only, outside side borders -->
+            <div class="header-bottom">
                 <div class="header-title">
                     <h1>كشف الحساب</h1>
                     <p>Account Statement</p>
                 </div>
             </div>
-            
-            <!-- Arabic details on RIGHT -->
-            <div class="company-info arabic">
-                <div class="company-name">شركة جوهرة بلوذان</div>
-                <div class="company-details">
-                    <div class="company-address">الكويت - الشرق - شارع مبارك الكبير</div>
-                    <div class="company-address">عمارة عبدالله الربيعي - محل 11</div>
-                    <div class="company-phone">هاتف: ٩٦٥+ ٦٦٦٣٤٦٩٨ ، ٩٦٥+ ٩٩٧٨٣٢٩٩</div>
-                    <div class="company-cr">س.ت: ٦٥٨٦٤</div>
-                </div>
-            </div>
-        </header>
+        </div>
         
         <!-- Print Button -->
         <div class="print-section">
