@@ -39,12 +39,12 @@
             border: 1px solid #e0d6b5;
         }
         
-        /* Compact Header - English left, Arabic right */
+        /* Enhanced Header with Title inside - English left, Arabic right */
         .company-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
+            align-items: stretch; /* Make all children stretch to same height */
+            padding: 12px 15px;
             margin-bottom: 15px;
             background-color: #1a1a1a;
             color: #d4af37;
@@ -53,6 +53,7 @@
             position: relative;
             overflow: hidden;
             direction: ltr;
+            min-height: 130px; /* Increased height to accommodate title */
         }
         
         .company-header::before {
@@ -68,6 +69,9 @@
         .company-info {
             flex: 1;
             padding: 3px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
         }
         
         .company-info.english {
@@ -84,15 +88,44 @@
             border-left: 1px solid rgba(212, 175, 55, 0.2);
         }
         
-        .company-logo {
-            flex: 0 0 90px;
+        .header-center {
+            flex: 0 0 140px; /* Slightly wider center section */
             text-align: center;
             padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center;
         }
         
         .logo-img {
             max-width: 70px;
             height: auto;
+            margin-bottom: 8px; /* Space between logo and title */
+        }
+        
+        .header-title {
+            text-align: center;
+            color: #d4af37;
+            direction: rtl;
+        }
+        
+        .header-title h1 {
+            font-size: 18px;
+            color: #d4af37;
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            color: #e6e6e6;
+            margin: 3px 0 0 0;
+            padding: 0;
+            font-weight: bold;
+            font-style: italic;
         }
         
         .company-name {
@@ -115,29 +148,6 @@
             font-weight: normal;
             margin-top: 2px;
             display: block;
-        }
-        
-        /* Page Title */
-        .page-title {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #d4af37;
-            position: relative;
-            direction: rtl;
-        }
-        
-        .page-title h1 {
-            font-size: 18px;
-            color: #2c3e50;
-            margin-bottom: 3px;
-            font-weight: bold;
-        }
-        
-        .page-title p {
-            font-size: 13px;
-            color: #666;
-            font-weight: bold;
         }
         
         /* Print Button */
@@ -305,7 +315,7 @@
             transform: translateY(0);
         }
         
-        /* Print-specific styles - LARGER JEWELLERY TEXT */
+        /* Print-specific styles */
         @media print {
             body {
                 background: white;
@@ -335,8 +345,19 @@
                 print-color-adjust: exact;
                 border: 1px solid #d4af37;
                 direction: ltr;
-                padding: 8px 12px;
+                padding: 10px 12px;
                 margin-bottom: 12px;
+                min-height: 120px;
+            }
+            
+            .header-title h1 {
+                color: #d4af37 !important;
+                font-size: 16px !important;
+            }
+            
+            .header-title p {
+                color: #e6e6e6 !important;
+                font-size: 13px !important;
             }
             
             .company-name, .company-details, .company-phone, .company-address, .company-cr {
@@ -351,14 +372,6 @@
             
             .company-details {
                 font-size: 9px !important;
-            }
-            
-            .page-title {
-                margin-bottom: 12px;
-            }
-            
-            .page-title h1 {
-                font-size: 16px !important;
             }
             
             .table-container {
@@ -381,21 +394,13 @@
                 font-size: 11px !important;
             }
             
-            /* Make jewellery text much larger and bold in print */
+            /* Make jewellery text big and bold in print */
             .jewellery-text {
-                font-size: 20px !important; /* Increased from 14px to 20px */
+                font-size: 14px !important;
                 font-weight: bold !important;
                 color: #000 !important;
                 text-align: right;
                 direction: rtl;
-                line-height: 1.3;
-            }
-            
-            /* Adjust row height for larger text */
-            .editable-cell {
-                padding-top: 10px !important;
-                padding-bottom: 10px !important;
-                vertical-align: middle !important;
             }
             
             .editable-cell input {
@@ -424,12 +429,13 @@
             .company-header {
                 flex-direction: column;
                 text-align: center;
-                padding: 8px 10px;
+                padding: 10px;
+                min-height: auto;
             }
             
             .company-info.english, .company-info.arabic {
                 border: none;
-                padding: 5px 0;
+                padding: 8px 0;
                 text-align: center;
                 width: 100%;
                 font-size: 9px;
@@ -439,36 +445,38 @@
                 direction: ltr;
                 order: 1;
                 border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-                padding-bottom: 8px;
+                padding-bottom: 10px;
             }
             
-            .company-logo {
+            .header-center {
                 order: 2;
-                margin: 5px 0;
+                margin: 8px 0;
                 flex: 0 0 auto;
                 padding: 0;
+                width: 100%;
             }
             
             .logo-img {
                 max-width: 60px;
+                margin-bottom: 5px;
+            }
+            
+            .header-title h1 {
+                font-size: 16px;
+            }
+            
+            .header-title p {
+                font-size: 13px;
             }
             
             .company-info.arabic {
                 direction: rtl;
                 order: 3;
-                padding-top: 8px;
+                padding-top: 10px;
                 border-top: 1px solid rgba(212, 175, 55, 0.2);
             }
             
             .company-name {
-                font-size: 12px;
-            }
-            
-            .page-title h1 {
-                font-size: 16px;
-            }
-            
-            .page-title p {
                 font-size: 12px;
             }
             
@@ -501,7 +509,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Compact Header: English left, Arabic right -->
+        <!-- Enhanced Header with Title inside -->
         <header class="company-header">
             <!-- English details on LEFT -->
             <div class="company-info english">
@@ -514,9 +522,13 @@
                 </div>
             </div>
             
-            <!-- Logo in CENTER -->
-            <div class="company-logo">
+            <!-- Center section with Logo and Title -->
+            <div class="header-center">
                 <img src="./logo.png" alt="Bloudan Jewellery Logo" class="logo-img">
+                <div class="header-title">
+                    <h1>كشف الحساب</h1>
+                    <p>Account Statement</p>
+                </div>
             </div>
             
             <!-- Arabic details on RIGHT -->
@@ -530,12 +542,6 @@
                 </div>
             </div>
         </header>
-        
-        <!-- Page Title -->
-        <div class="page-title">
-            <h1>كشف الحساب</h1>
-            <p>Account Statement</p>
-        </div>
         
         <!-- Print Button -->
         <div class="print-section">
@@ -648,16 +654,10 @@
                             .editable-cell span.jewellery-text { 
                                 display: inline !important; 
                                 font-weight: bold !important;
-                                font-size: 20px !important; /* LARGER TEXT */
+                                font-size: 14px !important;
                                 color: #000 !important;
                                 text-align: right !important;
                                 direction: rtl !important;
-                                line-height: 1.3 !important;
-                            }
-                            .editable-cell {
-                                padding-top: 10px !important;
-                                padding-bottom: 10px !important;
-                                vertical-align: middle !important;
                             }
                         }
                     `;
