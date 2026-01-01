@@ -5,343 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PDF to Images Converter</title>
   <style>
-    :root {
-      --bg: #0f1115;
-      --panel: #151922;
-      --text: #e6e9ef;
-      --muted: #9aa3b2;
-      --accent: #4f8cff;
-      --accent-2: #7b61ff;
-      --border: #232838;
-      --success: #2ecc71;
-      --warning: #f39c12;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: radial-gradient(1200px 600px at 20% 0%, #121622 0%, #0f1115 60%, #0c0f14 100%);
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 24px;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .title {
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .badge {
-      font-size: 12px;
-      color: var(--muted);
-      background: linear-gradient(180deg, #1a1f2b, #121622);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 999px;
-    }
-
-    .panel {
-      background: linear-gradient(180deg, #171c27, #121622);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .file-input {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #0f131b;
-      border: 1px dashed #2a3244;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    input[type="file"] {
-      color: var(--muted);
-      width: 100%;
-    }
-
-    .btn {
-      appearance: none;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 600;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .btn:active { transform: translateY(1px); }
-
-    .btn-primary {
-      background: linear-gradient(180deg, var(--accent), #3a6fe6);
-      box-shadow: 0 8px 20px rgba(79, 140, 255, 0.35);
-    }
-
-    .btn-secondary {
-      background: linear-gradient(180deg, #2a3244, #1b2130);
-      color: #dbe3f5;
-      border: 1px solid #2a3244;
-    }
-
-    .status {
-      margin-top: 12px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .grid {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background: #0f131b;
-      border: 1px solid #232838;
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-header {
-      padding: 10px 12px;
-      border-bottom: 1px solid #232838;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .card-body {
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .thumb {
-      width: 100%;
-      border-radius: 8px;
-      background: #0b0e13;
-      border: 1px solid #1f2432;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .small {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .footer {
-      margin-top: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .progress {
-      height: 8px;
-      background: #1b2130;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-
-    .progress > div {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      transition: width 0.2s ease;
-    }
-
-    .hidden { display: none; }
+    body { font-family: "Segoe UI", sans-serif; background:#f9fafc; margin:0; }
+    header { background:#4f8cff; color:white; padding:20px; text-align:center; font-size:1.5rem; font-weight:bold; }
+    .container { max-width:900px; margin:30px auto; padding:20px; background:white; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    h2 { color:#4f8cff; margin-top:20px; }
+    input[type="file"] { margin:10px 0; }
+    button { background:#4f8cff; border:none; color:white; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer; margin-right:10px; }
+    button.secondary { background:#777; }
+    #status { margin-top:10px; font-size:0.95rem; color:#555; }
+    .progress { height:10px; background:#eee; border-radius:5px; overflow:hidden; margin-top:10px; }
+    .progress div { height:100%; width:0%; background:#4f8cff; transition:width 0.3s ease; }
+    .grid { margin-top:20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+    .card { border:1px solid #ddd; border-radius:8px; background:#fafafa; }
+    .card-header { background:#f0f4ff; padding:8px 12px; font-weight:600; font-size:0.9rem; }
+    .card-body { padding:12px; text-align:center; }
+    .card-body img { max-width:100%; border:1px solid #ccc; border-radius:6px; }
+    .actions { margin-top:10px; display:flex; justify-content:center; gap:10px; }
+    .actions a, .actions button { font-size:0.85rem; padding:6px 10px; }
   </style>
 </head>
 <body>
+  <header>PDF → Images Converter</header>
   <div class="container">
-    <div class="header">
-      <div class="title">
-        PDF → Images
-        <span class="badge">Client-side • PNG export</span>
-      </div>
-      <div class="small">Powered by PDF.js</div>
-    </div>
-
-    <div class="panel">
-      <div class="controls">
-        <div class="file-input">
-          <input id="pdfFile" type="file" accept="application/pdf" />
-        </div>
-        <button id="convertBtn" class="btn btn-primary">Convert</button>
-        <button id="clearBtn" class="btn btn-secondary">Clear</button>
-      </div>
-      <div class="status" id="status">Select a PDF and click Convert.</div>
-      <div class="progress hidden" id="progressBar"><div id="progressFill"></div></div>
-    </div>
-
+    <h2>Step 1: Upload your PDF</h2>
+    <input id="pdfFile" type="file" accept="application/pdf" />
+    <h2>Step 2: Convert</h2>
+    <button id="convertBtn">Convert</button>
+    <button id="clearBtn" class="secondary">Clear</button>
+    <button id="downloadZipBtn" class="secondary" disabled>Download All as ZIP</button>
+    <div id="status">Select a PDF and click Convert.</div>
+    <div class="progress"><div id="progressFill"></div></div>
+    <h2>Step 3: Download Images</h2>
     <div id="output" class="grid"></div>
-
-    <div class="footer">
-      <div>Images are rendered at a scale you control—higher scale = higher resolution.</div>
-      <div>Tip: Use “Download All” with a zip tool server-side if needed.</div>
-    </div>
   </div>
 
-  <!-- PDF.js (CDN) -->
+  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- JSZip -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <script>
-    // Configure worker
-    if (window['pdfjsLib']) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     const pdfInput = document.getElementById('pdfFile');
     const convertBtn = document.getElementById('convertBtn');
     const clearBtn = document.getElementById('clearBtn');
+    const downloadZipBtn = document.getElementById('downloadZipBtn');
     const output = document.getElementById('output');
     const statusEl = document.getElementById('status');
-    const progressBar = document.getElementById('progressBar');
     const progressFill = document.getElementById('progressFill');
 
-    // Tweak this for resolution (1.0–3.0 is typical)
-    const RENDER_SCALE = 1.5;
+    const RENDER_SCALE = 6.0; // High clarity
+
+    let imagesData = []; // store base64 images
 
     clearBtn.addEventListener('click', () => {
       output.innerHTML = '';
       statusEl.textContent = 'Select a PDF and click Convert.';
-      progressBar.classList.add('hidden');
       progressFill.style.width = '0%';
       pdfInput.value = '';
+      imagesData = [];
+      downloadZipBtn.disabled = true;
     });
 
     convertBtn.addEventListener('click', async () => {
       const file = pdfInput.files?.[0];
       if (!file) {
-        statusEl.textContent = 'Please choose a PDF file first.';
+        statusEl.textContent = '⚠️ Please choose a PDF file first.';
         return;
       }
 
       output.innerHTML = '';
       statusEl.textContent = 'Loading PDF…';
-      progressBar.classList.remove('hidden');
       progressFill.style.width = '0%';
+      imagesData = [];
 
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-        statusEl.textContent = `Pages detected: ${pdf.numPages}. Rendering…`;
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: RENDER_SCALE });
 
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d', { willReadFrequently: true });
+          const context = canvas.getContext('2d');
           canvas.width = viewport.width;
           canvas.height = viewport.height;
 
           await page.render({ canvasContext: context, viewport }).promise;
+          const dataURL = canvas.toDataURL('image/png');
 
-          const dataURL = canvas.toDataURL('image/png', 1.0);
+          imagesData.push({ name: `page-${pageNum}.png`, dataURL });
 
           const card = document.createElement('div');
           card.className = 'card';
-
-          const header = document.createElement('div');
-          header.className = 'card-header';
-          header.innerHTML = `<span>Page ${pageNum}</span><span>${Math.round(viewport.width)}×${Math.round(viewport.height)} px</span>`;
-
-          const body = document.createElement('div');
-          body.className = 'card-body';
-
-          const img = document.createElement('img');
-          img.className = 'thumb';
-          img.src = dataURL;
-          img.alt = `Page ${pageNum}`;
-
-          const actions = document.createElement('div');
-          actions.className = 'actions';
-
-          const downloadBtn = document.createElement('a');
-          downloadBtn.className = 'btn btn-secondary';
-          downloadBtn.textContent = 'Download PNG';
-          downloadBtn.href = dataURL;
-          downloadBtn.download = `page-${pageNum}.png`;
-
-          const copyBtn = document.createElement('button');
-          copyBtn.className = 'btn btn-secondary';
-          copyBtn.textContent = 'Copy to clipboard';
-          copyBtn.addEventListener('click', async () => {
-            try {
-              const blob = await (await fetch(dataURL)).blob();
-              await navigator.clipboard.write([
-                new ClipboardItem({ [blob.type]: blob })
-              ]);
-              statusEl.textContent = `Copied page ${pageNum} to clipboard.`;
-            } catch (err) {
-              statusEl.textContent = 'Copy failed—your browser may not support image clipboard.';
-            }
-          });
-
-          actions.appendChild(downloadBtn);
-          actions.appendChild(copyBtn);
-
-          body.appendChild(img);
-          body.appendChild(actions);
-
-          card.appendChild(header);
-          card.appendChild(body);
+          card.innerHTML = `
+            <div class="card-header">Page ${pageNum}</div>
+            <div class="card-body">
+              <img src="${dataURL}" alt="Page ${pageNum}" />
+              <div class="actions">
+                <a href="${dataURL}" download="page-${pageNum}.png">Download PNG</a>
+              </div>
+            </div>
+          `;
           output.appendChild(card);
 
           const pct = Math.round((pageNum / pdf.numPages) * 100);
           progressFill.style.width = pct + '%';
           statusEl.textContent = `Rendered ${pageNum}/${pdf.numPages} pages (${pct}%).`;
         }
-
-        statusEl.textContent = 'Done. You can download images above.';
+        statusEl.textContent = '✅ Conversion complete. Download images below or as ZIP.';
+        downloadZipBtn.disabled = false;
       } catch (err) {
+        statusEl.textContent = '❌ Failed to process PDF.';
         console.error(err);
-        statusEl.textContent = 'Failed to process PDF. Try another file or check the console.';
-        progressBar.classList.add('hidden');
       }
+    });
+
+    downloadZipBtn.addEventListener('click', async () => {
+      if (!imagesData.length) return;
+      const zip = new JSZip();
+      imagesData.forEach(img => {
+        const base64 = img.dataURL.split(',')[1];
+        zip.file(img.name, base64, { base64: true });
+      });
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, "pdf-images.zip");
     });
   </script>
 </body>
